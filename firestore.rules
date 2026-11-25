@@ -1,0 +1,47 @@
+rules_version = '2';
+
+// Ringer Fantasy security rules.
+// EDIT the email below to the commissioner's email (same as COMMISSIONER_EMAILS in index.html).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isCommish() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in ['you@example.com'];
+    }
+
+    // 'auto' locks at the first flight: Fri Dec 4 2026, 2:00 PM Central (20:00 UTC).
+    function lockSetting() {
+      return exists(/databases/$(database)/documents/league/state)
+        ? get(/databases/$(database)/documents/league/state).data.get('lock', 'auto')
+        : 'auto';
+    }
+    function lineupsOpen() {
+      return lockSetting() == 'open'
+        || (lockSetting() == 'auto' && request.time < timestamp.value(1796414400000));
+    }
+
+    function validTeam() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['name', 'picks', 'cap', 'owner', 'at'])
+        && d.name is string && d.name.size() <= 40
+        && d.owner is string && d.owner.size() <= 60
+        && d.picks is list && d.picks.size() == 7;
+    }
+
+    // Anyone can see teams; each player can only write their own, and only before the lock.
+    match /teams/{uid} {
+      allow read: if true;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && lineupsOpen() && validTeam();
+      allow delete: if isCommish();
+    }
+
+    // Scores and the lock setting: everyone reads, only the commissioner writes.
+    match /league/{docId} {
+      allow read: if true;
+      allow write: if isCommish();
+    }
+  }
+}
