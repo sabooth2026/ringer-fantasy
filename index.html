@@ -47,6 +47,7 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+.rk small.pjr{display:block;font-family:Pridi,Georgia,serif;font-size:11px;color:var(--mut);white-space:nowrap}
 .tots{text-align:right}.tots small.pj{font-size:14px}
 small.pj{display:block;font-family:Pridi,Georgia,serif;font-size:12px;color:var(--mut);font-weight:400;line-height:1.2;text-align:right}
 .sum small.pj{text-align:center;margin-top:2px}
@@ -70,16 +71,16 @@ td.pjc,th.pjc{color:var(--mut)}
 .tr.gone .nm b{color:var(--mut)}
 .num.cp{background:var(--red)}
 .steps{grid-column:2/-1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
-.st{font-size:12px;line-height:1.2;padding:5px 2px;border-radius:6px;text-align:center;border:1px solid var(--line);color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.st.done{background:var(--red);border-color:var(--red);color:#fff}
-.st.now{border:2px solid #fff;color:#fff;font-weight:600}
-.st.proj{border:1px dashed #fff;color:#fff}
-.st.out,.st.projout{background:#1c1c1c;color:#666;text-decoration:line-through}
-.st.gold{background:#ffc72c;border-color:#ffc72c;color:#000;font-weight:600}
-.st.silver{background:#cfd3d8;border-color:#cfd3d8;color:#000;font-weight:600}
-.st.bronze{background:#c98a4b;border-color:#c98a4b;color:#000;font-weight:600}
-.leg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--mut);margin:12px 0 0}.leg .st{padding:3px 8px}
-@media(max-width:600px){.st{font-size:11px;padding:5px 1px}.steps{grid-column:1/-1;gap:3px}.trk.card{padding:14px}}
+.stp{font-size:12px;line-height:1.2;padding:5px 2px;border-radius:6px;text-align:center;border:1px solid var(--line);color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stp.done{background:var(--red);border-color:var(--red);color:#fff}
+.stp.now{border:2px solid #fff;color:#fff;font-weight:600}
+.stp.proj{border:1px dashed #fff;color:#fff}
+.stp.out,.stp.projout{background:#1c1c1c;color:#666;text-decoration:line-through}
+.stp.gold{background:#ffc72c;border-color:#ffc72c;color:#000;font-weight:600}
+.stp.silver{background:#cfd3d8;border-color:#cfd3d8;color:#000;font-weight:600}
+.stp.bronze{background:#c98a4b;border-color:#c98a4b;color:#000;font-weight:600}
+.leg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--mut);margin:12px 0 0}.leg .stp{padding:3px 8px}
+@media(max-width:600px){.stp{font-size:11px;padding:5px 1px}.steps{grid-column:1/-1;gap:3px}.trk.card{padding:14px}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
 label.tn{display:block;font-weight:600;font-size:14px;color:var(--mut)}
 input,select{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px}
@@ -255,6 +256,8 @@ function buildProj(){PROJ={};PHIST={};const yr=season=="2025"?2025:2026,PRIOR=0.
 const projR=id=>PROJ[id]!=null?Math.round(PROJ[id]):null;
 function histText(id,short){const h=PHIST[id]||[];if(!h.length)return short?"No past Ringer results":"No past Texas Ringer results on file.";
   return h.map(x=>`${x.y}${x.d!=BY[id].d?" ("+DIV[x.d]+")":""}: #${x.r}${x.fin!="-"?" · "+FINW[x.fin]:""}${short?"":" · "+x.p+" pts"}`).join(short?" · ":"; ")}
+function projRanks(list){const ps=list.map(t=>[t.id,teamProj(t)]);const R={};ps.forEach(([id,p])=>{R[id]=1+ps.filter(([,q])=>q>p+1e-9).length});return R}
+const ordn=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
 const teamProj=t=>t.picks.reduce((s,id)=>s+(id&&PROJ[id]!=null?PROJ[id]*(t.cap==id?1.5:1):0),0);
 buildPool("2026");
 const SLOTS=["BB","TR","FC","BH","RC","FLEX","FLEX"];
@@ -390,14 +393,14 @@ function tracker(P){const ids=me.picks.filter(Boolean),sc=anyScores();
   const myProj=teamProj(me),diff=myTot-myProj;
   const sum=`<div class="sum"><div><b>${sc?fmt(myTot):"0"}</b><span>points</span>${sc?`<small class="pj ${diff>=0?"up":"down"}">${(diff>=0?"+":"")+fmt(Math.round(diff))} vs projected</small>`:""}</div>
     <div class="pjbox"><b>${Math.round(myProj)}</b><span>projected</span></div>
-    <div><b>${sc&&list.length>1?ord(rank):"–"}</b><span>${list.length>1?"of "+list.length+" teams":"league rank"}</span></div>
+    ${(()=>{const PR=projRanks(teams.filter(t=>t.picks.some(Boolean)).map(t=>t.id==myId||t.id=="me"?{...t,...me}:t));const pr=PR[myId||"me"];return`<div><b>${sc&&list.length>1?ord(rank):pr&&list.length>1?ord(pr):"–"}</b><span>${list.length>1?(sc?"of ":"projected, of ")+list.length+" teams":"league rank"}</span>${sc&&pr&&list.length>1?`<small class="pj">projected ${ordn(pr)}</small>`:""}</div>`})()}
     ${done?`<div><b>${medals}</b><span>medal${medals==1?"":"s"} won</span></div>`:`<div><b>${ids.length?(sc?alive:ids.length)+"/"+ids.length:"0"}</b><span>${sc?"still shooting":"archers picked"}</span></div>`}</div>`;
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i];if(!id)return`<li class="tr emp"><span class="num">${i+1}</span><span class="meta">Empty ${s=="FLEX"?"Flex":DIV[s]} slot</span></li>`;
     const pth=paths.find(x=>x[0]==id)[1],c=me.cap==id,p=P[id];
     return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm"><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div>
-      <div class="tpw"><b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}${c?` (${Math.round(PROJ[id]||0)} × 1.5)`:""}</small></div><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
+      <div class="tpw"><b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}${c?` (${Math.round(PROJ[id]||0)} × 1.5)`:""}</small></div><div class="steps">${pth.st.map(x=>`<span class="stp ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
   return`<div class="trk card"><h3>${esc(me.name||"Tournament tracker")}</h3><p class="meta trk-sub">Tournament tracker</p>${sum}<ol class="trl">${rows}</ol>
-    <p class="leg"><span class="st done">Done</span><span class="st now">Shooting now</span><span class="st proj">On track</span><span class="st out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
+    <p class="leg"><span class="stp done">Done</span><span class="stp now">Shooting now</span><span class="stp proj">On track</span><span class="stp out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
 const named=()=>me.name.trim().length>=2;
 function nameView(){return`<div class="card namebox"><h2>First, name your team</h2><p class="meta">Every team needs a name to enter the league. It's what everyone sees in the standings.</p>
   <form id="nf"><label for="nf-name" class="tn">Team name</label><div class="row" style="margin:6px 0 0"><input type="text" id="nf-name" maxlength="40" minlength="2" required placeholder="e.g. Bale 4 Bandits" autocomplete="off"><button class="btn" type="submit">Save and pick archers</button></div></form>
@@ -436,8 +439,9 @@ function archersView(){const cnt=d=>A.filter(a=>a.d==d).length;
 function standingsView(){const P=pts(),sc=anyScores(),show=locked()||mode=="local";
   const list=teams.filter(t=>t.picks.some(Boolean)||t.name).map(t=>({...t,tot:teamTotal(t,P)})).sort((a,b)=>sc?(b.tot-a.tot||(a.name||"").localeCompare(b.name||"")):(teamProj(b)-teamProj(a)));
   if(!list.length)return`<h2>Standings</h2><div class="empty-st">No teams yet. Build yours on My Team and share the page with your archery friends.</div>`;
-  return`<h2>Standings</h2>${sc?"":`<p class="note">Points show up after the commissioner posts scores. ${show?"":"Rosters stay hidden until lineups lock."}</p>`}
-  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?i+1:"·"}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):Math.round(teamProj(t))}<small class="pj">${sc?"proj "+Math.round(teamProj(t)):"projected"}</small></span>
+  const PR=projRanks(list),AR={};list.forEach(t=>{AR[t.id]=1+list.filter(o=>o.tot>t.tot+1e-9).length});
+  return`<h2>${sc?"Standings":"Projected standings"}</h2>${sc?"":`<p class="note">Ranked by projected points until the commissioner posts scores. ${show?"":"Rosters stay hidden until lineups lock."}</p>`}
+  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?AR[t.id]:PR[t.id]}${sc?`<small class="pjr">proj #${PR[t.id]}</small>`:""}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):Math.round(teamProj(t))}<small class="pj">${sc?"proj "+Math.round(teamProj(t)):"projected"}</small></span>
   ${show||t.id==myId?`<details><summary>Roster</summary><ol>${t.picks.filter(Boolean).map(id=>`<li>${esc(BY[id].n)} <span class="meta">${DIV[BY[id].d]}${t.cap==id?" · Captain":""}${P[id]!=null?" · "+fmt(P[id]*(t.cap==id?1.5:1))+" pts":""} · proj ${Math.round((PROJ[id]||0)*(t.cap==id?1.5:1))}</span></li>`).join("")}</ol></details>`:""}</li>`).join("")}</ul>`}
 function rulesView(){const w=SC.win;return`<div class="rules"><h2>How it works</h2>
 <h3>Build a roster of 7</h3><ul><li>One archer from each division: Barebow, Traditional, Freestyle Compound, Bowhunter and Recurve.</li><li>Two Flex spots, filled from any division.</li><li>Anyone can pick the same archer, so there's no draft order to fight over.</li><li>Name one captain. Your captain's points count 1.5×.</li></ul>
