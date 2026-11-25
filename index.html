@@ -47,6 +47,12 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+small.pj{display:block;font-family:Pridi,Georgia,serif;font-size:12px;color:var(--mut);font-weight:400;line-height:1.2;text-align:right}
+.sum small.pj{text-align:center;margin-top:2px}
+.tpw{text-align:right}
+.hist{display:block;font-size:13px;color:var(--mut);margin-top:2px}
+.stat b+div,.stat{line-height:1.3}
+td.pjc,th.pjc{color:var(--mut)}
 .nocap{display:inline-block;font-size:12px;font-weight:600;color:#fff;background:var(--red);border-radius:5px;padding:1px 7px;margin-left:6px;vertical-align:2px}
 .chk-list{margin:0 0 6px;padding-left:20px}.chk-list li{margin:4px 0}
 .sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
@@ -210,6 +216,43 @@ const SEASONS={"2026":{label:"2026 Texas Ringer · Fri–Sat, Dec 4–5",raw:RAW
 let A=[],BY={},season="";
 function buildPool(sn){season=SEASONS[sn]?sn:"2026";const S=SEASONS[season];A=[];BY={};
   for(const d of ORDER)S.raw[d].split("|").forEach((l,i)=>{const [n,b,t]=l.split(",");const a={id:S.pre+d+i,n,d,b,tc:t,t:S.times[t]||""};A.push(a);BY[a.id]=a})}
+/* ---- Projections from past Texas Ringer results (adult divisions, 2024-2025) ---- */
+const HIST=`2025#TR#34#Gene Cross|1|31|QF;Jon Starks|2|55|S;Michael Davenport|3|19|R16;John Sligh|4|48|B;Clifton Montgomery|5|27|QF;Andy Love|6|16|R16;Matthew Epp|7|25|QF;Julie Jones|8|69|G;Stacey Carmichael|9|13|R16;Paul Helms|10|12|R16;Richard Bolton|11|21|QF;Zihao Liu|12|10|R16;Belinda Hale|13|9|R16;Mike Ellis|14|28|4;Marcus Williamson|15|7|R16;Dave Riggle|16|6|R16;Sherry Kessler|17|0|-;Paul Batchelder Jr.|18|0|-;Troy Lensing|19|0|-;Jessica Gilliland|20|0|-;Kyle Black|21|0|-;Paul Moreau|22|0|-;Bill Lawless|23|0|-;Matthew Fleetwood|24|0|-;Billy Koch|25|0|-;Jeremy Velez|26|0|-;Kelley Garrett|27|0|-;Maddison Sossamon|28|0|-;Philip Barnes|29|0|-;Brian Knoop|30|0|-;Alan Retamozo|31|0|-;Jessica Corbett|32|0|-;Henry Infante|33|0|-;Robert Schneider|34|0|-
+2025#FC#22#Sawyer Sullivan|1|41|4;Ryan Thomas|2|75|G;Julia Cook|3|49|B;Connor Goehring|4|18|R16;Annabelle Moore|4|53|S;Ryan Booth|6|26|QF;Rendyn Brooks|7|15|R16;Bryce Talley|8|14|R16;Carson Krahe|9|23|QF;Timothy Wallace|10|22|QF;Josh Carter|11|11|R16;Adam Shackelford|12|10|R16;Bryan Padgett|13|19|QF;Jewel Blakey|14|8|R16;Curtis Belew|15|7|R16;Kirk Menard|16|6|R16;Jacob Goff|17|0|-;Steve Holbert|18|0|-;Kenneth Lassiter|19|0|-;Jason Whiddon|20|0|-;Aaron Thompson|21|0|-;Justice Sears|22|0|-
+2025#BH#13#Griffin Witty|1|76|G;Craig Cato|2|30|QF;Aaron Roberts|3|39|4;James Brown|4|28|QF;Chase Manor|5|47|B;Dennis Chen|6|26|QF;Lilly Dillon|7|50|S;Craig Jameson|8|14|R16;Jason Gilliland|9|23|QF;Marcey House|10|12|R16;Terra Timmerman|11|11|R16;Lizzie Camp|12|10|R16;Kendall Garner|13|9|R16
+2025#BB#41#Jeremiah Jones|1|76|G;Robby Weissinger|2|20|R16;Zack Bisinger|3|54|S;Matthew Yacca|4|28|QF;John Winker|5|17|R16;Spanky Brooks|6|26|QF;Nicholas Way|7|25|QF;Lee Wilkins|8|14|R16;Justin Sperlazza|9|23|QF;Damond Vigil|10|12|R16;Bubba Bateman|11|11|R16;Nathan Schoeneberg|12|40|B;Venugopal Kunnavakkam|13|9|R16;Rick Stonebraker|14|8|R16;Marcus Cooley|15|27|4;Chris Barden|16|6|R16;Johana Czako|17|0|-;Richard Hall|18|0|-;Cheyenne McBride|19|0|-;David Day|20|0|-;Darren Morse|21|0|-;Charli Long|22|0|-;Justin Isbell|23|0|-;Sabrina Harrigan|24|0|-;Joe Cashuric|25|0|-;Adrian Lama|26|0|-;Sarah Kate (sk) Jentsch|27|0|-;Carter Pearson|28|0|-;Kayla Kalnasy|29|0|-;Bryan Copeland|30|0|-;Sanjeh Lok|31|0|-;Scooter Farber|32|0|-;Jay Bennett|33|0|-;Shamus McCann|34|0|-;Kurt Jentsch|35|0|-;Tom Calpouzos|36|0|-;Eeshwar Kollu|37|0|-;Mollie McDonald|38|0|-;Amy Booth|39|0|-;Landry Blakey|40|0|-;Archana Kongara|41|0|-
+2025#RC#17#Ethan Chan|1|51|B;Trenton Cowles|2|75|G;Jack Krengel|3|29|QF;Alex Gilliam|4|53|S;Pierce McAdam|5|27|QF;Abby Kippes|6|16|R16;Caelan Shanklin|7|25|QF;Sam Dornan|8|24|QF;Madeleine Dodson|9|13|R16;Micah Xie|10|12|R16;Catalina GNoriega|11|31|4;Ellie Booth|12|10|R16;Taylor Vader|13|9|R16;Sarah Hwang|14|8|R16;Zachary Maracine|15|7|R16;Angela Ma|16|6|R16;Tri Ngo|17|0|-
+2024#FC#16#Ryan Booth|1|56|S;Colton Converse|2|30|QF;Ellensohn Chris|3|49|B;Brannan Woelfel|4|28|QF;Ray Veuleman|5|37|4;Bryan Padgett|6|26|QF;Carson Krahe|7|70|G;Aaron Ochoa|8|14|R16;Josh Carter|9|23|QF;Colby Scott|10|12|R16;Steve Holbert|11|11|R16;Kat Stiegel|12|10|R16;Chaney Elliott|13|9|R16;Randall Chesnutt|14|8|R16;Jason Whiddon|15|7|R16;Billy Barber|16|6|R16
+2024#BB#26#Cheyenne McBride|1|21|R16;John Winker|2|30|QF;Nicholas Way|3|74|G;Spanky Brooks|4|53|S;Justin Sperlazza|5|27|QF;Marcel Laurens|6|16|R16;Lee Wilkins|7|45|B;Johana Czako|8|34|4;Rick Stonebraker|9|13|R16;Jason Rojas|10|12|R16;Sanjeh Lok|11|21|QF;Darren Morse|12|10|R16;Richard Hall|13|9|R16;David Day|14|8|R16;Sarah Kate [SK] Jentsch|14|8|R16;Tom Ramsbacher|16|16|QF;Dave Nesbitt|17|0|-;Sherrill Andrea|18|0|-;Sabrina Harrigan|19|0|-;Kayla Kalnasy|20|0|-;Adrian Lama|21|0|-;Billy Koch|22|0|-;Jay Bennett|23|0|-;Jamie Parker|24|0|-;Mollie McDonald|25|0|-;Apurv Singh Gautam|26|0|-
+2024#RC#6#Caelan Shanklin|1|76|G;Venugopal Kunnavakkam|2|55|S;Matthew Requa|3|49|B;Whitney Vandiver|4|28|QF;Tri Ngo|5|37|4;Haydee Diaz|6|26|QF
+2024#TR#29#Clifton Montgomery|1|76|G;Robert Garcia|2|40|4;Stacey Carmichael|3|54|S;Matthew Epp|4|48|B;Robby Rodriguez Jr.|5|27|QF;Suzi Swanson|6|16|R16;Troy Lensing|7|25|QF;Matthew Fleetwood|8|14|R16;Keith Bain|9|23|QF;Jeffrey Stewart|10|12|R16;Sherry Kessler|11|21|QF;Paul Moreau|12|10|R16;Jessica Garcia|13|9|R16;Kelley Garrett|14|8|R16;Kristie Bocanegra|15|7|R16;Cynthia Dinwiddie|16|6|R16;George Wilhite|17|0|-;Anna Gonzales|18|0|-;Maddison Sossamon|19|0|-;Jonathan Laas|20|0|-;Rebecca Wilhite|21|0|-;Jessica Corbett|22|0|-;Beverly Wygal|23|0|-;Dieter Galvan|24|0|-;Alan Retamozo|25|0|-;Terry Wygal|26|0|-;David Paul|27|0|-;William Flores|28|0|-;Robert Schneider|29|0|-`;
+const HY={};HIST.split("\n").forEach(line=>{const [y,d,f,ent]=line.split("#");(HY[d]??={})[+y]={field:+f,e:ent.split(";").map(x=>{const [n,r,p,fin]=x.split("|");return{n,r:+r,p:+p,fin}})}});
+const FINW={G:"Gold",S:"Silver",B:"Bronze","4":"4th",QF:"Quarterfinal",R16:"Round of 16","-":"missed top 16"};
+let PROJ={},PHIST={};
+function histMatch(name,ents){const t=normN(name);let h=ents.filter(e=>normN(e.n)==t);if(h.length==1)return h[0];
+  const w=t.split(" ");h=ents.filter(e=>{const v=normN(e.n).split(" ");return v[v.length-1]==w[w.length-1]&&v[0][0]==w[0][0]});return h.length==1?h[0]:null}
+function buildProj(){PROJ={};PHIST={};const yr=season=="2025"?2025:2026,PRIOR=0.55,SIG=0.45,N=2000;
+  let st=0x9e3779b9;const rnd=()=>{st|=0;st=st+0x6D2B79F5|0;let t=Math.imul(st^st>>>15,1|st);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  const gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+  const S={};
+  for(const a of A){let num=PRIOR,den=1;const h=[];
+    for(const d in HY)for(const y in HY[d]){if(+y>=yr)continue;const Y=HY[d][y],e=histMatch(a.n,Y.e);if(!e)continue;
+      const pct=Y.field>1?1-(e.r-1)/(Y.field-1):1,w=(+y==yr-1?2:1)*(d==a.d?1:.5);num+=w*pct;den+=w;h.push({y:+y,d,r:e.r,field:Y.field,p:e.p,fin:e.fin})}
+    S[a.id]=num/den;PHIST[a.id]=h.sort((x,z)=>z.y-x.y)}
+  for(const d of ORDER){const ids=A.filter(a=>a.d==d).map(a=>a.id),tot={};ids.forEach(i=>tot[i]=0);
+    const win=(x,y)=>x&&!y?x:y&&!x?y:!x?null:(S[x]+SIG*gauss()>S[y]+SIG*gauss()?x:y);
+    for(let it=0;it<N;it++){const perf={};ids.forEach(i=>perf[i]=S[i]+SIG*gauss());const ord=[...ids].sort((x,y)=>perf[y]-perf[x]);
+      ord.forEach((i,k)=>{if(k<CUT)tot[i]+=qualPts(k+1)+SC.cut});
+      const sd=ord.slice(0,16);while(sd.length<16)sd.push(null);
+      const w1=PAIRS.map(([x,y])=>{const w=win(sd[x-1],sd[y-1]);if(w)tot[w]+=SC.win.r;return w});
+      const w2=[0,1,2,3].map(k=>{const w=win(w1[2*k],w1[2*k+1]);if(w)tot[w]+=SC.win.q;return w});
+      const l3=[];const w3=[0,1].map(k=>{const x=w2[2*k],y=w2[2*k+1],w=win(x,y);if(w)tot[w]+=SC.win.s;l3.push(x&&y?(w==x?y:x):null);return w});
+      let w=win(w3[0],w3[1]);if(w)tot[w]+=SC.win.f;w=win(l3[0],l3[1]);if(w)tot[w]+=SC.win.b}
+    ids.forEach(i=>PROJ[i]=tot[i]/N)}}
+const projR=id=>PROJ[id]!=null?Math.round(PROJ[id]):null;
+function histText(id,short){const h=PHIST[id]||[];if(!h.length)return short?"No past Ringer results":"No past Texas Ringer results on file.";
+  return h.map(x=>`${x.y}${x.d!=BY[id].d?" ("+DIV[x.d]+")":""}: #${x.r}${x.fin!="-"?" · "+FINW[x.fin]:""}${short?"":" · "+x.p+" pts"}`).join(short?" · ":"; ")}
+const teamProj=t=>t.picks.reduce((s,id)=>s+(id&&PROJ[id]!=null?PROJ[id]*(t.cap==id?1.5:1):0),0);
 buildPool("2026");
 const SLOTS=["BB","TR","FC","BH","RC","FLEX","FLEX"];
 const LOCK=new Date("2026-12-04T14:00:00-06:00");
@@ -341,13 +384,14 @@ function tracker(P){const ids=me.picks.filter(Boolean),sc=anyScores();
   const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({id:t.id,tot:teamTotal(t,P)})).sort((a,b)=>b.tot-a.tot);
   const myTot=teamTotal(me,P);const rank=1+list.filter(t=>t.tot>myTot+1e-9).length;
   const ord=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
-  const sum=`<div class="sum"><div><b>${sc?fmt(myTot):"0"}</b><span>points</span></div>
+  const myProj=teamProj(me),diff=myTot-myProj;
+  const sum=`<div class="sum"><div><b>${sc?fmt(myTot):"0"}</b><span>points</span><small class="pj">${sc?(diff>=0?"+":"")+fmt(Math.round(diff))+" vs proj "+Math.round(myProj):"proj "+Math.round(myProj)}</small></div>
     <div><b>${sc&&list.length>1?ord(rank):"–"}</b><span>${list.length>1?"of "+list.length+" teams":"league rank"}</span></div>
     ${done?`<div><b>${medals}</b><span>medal${medals==1?"":"s"} won</span></div>`:`<div><b>${ids.length?(sc?alive:ids.length)+"/"+ids.length:"0"}</b><span>${sc?"still shooting":"archers picked"}</span></div>`}</div>`;
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i];if(!id)return`<li class="tr emp"><span class="num">${i+1}</span><span class="meta">Empty ${s=="FLEX"?"Flex":DIV[s]} slot</span></li>`;
     const pth=paths.find(x=>x[0]==id)[1],c=me.cap==id,p=P[id];
     return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm"><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div>
-      <b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
+      <div class="tpw"><b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}</small></div><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
   return`<div class="trk card"><h3>${esc(me.name||"Tournament tracker")}</h3><p class="meta trk-sub">Tournament tracker</p>${sum}<ol class="trl">${rows}</ol>
     <p class="leg"><span class="st done">Done</span><span class="st now">Shooting now</span><span class="st proj">On track</span><span class="st out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
 const named=()=>me.name.trim().length>=2;
@@ -359,7 +403,7 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i],a=id&&BY[id],lab=s=="FLEX"?"Flex":DIV[s];
     if(!a)return`<li class="slot empty"><span class="num">${i+1}</span><div class="who"><small>${lab}</small><button class="pickbtn" data-act="pick" data-i="${i}" ${dis?"disabled":""}>+ Pick ${s=="FLEX"?"an archer from any division":"a "+DIV[s]+" archer"}</button></div></li>`;
     const p=P[id],c=me.cap==id,st=status(id);
-    return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}</div>
+    return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}<small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}</small></div>
       <div class="acts"><button class="ic${c?" on":""}${needCap?" glow":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
   const filled=me.picks.filter(Boolean).length;
   return`<div class="grid"><div>${tracker(P)}</div>
@@ -372,25 +416,25 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()
 function ownMap(){const o={};teams.forEach(t=>t.picks.forEach(id=>{if(id)o[id]=(o[id]||0)+1}));return o}
 function alist(){const P=pts(),o=ownMap(),L=locked(),showOwn=(L||mode=="local")&&teams.length,ql=q.trim().toLowerCase();
   let xs=A.filter(a=>(afilter=="ALL"||a.d==afilter)&&(!ql||a.n.toLowerCase().includes(ql)));
-  xs.sort(sort=="pts"?(a,b)=>(P[b.id]??-1)-(P[a.id]??-1):sort=="time"?(a,b)=>TORD[a.tc]-TORD[b.tc]||a.b.localeCompare(b.b):(a,b)=>a.n.localeCompare(b.n));
+  xs.sort(sort=="pts"?(a,b)=>(P[b.id]??-1)-(P[a.id]??-1):sort=="proj"?(a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0):sort=="time"?(a,b)=>TORD[a.tc]-TORD[b.tc]||a.b.localeCompare(b.b):(a,b)=>a.n.localeCompare(b.n));
   if(!xs.length)return`<li class="empty-st">No archers match “${esc(q)}”.</li>`;
   return xs.map(a=>{const on=me.picks.includes(a.id),p=P[a.id];
-    const st=(p!=null?`<b>${fmt(p)} pts</b>${esc(status(a.id))}`:"")+(showOwn?`<div>${Math.round(100*(o[a.id]||0)/teams.length)}% rostered</div>`:"");
-    return`<li class="ar"><div class="who"><b>${esc(a.n)}</b><span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span></div><div class="stat">${st}</div>
+    const st=(p!=null?`<b>${fmt(p)} pts</b>${esc(status(a.id))}<div>proj ${projR(a.id)}</div>`:`<b>${projR(a.id)}</b>projected`)+(showOwn?`<div>${Math.round(100*(o[a.id]||0)/teams.length)}% rostered</div>`:"");
+    return`<li class="ar"><div class="who"><b>${esc(a.n)}</b><span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span></div><div class="stat">${st}</div>
     <button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button></li>`}).join("")}
 function archersView(){const cnt=d=>A.filter(a=>a.d==d).length;
   const ban=pendingSlot!=null?`<p class="note">Choosing for slot ${pendingSlot+1} (${SLOTS[pendingSlot]=="FLEX"?"Flex, any division":DIV[SLOTS[pendingSlot]]}). <a href="#team" data-act="cancelpick">Back to my team</a></p>`:"";
   return`<h2>The field</h2>${ban}${(mode!="shared"||authUser)&&!named()&&!locked()?`<p class="note"><a href="#team">Name your team</a> first, then add archers.</p>`:""}${mode=="shared"&&!authUser?`<p class="note"><a href="#team">Sign in</a> to add archers to a team.</p>`:""}<div class="tools"><input type="search" id="q" placeholder="Search archers" value="${esc(q)}" aria-label="Search archers">
-  <select id="sort" aria-label="Sort"><option value="name"${sort=="name"?" selected":""}>Sort: name</option><option value="time"${sort=="time"?" selected":""}>Sort: flight time</option><option value="pts"${sort=="pts"?" selected":""}>Sort: fantasy points</option></select></div>
+  <select id="sort" aria-label="Sort"><option value="name"${sort=="name"?" selected":""}>Sort: name</option><option value="time"${sort=="time"?" selected":""}>Sort: flight time</option><option value="proj"${sort=="proj"?" selected":""}>Sort: projected points</option><option value="pts"${sort=="pts"?" selected":""}>Sort: fantasy points</option></select></div>
   <div class="chips">${[["ALL","All ("+A.length+")"],...ORDER.map(d=>[d,DIV[d]+" ("+cnt(d)+")"])].map(([d,l])=>`<button class="chip${afilter==d?" on":""}" data-act="filter" data-d="${d}">${l}</button>`).join("")}</div>
   <ul class="list" id="alist">${alist()}</ul>`}
 
 function standingsView(){const P=pts(),sc=anyScores(),show=locked()||mode=="local";
-  const list=teams.filter(t=>t.picks.some(Boolean)||t.name).map(t=>({...t,tot:teamTotal(t,P)})).sort((a,b)=>b.tot-a.tot||(a.name||"").localeCompare(b.name||""));
+  const list=teams.filter(t=>t.picks.some(Boolean)||t.name).map(t=>({...t,tot:teamTotal(t,P)})).sort((a,b)=>sc?(b.tot-a.tot||(a.name||"").localeCompare(b.name||"")):(teamProj(b)-teamProj(a)));
   if(!list.length)return`<h2>Standings</h2><div class="empty-st">No teams yet. Build yours on My Team and share the page with your archery friends.</div>`;
   return`<h2>Standings</h2>${sc?"":`<p class="note">Points show up after the commissioner posts scores. ${show?"":"Rosters stay hidden until lineups lock."}</p>`}
-  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?i+1:"·"}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):"–"}</span>
-  ${show||t.id==myId?`<details><summary>Roster</summary><ol>${t.picks.filter(Boolean).map(id=>`<li>${esc(BY[id].n)} <span class="meta">${DIV[BY[id].d]}${t.cap==id?" · Captain":""}${P[id]!=null?" · "+fmt(P[id]*(t.cap==id?1.5:1))+" pts":""}</span></li>`).join("")}</ol></details>`:""}</li>`).join("")}</ul>`}
+  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?i+1:"·"}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):Math.round(teamProj(t))}<small class="pj">${sc?"proj "+Math.round(teamProj(t)):"projected"}</small></span>
+  ${show||t.id==myId?`<details><summary>Roster</summary><ol>${t.picks.filter(Boolean).map(id=>`<li>${esc(BY[id].n)} <span class="meta">${DIV[BY[id].d]}${t.cap==id?" · Captain":""}${P[id]!=null?" · "+fmt(P[id]*(t.cap==id?1.5:1))+" pts":""} · proj ${Math.round((PROJ[id]||0)*(t.cap==id?1.5:1))}</span></li>`).join("")}</ol></details>`:""}</li>`).join("")}</ul>`}
 function rulesView(){const w=SC.win;return`<div class="rules"><h2>How it works</h2>
 <h3>Build a roster of 7</h3><ul><li>One archer from each division: Barebow, Traditional, Freestyle Compound, Bowhunter and Recurve.</li><li>Two Flex spots, filled from any division.</li><li>Anyone can pick the same archer, so there's no draft order to fight over.</li><li>Name one captain. Your captain's points count 1.5×.</li></ul>
 <h3>Lineups lock at the first flight</h3><p>Rosters lock Friday, December 4 at 2:00 PM Central. After that, everyone's rosters and how often each archer was picked become visible.</p>
@@ -400,6 +444,8 @@ function rulesView(){const w=SC.win;return`<div class="rules"><h2>How it works</
 <table><tbody><tr><td>Win in the Round of 16</td><td class="n">+${w.r}</td></tr><tr><td>Win a quarterfinal</td><td class="n">+${w.q}</td></tr><tr><td>Win a semifinal</td><td class="n">+${w.s}</td></tr><tr><td>Win the gold match</td><td class="n">+${w.f}</td></tr><tr><td>Win the bronze match</td><td class="n">+${w.b}</td></tr></tbody></table>
 <p>A bye counts as a win. Divisions with fewer than ${CUT} archers (Bowhunter, Recurve) give byes to their top seeds.</p>
 <p>Example: a top qualifier who wins gold earns ${qualPts(1)} + ${SC.cut} + ${w.r} + ${w.q} + ${w.s} + ${w.f} = <b>${MAXP}</b> points, or ${fmt(MAXP*1.5)} as your captain.</p>
+<h3>Projections</h3><p>Every archer has a projected point total, based on their finishes at the last two Texas Ringers (2024 and 2025, adult divisions). Last year counts double, results in a different bow style count half, and archers with no past results get a middle-of-the-pack estimate. The site then plays out the tournament 2,000 times, with plenty of room for upsets, and averages the points. ${season=="2025"?"In test mode, 2025 projections use only 2024 results, so you can compare them with what really happened.":""}</p>
+<p>Treat projections as a rough guide. Tested on 2025, they beat simply guessing the average, but upsets are common in archery and many archers have little or no history.</p>
 <h3>Posting results</h3><p>The commissioner enters qualification scores, starts each bracket, and clicks the winner of each match. The Results tab and the standings update for everyone right away.</p></div>`}
 
 function matchBox(m,edit){if(m.dead)return`<div class="mt dead"></div>`;
@@ -412,10 +458,10 @@ function bracketHtml(d,edit){const M=bracket(d);if(!M)return"";
   return`<div class="scroll"><div class="br">${col("Round of 16",MIDS.slice(0,8))}${col("Quarterfinals",MIDS.slice(8,12))}${col("Semifinals",["s0","s1"])}${col("Medal matches",["f","b"])}</div></div>`}
 function qualTable(d,edit){const Q=qual(d),P=pts();const done=new Set(Q.map(r=>r.id));
   const rows=(edit?[...Q.map(r=>BY[r.id]),...A.filter(a=>a.d==d&&!done.has(a.id))]:Q.map(r=>BY[r.id])).map((a,i)=>{const r=DET[a.id];
-    const cutRow=!edit&&i==CUT?`<tr class="cutl"><td colspan="5">Cut line: top ${CUT} advance</td></tr>`:"";
-    return cutRow+`<tr><td class="n">${r?r.rank:"–"}</td><td>${esc(a.n)}</td>${edit?`<td class="n"><input type="number" inputmode="numeric" min="0" step="1" data-sid="${a.id}" value="${league.scores[a.id]??""}" aria-label="Score for ${esc(a.n)}"></td><td class="n"><input class="xi" type="number" inputmode="numeric" min="0" step="1" data-xid="${a.id}" value="${league.xs[a.id]??""}" aria-label="7s for ${esc(a.n)}"></td>`:`<td class="n">${league.scores[a.id]}</td><td class="n">${league.xs[a.id]??"–"}</td><td class="n">${P[a.id]!=null?fmt(P[a.id]):""}</td>`}</tr>`}).join("");
+    const cutRow=!edit&&i==CUT?`<tr class="cutl"><td colspan="6">Cut line: top ${CUT} advance</td></tr>`:"";
+    return cutRow+`<tr><td class="n">${r?r.rank:"–"}</td><td>${esc(a.n)}</td>${edit?`<td class="n"><input type="number" inputmode="numeric" min="0" step="1" data-sid="${a.id}" value="${league.scores[a.id]??""}" aria-label="Score for ${esc(a.n)}"></td><td class="n"><input class="xi" type="number" inputmode="numeric" min="0" step="1" data-xid="${a.id}" value="${league.xs[a.id]??""}" aria-label="7s for ${esc(a.n)}"></td>`:`<td class="n">${league.scores[a.id]}</td><td class="n">${league.xs[a.id]??"–"}</td><td class="n">${P[a.id]!=null?fmt(P[a.id]):""}</td><td class="n pjc">${projR(a.id)}</td>`}</tr>`}).join("");
   if(!rows)return`<div class="empty-st">No qualification scores posted yet.</div>`;
-  return`<table class="qt"><thead><tr><th class="n">Rank</th><th>Archer</th><th class="n">Score</th><th class="n">7s</th>${edit?"":`<th class="n">Fantasy pts</th>`}</tr></thead><tbody>${rows}</tbody></table>`}
+  return`<table class="qt"><thead><tr><th class="n">Rank</th><th>Archer</th><th class="n">Score</th><th class="n">7s</th>${edit?"":`<th class="n">Fantasy pts</th><th class="n pjc">Projected</th>`}</tr></thead><tbody>${rows}</tbody></table>`}
 function divChips(act,cur){return`<div class="chips">${ORDER.map(d=>`<button class="chip${cur==d?" on":""}" data-act="${act}" data-d="${d}">${DIV[d]}</button>`).join("")}</div>`}
 function resultsView(){const d=rdiv,M=bracket(d);
   return`<h2>Results</h2>${league.link?`<p><a class="ext" href="${esc(league.link)}" target="_blank" rel="noopener">Official live scores on Eyes on Score ↗</a></p>`:""}${divChips("rdiv",d)}${M?`<h3 class="sec">${DIV[d]} eliminations</h3>${bracketHtml(d,false)}`:""}<h3 class="sec">${DIV[d]} qualification</h3>${qualTable(d,false)}`}
@@ -538,7 +584,7 @@ function parseEOS(text){const toks=text.split(/[\t\r\n]+/).map(x=>x.replace(/\s+
     else cur.push({seed:+t,name,total:nums[nums.length-1]});
     i=k-1}
   return out}
-const normN=n=>n.toLowerCase().replace(/\([^)]*\)/g," ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g," ").replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim();
+function normN(n){return String(n).toLowerCase().replace(/\([^)]*\)|\[[^\]]*\]/g," ").replace(/\b(jr|sr|ii|iii|iv)\b\.?/g," ").replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim()}
 function findArcher(d,name){const pool=A.filter(a=>a.d==d),n=normN(name);let hit=pool.filter(a=>normN(a.n)==n);if(hit.length==1)return hit[0];
   const w=n.split(" "),f=w[0]||"",l=w[w.length-1]||"";hit=pool.filter(a=>{const v=normN(a.n).split(" ");return v[v.length-1]==l&&v[0][0]==f[0]});return hit.length==1?hit[0]:null}
 function applyImport(P){const L={...league,scores:{...league.scores},xs:{...league.xs},seeds:{...league.seeds},elim:JSON.parse(JSON.stringify(league.elim))};
@@ -621,12 +667,12 @@ async function doPull(loud){if(pulling)return;const url=league.link;if(!isFeed(u
 function startLocal(){if(mode=="shared")return;mode="local";isAdmin=true;
   try{const d=JSON.parse(localStorage.getItem(LS)||"null");if(d){league=cleanLeague(d.league);me=cleanTeam(d.me,"me")}}catch{}
   me.id="me";teams=[me];render(true)}
-function poolChanged(){if(mode=="local"){me=cleanTeam(me,"me");me.id="me";teams=[me];return}
+function poolChanged(){buildProj();if(mode=="local"){me=cleanTeam(me,"me");me.id="me";teams=[me];return}
   teams=teamsRaw.map(t=>cleanTeam(t.data,t.id));if(authUser&&loadedMine){adoptMine();overlayMine()}}
 function adoptMine(){const mine=teams.find(t=>t.id==myId);me=mine?{name:mine.name,picks:[...mine.picks],cap:mine.cap}:{name:"",picks:Array(7).fill(null),cap:null}}
 function overlayMine(){if(!authUser)return;const i=teams.findIndex(t=>t.id==myId);const live={id:myId,owner:ownerName(),...me,picks:[...me.picks]};if(i<0)teams.push(live);else teams[i]=live}
 
-render(true);
+buildProj();render(true);
 (async()=>{if(!firebaseConfig.apiKey||String(firebaseConfig.apiKey).startsWith("PASTE"))return startLocal();
   const slowT=setTimeout(()=>{slow=true;if(mode=="loading")render()},10000);
   let app;
