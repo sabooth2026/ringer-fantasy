@@ -47,6 +47,7 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+.tots{text-align:right}.tots small.pj{font-size:14px}
 small.pj{display:block;font-family:Pridi,Georgia,serif;font-size:12px;color:var(--mut);font-weight:400;line-height:1.2;text-align:right}
 .sum small.pj{text-align:center;margin-top:2px}
 .tpw{text-align:right}
@@ -55,7 +56,9 @@ small.pj{display:block;font-family:Pridi,Georgia,serif;font-size:12px;color:var(
 td.pjc,th.pjc{color:var(--mut)}
 .nocap{display:inline-block;font-size:12px;font-weight:600;color:#fff;background:var(--red);border-radius:5px;padding:1px 7px;margin-left:6px;vertical-align:2px}
 .chk-list{margin:0 0 6px;padding-left:20px}.chk-list li{margin:4px 0}
-.sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.sum .pjbox b{color:var(--mut)}.sum small.up{color:#5fd068}.sum small.down{color:#ff6b6b}
+@media(max-width:600px){.sum{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .sum div{background:#000;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
 .sum b{display:block;font-family:Forum,serif;font-weight:400;font-size:clamp(28px,4vw,38px);line-height:1.1}
 .sum span{font-size:13px;color:var(--mut)}
@@ -385,13 +388,14 @@ function tracker(P){const ids=me.picks.filter(Boolean),sc=anyScores();
   const myTot=teamTotal(me,P);const rank=1+list.filter(t=>t.tot>myTot+1e-9).length;
   const ord=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
   const myProj=teamProj(me),diff=myTot-myProj;
-  const sum=`<div class="sum"><div><b>${sc?fmt(myTot):"0"}</b><span>points</span><small class="pj">${sc?(diff>=0?"+":"")+fmt(Math.round(diff))+" vs proj "+Math.round(myProj):"proj "+Math.round(myProj)}</small></div>
+  const sum=`<div class="sum"><div><b>${sc?fmt(myTot):"0"}</b><span>points</span>${sc?`<small class="pj ${diff>=0?"up":"down"}">${(diff>=0?"+":"")+fmt(Math.round(diff))} vs projected</small>`:""}</div>
+    <div class="pjbox"><b>${Math.round(myProj)}</b><span>projected</span></div>
     <div><b>${sc&&list.length>1?ord(rank):"–"}</b><span>${list.length>1?"of "+list.length+" teams":"league rank"}</span></div>
     ${done?`<div><b>${medals}</b><span>medal${medals==1?"":"s"} won</span></div>`:`<div><b>${ids.length?(sc?alive:ids.length)+"/"+ids.length:"0"}</b><span>${sc?"still shooting":"archers picked"}</span></div>`}</div>`;
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i];if(!id)return`<li class="tr emp"><span class="num">${i+1}</span><span class="meta">Empty ${s=="FLEX"?"Flex":DIV[s]} slot</span></li>`;
     const pth=paths.find(x=>x[0]==id)[1],c=me.cap==id,p=P[id];
     return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm"><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div>
-      <div class="tpw"><b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}</small></div><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
+      <div class="tpw"><b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}${c?` (${Math.round(PROJ[id]||0)} × 1.5)`:""}</small></div><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
   return`<div class="trk card"><h3>${esc(me.name||"Tournament tracker")}</h3><p class="meta trk-sub">Tournament tracker</p>${sum}<ol class="trl">${rows}</ol>
     <p class="leg"><span class="st done">Done</span><span class="st now">Shooting now</span><span class="st proj">On track</span><span class="st out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
 const named=()=>me.name.trim().length>=2;
@@ -403,14 +407,14 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i],a=id&&BY[id],lab=s=="FLEX"?"Flex":DIV[s];
     if(!a)return`<li class="slot empty"><span class="num">${i+1}</span><div class="who"><small>${lab}</small><button class="pickbtn" data-act="pick" data-i="${i}" ${dis?"disabled":""}>+ Pick ${s=="FLEX"?"an archer from any division":"a "+DIV[s]+" archer"}</button></div></li>`;
     const p=P[id],c=me.cap==id,st=status(id);
-    return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}<small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}</small></div>
+    return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}<small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}${c?` (${Math.round(PROJ[id]||0)} × 1.5)`:""}</small></div>
       <div class="acts"><button class="ic${c?" on":""}${needCap?" glow":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
   const filled=me.picks.filter(Boolean).length;
   return`<div class="grid"><div>${tracker(P)}</div>
   <div class="card"><label class="tn">Team name <span class="req">(required)</span><input type="text" id="tname" required minlength="2" maxlength="40" placeholder="e.g. Bale 4 Bandits" value="${esc(me.name)}" ${dis?"disabled":""}></label>
   ${needCap?`<div class="capcall"><b>Pick your captain.</b> Tap <span class="cmini">C</span> next to the archer you think will score the most. Your captain's points count 1.5×.</div>`:""}
   <ol class="roster">${rows}</ol>
-  <div class="total"><span>${filled}/7 archers${filled&&!me.cap?" · <b class=\"capwarn\">no captain yet</b>":""}</span><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b></div>
+  <div class="total"><span>${filled}/7 archers${filled&&!me.cap?" · <b class=\"capwarn\">no captain yet</b>":""}</span><span class="tots"><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b><small class="pj">Projected total: ${Math.round(teamProj(me))}</small></span></div>
   <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>`}
 
 function ownMap(){const o={};teams.forEach(t=>t.picks.forEach(id=>{if(id)o[id]=(o[id]||0)+1}));return o}
