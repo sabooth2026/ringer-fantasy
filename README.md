@@ -1,8 +1,8 @@
-# Ringer Fantasy: setup guide
+# Ringer Fantasy Games: setup guide
 
 A fantasy archery league for the 2026 Texas Ringer. The site is hosted free on **GitHub Pages**, and teams and scores are saved in **Firebase** (Google's free database). Setup takes about 30–45 minutes, and everything stays on the free tiers.
 
-You'll need: a GitHub account, a Google account, and these three files: `index.html`, `firestore.rules`, `README.md`.
+You'll need: a GitHub account, a Google account, and these four files: `index.html`, `config.js`, `firestore.rules`, `README.md`.
 
 ---
 
@@ -12,7 +12,7 @@ You'll need: a GitHub account, a Google account, and these three files: `index.h
 1. Sign in at github.com and click **+ → New repository** (top right).
 2. Name it `ringer-fantasy` and set it to **Public**. GitHub Pages is free for public repositories.
 3. Click **Create repository**.
-4. On the next page, click **uploading an existing file**. Drag in `index.html`, `firestore.rules` and `README.md`, then click **Commit changes**.
+4. On the next page, click **uploading an existing file**. Drag in `index.html`, `config.js`, `firestore.rules` and `README.md`, then click **Commit changes**.
 
 **2. Turn on GitHub Pages**
 1. In the repository, go to **Settings → Pages**.
@@ -40,19 +40,21 @@ Open that address. The site works now, but only in **practice mode** (picks are 
 2. Open the **Rules** tab, delete everything there, and paste in the full contents of `firestore.rules`.
 3. In what you pasted, replace `you@example.com` with **your** Google email (the commissioner's). Then click **Publish**.
 
-**6. Paste your settings into the site**
-1. In GitHub, open `index.html` and click the **pencil icon** to edit it.
-2. Near the top of the script, find the **SETUP** block and fill it in:
+**6. Put your settings in `config.js`**
+1. In GitHub, click `config.js`, then the **pencil icon** to edit it.
+2. Fill in your values from Firebase (step 3) and your commissioner email:
    ```js
-   const firebaseConfig = {
-     apiKey: "AIza...",                       // from step 3
+   firebaseConfig: {
+     apiKey: "AIza...",
      authDomain: "ringer-fantasy.firebaseapp.com",
      projectId: "ringer-fantasy",
      appId: "1:1234:web:abcd"
-   };
-   const COMMISSIONER_EMAILS = ["yourname@gmail.com"];  // same email as in the rules
+   },
+   commissionerEmails: ["yourname@gmail.com"]   // same email as in the rules
    ```
 3. Click **Commit changes**. GitHub Pages updates within a minute or two.
+
+Your settings live only in `config.js`. To update the site later, upload a new `index.html`; `config.js` stays as it is.
 
 It's normal for these Firebase values to be visible to anyone. They only identify your project. What protects the data is the security rules from step 5.
 
@@ -78,11 +80,11 @@ It's normal for these Firebase values to be visible to anyone. They only identif
 
 | What you see | Fix |
 |---|---|
-| "Setup isn't finished… practice mode" | The `firebaseConfig` in `index.html` still says `PASTE…`. Redo step 6. |
+| "Setup isn't finished… practice mode" | `config.js` is missing or still says `PASTE…`. Redo step 6. |
 | "This web address isn't on Firebase's authorized domains list" | Step 4.3: add `YOUR-USERNAME.github.io`. |
 | "That sign-in method isn't turned on" | Step 4.2: enable Google and Email/Password. |
 | A team won't save ("Couldn't save… security rules") | Step 5: the rules weren't published, or the lineups are locked. |
-| No Commissioner tab | The email must match in **both** `index.html` and the rules, and you must sign in with Google. |
+| No Commissioner tab | The email must match in **both** `config.js` and the rules, and you must sign in with Google. |
 | Changes on GitHub don't show up | Wait 2 minutes, then do a hard refresh (Ctrl+Shift+R, or Cmd+Shift+R on a Mac). |
 
 Fan-made game. Not affiliated with the Texas Ringer or Eyes on Score.

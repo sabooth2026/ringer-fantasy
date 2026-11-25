@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ringer Fantasy Archery</title>
+<title>Ringer Fantasy Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Forum&family=Pridi:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -38,7 +38,9 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(20px,3vw,40px);align-items:start}
 @media(max-width:780px){.grid{grid-template-columns:minmax(0,1fr)}}
 .tgt{width:100%;max-width:520px;aspect-ratio:1;display:block;margin:0 auto;filter:drop-shadow(0 10px 30px rgba(231,0,0,.18))}
-.trk h3{font-size:26px;margin-bottom:12px}
+.trk h3{font-size:30px;margin-bottom:2px;overflow-wrap:anywhere}.trk-sub{margin:0 0 12px}
+.namebox{max-width:620px;margin:0 auto;border-color:var(--red)}.namebox input{flex:1 1 240px;font-size:18px}
+.req{color:var(--red);font-weight:600}
 .sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
 .sum div{background:#000;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
 .sum b{display:block;font-family:Forum,serif;font-weight:400;font-size:clamp(28px,4vw,38px);line-height:1.1}
@@ -163,7 +165,7 @@ tr.cutl td{color:var(--red);font-weight:700;font-size:13px;border-bottom:2px das
   <div class="wrap">
     <div class="hd">
       <div>
-        <h1>Ringer <span>Fantasy</span></h1>
+        <h1>Ringer <span>Fantasy Games</span></h1>
         <div class="sub" id="sub">2026 Texas Ringer · Fri–Sat, Dec 4–5 · 106 archers across 5 adult divisions</div>
         <div class="fan">A fan-made fantasy game. Not the official Texas Ringer site.</div>
       </div>
@@ -175,19 +177,12 @@ tr.cutl td{color:var(--red);font-weight:700;font-size:13px;border-bottom:2px das
 <main class="band"><div class="wrap" id="view"></div></main>
 <footer class="band" style="padding-top:0"><div class="wrap">Fan-made game, not affiliated with the Texas Ringer. Archer list from the Eyes on Score registration for the 2026 Texas Ringer. Bales and flight times may change; check the official schedule.</div></footer>
 <div id="toast" role="status" aria-live="polite"></div>
+<script src="config.js"></script>
 <script type="module">
-/* ===================== SETUP: edit these two things ===================== */
-// 1) Paste the firebaseConfig object from your Firebase project (Project settings > Your apps).
-const firebaseConfig = {
-  apiKey: "AIzaSyD8EvIYKiQCubsw6ioHLDIKg6SNVgrW3-8",
-  authDomain: "ringer-fantasy.firebaseapp.com",
-  projectId: "ringer-fantasy",
-  appId: "1:732732771712:web:1cbf3b179e79f713298565",
-  measurementId: "G-283HDL7N3X"
-};
-// 2) The commissioner's email (the person who posts scores). Must match firestore.rules.
-const COMMISSIONER_EMAILS = ["you@example.com"];
-/* ======================================================================== */
+/* Settings live in config.js (edit that file, not this one), so updating index.html never touches them. */
+const CFG=(window.RINGER_CONFIG&&typeof window.RINGER_CONFIG=="object")?window.RINGER_CONFIG:{};
+const firebaseConfig=CFG.firebaseConfig||{apiKey:"PASTE_YOUR_API_KEY"};
+const COMMISSIONER_EMAILS=Array.isArray(CFG.commissionerEmails)?CFG.commissionerEmails:[];
 const SDK="https://www.gstatic.com/firebasejs/10.12.2/";
 const DIV={BB:"Barebow",TR:"Traditional",FC:"Freestyle Compound",BH:"Bowhunter",RC:"Recurve"};
 const ORDER=["BB","TR","FC","BH","RC"];
@@ -296,7 +291,7 @@ function render(force){const ae=document.activeElement;
 function notes(){let s="";
   if(season=="2025")s+=`<p class="note warn"><b>Test mode.</b> The site is using the 2025 Texas Ringer field and results. Switch back to the 2026 field on the Commissioner tab before lineups open for real.</p>`;
   if(mode=="loading")s+=`<p class="note">${slow?"Can't reach the league data yet. Check your connection, or the Firebase setup steps.":"Loading the league…"}</p>`;
-  if(mode=="local")s+=`<p class="note warn">Setup isn't finished, so this is practice mode: picks are saved in this browser only. Paste your Firebase settings into index.html to turn on the shared league.</p>`;
+  if(mode=="local")s+=`<p class="note warn">Setup isn't finished, so this is practice mode: picks are saved in this browser only. Fill in config.js with your Firebase settings to turn on the shared league.</p>`;
   return s}
 function ownerName(){return authUser?(authUser.displayName||(authUser.email||"Player").split("@")[0]).slice(0,60):""}
 function signInView(){const up=authMode=="up";return`<div class="card signin"><h2>Join the league</h2><p class="meta">Sign in to build your team. Anyone can browse the archers and standings.</p>
@@ -345,9 +340,13 @@ function tracker(P){const ids=me.picks.filter(Boolean),sc=anyScores();
     const pth=paths.find(x=>x[0]==id)[1],c=me.cap==id,p=P[id];
     return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm"><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div>
       <b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
-  return`<div class="trk card"><h3>Tournament tracker</h3>${sum}<ol class="trl">${rows}</ol>
+  return`<div class="trk card"><h3>${esc(me.name||"Tournament tracker")}</h3><p class="meta trk-sub">Tournament tracker</p>${sum}<ol class="trl">${rows}</ol>
     <p class="leg"><span class="st done">Done</span><span class="st now">Shooting now</span><span class="st proj">On track</span><span class="st out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
-function teamView(){if(mode=="shared"&&!authUser)return signInView();const P=pts(),L=locked(),dis=L||!canWrite||mode=="loading";
+const named=()=>me.name.trim().length>=2;
+function nameView(){return`<div class="card namebox"><h2>First, name your team</h2><p class="meta">Every team needs a name to enter the league. It's what everyone sees in the standings.</p>
+  <form id="nf"><label for="nf-name" class="tn">Team name</label><div class="row" style="margin:6px 0 0"><input type="text" id="nf-name" maxlength="40" minlength="2" required placeholder="e.g. Bale 4 Bandits" autocomplete="off"><button class="btn" type="submit">Save and pick archers</button></div></form>
+  <p class="err" id="nf-err" role="alert"></p></div>`}
+function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()&&!locked()&&mode!="loading")return nameView();const P=pts(),L=locked(),dis=L||!canWrite||mode=="loading";
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i],a=id&&BY[id],lab=s=="FLEX"?"Flex":DIV[s];
     if(!a)return`<li class="slot empty"><span class="num">${i+1}</span><div class="who"><small>${lab}</small><button class="pickbtn" data-act="pick" data-i="${i}" ${dis?"disabled":""}>+ Pick ${s=="FLEX"?"an archer from any division":"a "+DIV[s]+" archer"}</button></div></li>`;
     const p=P[id],c=me.cap==id,st=status(id);
@@ -355,7 +354,7 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();const P=pts
       <div class="acts"><button class="ic${c?" on":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
   const filled=me.picks.filter(Boolean).length;
   return`<div class="grid"><div>${tracker(P)}</div>
-  <div class="card"><label class="tn">Team name<input type="text" id="tname" maxlength="40" placeholder="e.g. Bale 4 Bandits" value="${esc(me.name)}" ${dis?"disabled":""}></label>
+  <div class="card"><label class="tn">Team name <span class="req">(required)</span><input type="text" id="tname" required minlength="2" maxlength="40" placeholder="e.g. Bale 4 Bandits" value="${esc(me.name)}" ${dis?"disabled":""}></label>
   <ol class="roster">${rows}</ol>
   <div class="total"><span>${filled}/7 archers${me.cap?"":" · pick a captain (C)"}</span><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b></div>
   <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>`}
@@ -371,7 +370,7 @@ function alist(){const P=pts(),o=ownMap(),L=locked(),showOwn=(L||mode=="local")&
     <button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button></li>`}).join("")}
 function archersView(){const cnt=d=>A.filter(a=>a.d==d).length;
   const ban=pendingSlot!=null?`<p class="note">Choosing for slot ${pendingSlot+1} (${SLOTS[pendingSlot]=="FLEX"?"Flex, any division":DIV[SLOTS[pendingSlot]]}). <a href="#team" data-act="cancelpick">Back to my team</a></p>`:"";
-  return`<h2>The field</h2>${ban}${mode=="shared"&&!authUser?`<p class="note"><a href="#team">Sign in</a> to add archers to a team.</p>`:""}<div class="tools"><input type="search" id="q" placeholder="Search archers" value="${esc(q)}" aria-label="Search archers">
+  return`<h2>The field</h2>${ban}${(mode!="shared"||authUser)&&!named()&&!locked()?`<p class="note"><a href="#team">Name your team</a> first, then add archers.</p>`:""}${mode=="shared"&&!authUser?`<p class="note"><a href="#team">Sign in</a> to add archers to a team.</p>`:""}<div class="tools"><input type="search" id="q" placeholder="Search archers" value="${esc(q)}" aria-label="Search archers">
   <select id="sort" aria-label="Sort"><option value="name"${sort=="name"?" selected":""}>Sort: name</option><option value="time"${sort=="time"?" selected":""}>Sort: flight time</option><option value="pts"${sort=="pts"?" selected":""}>Sort: fantasy points</option></select></div>
   <div class="chips">${[["ALL","All ("+A.length+")"],...ORDER.map(d=>[d,DIV[d]+" ("+cnt(d)+")"])].map(([d,l])=>`<button class="chip${afilter==d?" on":""}" data-act="filter" data-d="${d}">${l}</button>`).join("")}</div>
   <ul class="list" id="alist">${alist()}</ul>`}
@@ -442,7 +441,7 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
     <div class="row"><button class="btn" data-act="seed" ${done?"":"disabled"}>Start ${DIV[d]} bracket from qualification</button></div>`}
   <h3 class="sec">Start over</h3><div class="row"><button class="btn ${clearArm?"danger":"ghost"}" data-act="clear">${clearArm?"Click again to erase ALL results":"Erase all results"}</button></div>`}
 
-async function writeTeam(){if(mode=="local"){saveLocal();setStatus("Saved in this browser");return}
+async function writeTeam(){if(!named()){setStatus("Your team needs a name (at least 2 characters) before it can be saved.");return}if(mode=="local"){saveLocal();setStatus("Saved in this browser");return}
   if(mode!="shared"||!authUser)return;
   try{await fs.setDoc(fs.doc(db,"teams",myId),{name:me.name,picks:me.picks,cap:me.cap,owner:ownerName(),at:Date.now()});setStatus("Saved")}
   catch(e){if(e&&e.code=="permission-denied"){setStatus(locked()?"Lineups are locked, so changes can't be saved.":"Couldn't save. Check that the security rules from firestore.rules are published (setup step 5).")}else setStatus("Couldn't save yet. Check your connection and try again.")}}
@@ -452,7 +451,7 @@ async function writeLeague(next){if(mode=="local"){league=cleanLeague(next);save
   try{await fs.setDoc(fs.doc(db,"league","state"),next);league=cleanLeague(next);render(true);return true}catch(e){toast(e&&e.code=="permission-denied"?"Only the commissioner's email (set in firestore.rules) can post scores.":"Couldn't save. Try again.");return false}}
 function saveLocal(){try{localStorage.setItem(LS,JSON.stringify({me,league}))}catch{}}
 
-function addArcher(id){const a=BY[id];if(!a||locked())return;if(me.picks.includes(id))return toast(a.n+" is already on your team");
+function addArcher(id){const a=BY[id];if(!a||locked())return;if(!named()){toast("Name your team first");location.hash="team";return}if(me.picks.includes(id))return toast(a.n+" is already on your team");
   const ok=i=>!me.picks[i]&&(SLOTS[i]==a.d||SLOTS[i]=="FLEX");
   let i=pendingSlot!=null&&ok(pendingSlot)?pendingSlot:SLOTS.findIndex((s,k)=>s==a.d&&!me.picks[k]);
   if(i<0)i=SLOTS.findIndex((s,k)=>s=="FLEX"&&!me.picks[k]);
@@ -466,7 +465,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
   if(act=="authmode"){authMode=authMode=="in"?"up":"in";render(true);return}
   if(act=="reset"){const em=($("#ee")||{}).value;if(!em){aerr({code:"x"});$("#aerr").textContent="Type your email above first, then click Forgot password.";return}
     try{await fa.sendPasswordResetEmail(auth,em.trim());$("#aerr").textContent="Password reset email sent to "+em.trim()+"."}catch(x){aerr(x)}return}
-  if(act=="pick"){pendingSlot=i;afilter=SLOTS[i]=="FLEX"?"ALL":SLOTS[i];q="";if(location.hash=="#archers")render(true);else location.hash="archers"}
+  if(act=="pick"){if(!named()){toast("Name your team first");return}pendingSlot=i;afilter=SLOTS[i]=="FLEX"?"ALL":SLOTS[i];q="";if(location.hash=="#archers")render(true);else location.hash="archers"}
   else if(act=="cancelpick")pendingSlot=null;
   else if(act=="add")addArcher(b.dataset.id);
   else if(act=="rm"){if(me.cap==me.picks[i])me.cap=null;me.picks[i]=null;schedSave();render(true)}
@@ -493,7 +492,11 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
   else if(act=="t25all"||act=="t25q"){const T=TEST25;const next={...league,qr:{},scores:{...T.scores},xs:{...T.xs},seeds:act=="t25all"?JSON.parse(JSON.stringify(T.seeds)):{},elim:act=="t25all"?JSON.parse(JSON.stringify(T.elim)):{}};
     if(await writeLeague(next))toast(act=="t25all"?"Loaded all 2025 results":"Loaded 2025 qualification scores")}
   else if(act=="clear"){if(!clearArm){clearArm=true;render(true);return}clearArm=false;if(await writeLeague({season:league.season,link:league.link,scores:{},xs:{},qr:{},seeds:{},elim:{},lock:league.lock}))toast("All results erased")}});
-document.addEventListener("submit",async e=>{if(e.target.id!="ef")return;e.preventDefault();const em=$("#ee").value.trim(),pw=$("#ep").value;
+document.addEventListener("submit",async e=>{if(e.target.id=="nf"){e.preventDefault();const v=$("#nf-name").value.trim().slice(0,40);
+    if(v.length<2){$("#nf-err").textContent="Use at least 2 characters.";return}
+    const taken=teams.some(t=>t.id!==myId&&t.id!=="me"&&(t.name||"").trim().toLowerCase()==v.toLowerCase());if(taken){$("#nf-err").textContent="Another team already uses that name. Try a different one.";return}
+    me.name=v;overlayMine&&mode=="shared"&&overlayMine();await writeTeam();toast("Team name saved. Now pick your archers!");render(true);return}
+  if(e.target.id!="ef")return;e.preventDefault();const em=$("#ee").value.trim(),pw=$("#ep").value;
   try{if(authMode=="up"){const nm=$("#en").value.trim().slice(0,40);const c=await fa.createUserWithEmailAndPassword(auth,em,pw);if(nm){await fa.updateProfile(c.user,{displayName:nm});authUser=auth.currentUser;render(true)}}
   else await fa.signInWithEmailAndPassword(auth,em,pw)}catch(x){aerr(x)}});
 document.addEventListener("input",e=>{if(e.target.id=="eoslink"){linkDraft=e.target.value;return}if(e.target.id=="tname"){me.name=e.target.value.slice(0,40);schedSave()}
@@ -611,7 +614,7 @@ function adoptMine(){const mine=teams.find(t=>t.id==myId);me=mine?{name:mine.nam
 function overlayMine(){if(!authUser)return;const i=teams.findIndex(t=>t.id==myId);const live={id:myId,owner:ownerName(),...me,picks:[...me.picks]};if(i<0)teams.push(live);else teams[i]=live}
 
 render(true);
-(async()=>{if(firebaseConfig.apiKey.startsWith("PASTE"))return startLocal();
+(async()=>{if(!firebaseConfig.apiKey||String(firebaseConfig.apiKey).startsWith("PASTE"))return startLocal();
   const slowT=setTimeout(()=>{slow=true;if(mode=="loading")render()},10000);
   let app;
   try{const fbApp=await import(SDK+"firebase-app.js");[fs,fa]=await Promise.all([import(SDK+"firebase-firestore.js"),import(SDK+"firebase-auth.js")]);
