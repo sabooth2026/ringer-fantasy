@@ -38,7 +38,29 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(20px,3vw,40px);align-items:start}
 @media(max-width:780px){.grid{grid-template-columns:minmax(0,1fr)}}
 .tgt{width:100%;max-width:520px;aspect-ratio:1;display:block;margin:0 auto;filter:drop-shadow(0 10px 30px rgba(231,0,0,.18))}
-.cap-note{text-align:center;color:var(--mut);font-size:14px;margin-top:10px}
+.trk h3{font-size:26px;margin-bottom:12px}
+.sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.sum div{background:#000;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.sum b{display:block;font-family:Forum,serif;font-weight:400;font-size:clamp(28px,4vw,38px);line-height:1.1}
+.sum span{font-size:13px;color:var(--mut)}
+.trl{list-style:none;margin:0;padding:0}
+.tr{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.tr.emp{grid-template-columns:34px 1fr}
+.tr .nm b{display:block;font-size:16px;line-height:1.25}.tr .nm small{color:var(--mut);font-size:13px}
+.tr .tp{font-family:Forum,serif;font-weight:400;font-size:26px}
+.tr.gone .nm b{color:var(--mut)}
+.num.cp{background:var(--red)}
+.steps{grid-column:2/-1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+.st{font-size:12px;line-height:1.2;padding:5px 2px;border-radius:6px;text-align:center;border:1px solid var(--line);color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st.done{background:var(--red);border-color:var(--red);color:#fff}
+.st.now{border:2px solid #fff;color:#fff;font-weight:600}
+.st.proj{border:1px dashed #fff;color:#fff}
+.st.out,.st.projout{background:#1c1c1c;color:#666;text-decoration:line-through}
+.st.gold{background:#ffc72c;border-color:#ffc72c;color:#000;font-weight:600}
+.st.silver{background:#cfd3d8;border-color:#cfd3d8;color:#000;font-weight:600}
+.st.bronze{background:#c98a4b;border-color:#c98a4b;color:#000;font-weight:600}
+.leg{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--mut);margin:12px 0 0}.leg .st{padding:3px 8px}
+@media(max-width:600px){.st{font-size:11px;padding:5px 1px}.steps{grid-column:1/-1;gap:3px}.trk.card{padding:14px}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
 label.tn{display:block;font-weight:600;font-size:14px;color:var(--mut)}
 input,select{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px}
@@ -157,14 +179,13 @@ tr.cutl td{color:var(--red);font-weight:700;font-size:13px;border-bottom:2px das
 /* ===================== SETUP: edit these two things ===================== */
 // 1) Paste the firebaseConfig object from your Firebase project (Project settings > Your apps).
 const firebaseConfig = {
-  apiKey: "AIzaSyD8EvIYKiQCubsw6ioHLDIKg6SNVgrW3-8",
-  authDomain: "ringer-fantasy.firebaseapp.com",
-  projectId: "ringer-fantasy",
-  appId: "1:732732771712:web:1cbf3b179e79f713298565",
-  measurementId: "G-283HDL7N3X"
+  apiKey: "PASTE_YOUR_API_KEY",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project",
+  appId: "PASTE_YOUR_APP_ID"
 };
 // 2) The commissioner's email (the person who posts scores). Must match firestore.rules.
-const COMMISSIONER_EMAILS = ["scott.booth@gmail.com"];
+const COMMISSIONER_EMAILS = ["you@example.com"];
 /* ======================================================================== */
 const SDK="https://www.gstatic.com/firebasejs/10.12.2/";
 const DIV={BB:"Barebow",TR:"Traditional",FC:"Freestyle Compound",BH:"Bowhunter",RC:"Recurve"};
@@ -287,16 +308,44 @@ function signInView(){const up=authMode=="up";return`<div class="card signin"><h
   <p class="err" id="aerr" role="alert"></p></div>`}
 const AERR={"auth/invalid-credential":"That email and password don't match.","auth/wrong-password":"That email and password don't match.","auth/user-not-found":"No account with that email yet. Create one instead.","auth/email-already-in-use":"That email already has an account. Sign in instead.","auth/weak-password":"Use at least 6 characters for the password.","auth/invalid-email":"That email doesn't look right.","auth/unauthorized-domain":"This web address isn't on Firebase's authorized domains list yet (setup step 4).","auth/operation-not-allowed":"That sign-in method isn't turned on in Firebase yet (setup step 4).","auth/too-many-requests":"Too many tries. Wait a minute and try again."};
 function aerr(e){if(e&&(e.code=="auth/popup-closed-by-user"||e.code=="auth/cancelled-popup-request"))return;const el=$("#aerr");if(el)el.textContent=AERR[e&&e.code]||"Something went wrong: "+(e&&e.code||e)}
-function target(P){const cols=["#ffffff","#ffffff","#1b1b1f","#1b1b1f","#1f8fd6","#1f8fd6","#e0262f","#e0262f","#ffd12a","#ffd12a"];
-  let g=`<svg class="tgt" viewBox="0 0 400 400" role="img" aria-label="Target face showing your roster as arrows"><rect width="400" height="400" rx="26" fill="#1a1a1a"/><rect x="8" y="8" width="384" height="384" rx="20" fill="#2a2420"/>`;
-  for(let k=0;k<10;k++){const r=186-k*18.2;g+=`<circle cx="200" cy="200" r="${r}" fill="${cols[k]}" stroke="${k==2||k==3?"#ffffff":"#1b1b1f"}" stroke-opacity=".55" stroke-width="1"/>`}
-  g+=`<path d="M196 200h8M200 196v8" stroke="#1b1b1f" stroke-width="1.2"/>`;
-  me.picks.forEach((id,i)=>{if(!id)return;const p=P[id];const ang=(-90+i*360/7)*Math.PI/180;const r=p==null?172:Math.max(10,172-(p/MAXP)*162);
-    const x=200+Math.cos(ang)*r,y=200+Math.sin(ang)*r,c=me.cap==id;
-    g+=`<g class="arrow"><line x1="${x}" y1="${y}" x2="${x+20}" y2="${y+26}" stroke="#3a2a1a" stroke-width="4" stroke-linecap="round" opacity=".35"/><line x1="${x}" y1="${y}" x2="${x+14}" y2="${y+20}" stroke="#2a1d10" stroke-width="3.5" stroke-linecap="round"/>
-      <circle cx="${x}" cy="${y}" r="13" fill="${c?"#e70000":"#0b2a6b"}" stroke="#fff" stroke-width="2.5"/><text x="${x}" y="${y+4.5}" text-anchor="middle" font-family="Pridi,serif" font-size="13" font-weight="700" fill="#fff">${i+1}</text></g>`});
-  return g+"</svg>"}
-
+// Tournament tracker: each archer's path Qualified -> Top 16 -> R16 -> QF -> SF -> Medal
+const STEPS=["Qual","Top 16","R16","QF","SF","Medal"];
+function path(id){const r0=pathSteps(id);const st=r0.st;const medal=["gold","silver","bronze"].includes(st[5].c);
+  const out=!medal&&st[5].c!="now"&&st.some(x=>x.c=="out"||x.c=="projout");
+  return{st,started:r0.started,medal:medal?st[5].c:null,out,alive:r0.started&&!out&&!medal}}
+function pathSteps(id){const st=STEPS.map(t=>({c:"todo",t}));const r=DET[id];const d=BY[id].d;let alive=true;
+  if(!r)return{st,alive,started:false};
+  st[0]={c:"done",t:"#"+r.rank};
+  const S=league.seeds[d],M=bracket(d);
+  if(!S){st[1]=r.rank<=CUT?{c:"proj",t:"Top 16"}:{c:"projout",t:"Top 16"};return{st,alive:r.rank<=CUT,started:true}}
+  if(!S.includes(id)){st[1]={c:"out",t:"Top 16"};return{st,alive:false,started:true}}
+  st[1]={c:"done",t:"Seed "+(S.indexOf(id)+1)};
+  const has=m=>m&&(m.a==id||m.b==id);
+  const step=(i,m)=>{if(!has(m))return false;if(!m.w){st[i]={c:"now",t:STEPS[i]};return false}
+    if(m.w==id){st[i]={c:"done",t:m.bye?"Bye":STEPS[i]};return true}st[i]={c:"out",t:STEPS[i]};return false};
+  const r16=MIDS.slice(0,8).map(k=>M[k]).find(has);if(!step(2,r16)){alive=st[2].c!="out";return{st,alive,started:true}}
+  const qf=MIDS.slice(8,12).map(k=>M[k]).find(has);if(!step(3,qf)){alive=st[3].c!="out";return{st,alive,started:true}}
+  const sf=[M.s0,M.s1].find(has);
+  if(!step(4,sf)){if(st[4].c=="out"){// lost semifinal: still shooting for bronze
+      if(!M.b.w&&has(M.b))st[5]={c:"now",t:"Bronze?"};else if(M.b.w==id)st[5]={c:"bronze",t:"Bronze"};else if(has(M.b)){st[5]={c:"out",t:"4th"};alive=false}
+      return{st,alive:alive&&st[5].c!="out",started:true}}return{st,alive,started:true}}
+  if(!M.f.w)st[5]={c:"now",t:"Gold?"};else st[5]=M.f.w==id?{c:"gold",t:"Gold"}:{c:"silver",t:"Silver"};
+  return{st,alive:!M.f.w,started:true}}
+function tracker(P){const ids=me.picks.filter(Boolean),sc=anyScores();
+  const paths=ids.map(id=>[id,path(id)]);const alive=paths.filter(([,p])=>p.alive).length;
+  const medals=paths.filter(([,p])=>p.medal).length,done=sc&&paths.length&&paths.every(([,p])=>!p.alive&&p.started);
+  const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({id:t.id,tot:teamTotal(t,P)})).sort((a,b)=>b.tot-a.tot);
+  const myTot=teamTotal(me,P);const rank=1+list.filter(t=>t.tot>myTot+1e-9).length;
+  const ord=n=>n+(n%100>10&&n%100<14?"th":["th","st","nd","rd"][n%10]||"th");
+  const sum=`<div class="sum"><div><b>${sc?fmt(myTot):"0"}</b><span>points</span></div>
+    <div><b>${sc&&list.length>1?ord(rank):"–"}</b><span>${list.length>1?"of "+list.length+" teams":"league rank"}</span></div>
+    ${done?`<div><b>${medals}</b><span>medal${medals==1?"":"s"} won</span></div>`:`<div><b>${ids.length?(sc?alive:ids.length)+"/"+ids.length:"0"}</b><span>${sc?"still shooting":"archers picked"}</span></div>`}</div>`;
+  const rows=SLOTS.map((s,i)=>{const id=me.picks[i];if(!id)return`<li class="tr emp"><span class="num">${i+1}</span><span class="meta">Empty ${s=="FLEX"?"Flex":DIV[s]} slot</span></li>`;
+    const pth=paths.find(x=>x[0]==id)[1],c=me.cap==id,p=P[id];
+    return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm"><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div>
+      <b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><div class="steps">${pth.st.map(x=>`<span class="st ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
+  return`<div class="trk card"><h3>Tournament tracker</h3>${sum}<ol class="trl">${rows}</ol>
+    <p class="leg"><span class="st done">Done</span><span class="st now">Shooting now</span><span class="st proj">On track</span><span class="st out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
 function teamView(){if(mode=="shared"&&!authUser)return signInView();const P=pts(),L=locked(),dis=L||!canWrite||mode=="loading";
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i],a=id&&BY[id],lab=s=="FLEX"?"Flex":DIV[s];
     if(!a)return`<li class="slot empty"><span class="num">${i+1}</span><div class="who"><small>${lab}</small><button class="pickbtn" data-act="pick" data-i="${i}" ${dis?"disabled":""}>+ Pick ${s=="FLEX"?"an archer from any division":"a "+DIV[s]+" archer"}</button></div></li>`;
@@ -304,7 +353,7 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();const P=pts
     return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}</div>
       <div class="acts"><button class="ic${c?" on":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
   const filled=me.picks.filter(Boolean).length;
-  return`<div class="grid"><div>${target(P)}<p class="cap-note">${anyScores()?"Arrows sit closer to the X the more points each archer earned.":"Once scores are posted, each arrow moves toward the X by the points that archer earns."}</p></div>
+  return`<div class="grid"><div>${tracker(P)}</div>
   <div class="card"><label class="tn">Team name<input type="text" id="tname" maxlength="40" placeholder="e.g. Bale 4 Bandits" value="${esc(me.name)}" ${dis?"disabled":""}></label>
   <ol class="roster">${rows}</ol>
   <div class="total"><span>${filled}/7 archers${me.cap?"":" · pick a captain (C)"}</span><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b></div>
