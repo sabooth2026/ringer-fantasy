@@ -3,11 +3,11 @@
 window.RINGER_CONFIG = {
   // From Firebase: gear icon > Project settings > General > Your apps > Config
   firebaseConfig: {
-    apiKey: "PASTE_YOUR_API_KEY",
+    apiKey: "AIzaSyD8EvIYKiQCubsw6ioHLDIKg6SNVgrW3-8",
     authDomain: "ringer-fantasy.firebaseapp.com",
     projectId: "ringer-fantasy",
-    appId: "PASTE_YOUR_APP_ID"
+    appId: "1:732732771712:web:1cbf3b179e79f713298565",
   },
   // The commissioner's Google email (who posts scores). Must match firestore.rules.
-  commissionerEmails: ["you@example.com"]
+  commissionerEmails: ["scott.booth@gmail.com"]
 };
