@@ -41,6 +41,14 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 .trk h3{font-size:30px;margin-bottom:2px;overflow-wrap:anywhere}.trk-sub{margin:0 0 12px}
 .namebox{max-width:620px;margin:0 auto;border-color:var(--red)}.namebox input{flex:1 1 240px;font-size:18px}
 .req{color:var(--red);font-weight:600}
+.capcall{margin-top:14px;padding:12px 14px;border:2px solid var(--red);border-radius:10px;background:rgba(231,0,0,.12)}
+.cmini{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;border:1px solid #fff;font-weight:700;font-size:13px}
+.ic.glow{border:2px solid var(--red);box-shadow:0 0 0 3px rgba(231,0,0,.35);animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
+@media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
+.capwarn{color:var(--red)}
+.nocap{display:inline-block;font-size:12px;font-weight:600;color:#fff;background:var(--red);border-radius:5px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.chk-list{margin:0 0 6px;padding-left:20px}.chk-list li{margin:4px 0}
 .sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
 .sum div{background:#000;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
 .sum b{display:block;font-family:Forum,serif;font-weight:400;font-size:clamp(28px,4vw,38px);line-height:1.1}
@@ -347,16 +355,18 @@ function nameView(){return`<div class="card namebox"><h2>First, name your team</
   <form id="nf"><label for="nf-name" class="tn">Team name</label><div class="row" style="margin:6px 0 0"><input type="text" id="nf-name" maxlength="40" minlength="2" required placeholder="e.g. Bale 4 Bandits" autocomplete="off"><button class="btn" type="submit">Save and pick archers</button></div></form>
   <p class="err" id="nf-err" role="alert"></p></div>`}
 function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()&&!locked()&&mode!="loading")return nameView();const P=pts(),L=locked(),dis=L||!canWrite||mode=="loading";
+  const needCap=!L&&!me.cap&&me.picks.some(Boolean);
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i],a=id&&BY[id],lab=s=="FLEX"?"Flex":DIV[s];
     if(!a)return`<li class="slot empty"><span class="num">${i+1}</span><div class="who"><small>${lab}</small><button class="pickbtn" data-act="pick" data-i="${i}" ${dis?"disabled":""}>+ Pick ${s=="FLEX"?"an archer from any division":"a "+DIV[s]+" archer"}</button></div></li>`;
     const p=P[id],c=me.cap==id,st=status(id);
     return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}</div>
-      <div class="acts"><button class="ic${c?" on":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
+      <div class="acts"><button class="ic${c?" on":""}${needCap?" glow":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
   const filled=me.picks.filter(Boolean).length;
   return`<div class="grid"><div>${tracker(P)}</div>
   <div class="card"><label class="tn">Team name <span class="req">(required)</span><input type="text" id="tname" required minlength="2" maxlength="40" placeholder="e.g. Bale 4 Bandits" value="${esc(me.name)}" ${dis?"disabled":""}></label>
+  ${needCap?`<div class="capcall"><b>Pick your captain.</b> Tap <span class="cmini">C</span> next to the archer you think will score the most. Your captain's points count 1.5×.</div>`:""}
   <ol class="roster">${rows}</ol>
-  <div class="total"><span>${filled}/7 archers${me.cap?"":" · pick a captain (C)"}</span><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b></div>
+  <div class="total"><span>${filled}/7 archers${filled&&!me.cap?" · <b class=\"capwarn\">no captain yet</b>":""}</span><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b></div>
   <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>`}
 
 function ownMap(){const o={};teams.forEach(t=>t.picks.forEach(id=>{if(id)o[id]=(o[id]||0)+1}));return o}
@@ -379,7 +389,7 @@ function standingsView(){const P=pts(),sc=anyScores(),show=locked()||mode=="loca
   const list=teams.filter(t=>t.picks.some(Boolean)||t.name).map(t=>({...t,tot:teamTotal(t,P)})).sort((a,b)=>b.tot-a.tot||(a.name||"").localeCompare(b.name||""));
   if(!list.length)return`<h2>Standings</h2><div class="empty-st">No teams yet. Build yours on My Team and share the page with your archery friends.</div>`;
   return`<h2>Standings</h2>${sc?"":`<p class="note">Points show up after the commissioner posts scores. ${show?"":"Rosters stay hidden until lineups lock."}</p>`}
-  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?i+1:"·"}</span><div><b>${esc(t.name||"Unnamed team")}</b><div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):"–"}</span>
+  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?i+1:"·"}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):"–"}</span>
   ${show||t.id==myId?`<details><summary>Roster</summary><ol>${t.picks.filter(Boolean).map(id=>`<li>${esc(BY[id].n)} <span class="meta">${DIV[BY[id].d]}${t.cap==id?" · Captain":""}${P[id]!=null?" · "+fmt(P[id]*(t.cap==id?1.5:1))+" pts":""}</span></li>`).join("")}</ol></details>`:""}</li>`).join("")}</ul>`}
 function rulesView(){const w=SC.win;return`<div class="rules"><h2>How it works</h2>
 <h3>Build a roster of 7</h3><ul><li>One archer from each division: Barebow, Traditional, Freestyle Compound, Bowhunter and Recurve.</li><li>Two Flex spots, filled from any division.</li><li>Anyone can pick the same archer, so there's no draft order to fight over.</li><li>Name one captain. Your captain's points count 1.5×.</li></ul>
@@ -412,7 +422,10 @@ function resultsView(){const d=rdiv,M=bracket(d);
 
 function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">Only the commissioner can post results.</div>`;
   const d=cdiv,xs=A.filter(a=>a.d==d),done=xs.filter(a=>league.scores[a.id]!=null).length,M=bracket(d);
-  return`<h2>Commissioner</h2>
+  const real=teams.filter(t=>t.picks.some(Boolean)||t.name);const noCap=real.filter(t=>!t.cap),short=real.filter(t=>t.picks.filter(Boolean).length<7),noName=real.filter(t=>!(t.name||"").trim());
+  const tn=t=>esc(t.name||t.owner||"Unnamed team");
+  const check=`<h3 class="sec">Team check</h3>${!real.length?`<p class="meta">No teams yet.</p>`:(!noCap.length&&!short.length&&!noName.length)?`<p class="meta">All ${real.length} teams have a name, 7 archers and a captain.</p>`:`<ul class="chk-list">${noCap.length?`<li><b>${noCap.length} without a captain:</b> ${noCap.map(tn).join(", ")}</li>`:""}${short.length?`<li><b>${short.length} with fewer than 7 archers:</b> ${short.map(t=>tn(t)+" ("+t.picks.filter(Boolean).length+"/7)").join(", ")}</li>`:""}${noName.length?`<li><b>${noName.length} without a team name:</b> ${noName.map(t=>esc(t.owner||"a player")).join(", ")}</li>`:""}</ul><p class="meta">Send these players a reminder before lineups lock.</p>`}`;
+  return`<h2>Commissioner</h2>${check}
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
   <h3 class="sec">Results from Eyes on Score</h3>
   <div class="imp"><label for="eoslink">Results page</label><div class="row" style="margin:6px 0 10px"><input id="eoslink" type="url" placeholder="https://texasringer.eyesonscore.com/events/2026/" value="${esc(linkDraft??(league.link||FEEDS[season]))}"><button class="btn ghost" data-act="savelink">Save link</button>${league.link?`<a class="btn ghost ext" href="${esc(league.link)}" target="_blank" rel="noopener">Open ↗</a>`:""}</div>
@@ -456,7 +469,7 @@ function addArcher(id){const a=BY[id];if(!a||locked())return;if(!named()){toast(
   let i=pendingSlot!=null&&ok(pendingSlot)?pendingSlot:SLOTS.findIndex((s,k)=>s==a.d&&!me.picks[k]);
   if(i<0)i=SLOTS.findIndex((s,k)=>s=="FLEX"&&!me.picks[k]);
   if(i<0)return toast("No open "+DIV[a.d]+" or Flex spot. Remove someone first.");
-  me.picks[i]=id;const back=pendingSlot!=null;pendingSlot=null;schedSave();toast("Added "+a.n+" to slot "+(i+1));
+  me.picks[i]=id;const back=pendingSlot!=null;pendingSlot=null;schedSave();toast(me.picks.every(Boolean)&&!me.cap?"Team full! Now tap C to pick your captain.":"Added "+a.n+" to slot "+(i+1));
   if(back||me.picks.every(Boolean))location.hash="team";else render(true)}
 
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,i=+b.dataset.i;
