@@ -8,7 +8,7 @@ service cloud.firestore {
     function isCommish() {
       return request.auth != null
         && request.auth.token.email_verified == true
-        && request.auth.token.email.lower() in ['you@example.com'];
+        && request.auth.token.email.lower() in ['scott.booth@gmail.com'];
     }
 
     // 'auto' locks at the first flight: Fri Dec 4 2026, 2:00 PM Central (20:00 UTC).
