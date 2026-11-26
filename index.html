@@ -50,6 +50,44 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+.sharebtn{display:inline-flex;align-items:center;gap:8px}.sharebtn.sm{min-height:36px;padding:0 14px;font-size:14px;margin-top:6px}
+.stwrap{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}.stcol{flex:1 1 460px;min-width:0}
+.wall{flex:1 1 380px;min-width:0}.wall h2{font-size:38px;margin:0}.wh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.wall textarea{width:100%;margin-top:6px;resize:vertical}.cnote{font-size:13px;color:#cfd7ee;border:1px solid var(--navy);border-radius:8px;padding:8px 10px;margin:12px 0 0}
+.post{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #2a2a2d}.pav{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:600;border:1px solid #fff}
+.pbody{flex:1;min-width:0}.phd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.ptx{margin:4px 0 8px;overflow-wrap:anywhere;white-space:pre-wrap}
+.pact{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.rx{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:#000;color:#fff;font-size:13px}
+.rx.on{border-color:var(--red);background:rgba(231,0,0,.18)}.rx.del{margin-left:auto;color:#ff8a8a;border-color:#5a1a1a;background:transparent}.rx:disabled{opacity:.6}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:grid;place-items:center;z-index:50;padding:16px}.modal[hidden]{display:none}
+.mbox{background:#111214;border:1px solid var(--line);border-radius:16px;padding:20px;max-width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;position:relative}
+.mbox h3{font-size:28px;margin:0 0 12px;padding-right:44px}.mbox img{width:100%;height:auto;border-radius:10px;display:block}.mclose{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:22px;border:1px solid var(--line);background:#000;color:#fff;font-size:22px}
+.awh{text-align:center}.awh .ey{color:var(--red);font-weight:600}.awh h2{font-size:clamp(40px,6vw,66px);margin:6px 0 0}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin-top:34px;flex-wrap:wrap}.pod{flex:1 1 200px;max-width:330px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.pn{font-size:24px;font-weight:600;line-height:1.2}.p1 .pn{font-size:28px}.pblock{margin-top:10px;width:100%;border-radius:12px 12px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#000}
+.pblock span{font-family:Forum,serif;font-size:80px;line-height:1}.pblock small{font-weight:600}.p1 .pblock{background:#ffc72c}.p2 .pblock{background:#cfd3d8}.p3 .pblock{background:#c98a4b}
+.pbase{height:4px;background:#fff;max-width:1040px;margin:0 auto}
+.awgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:18px;margin-top:40px}
+.awc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;gap:18px}.awi{width:60px;height:60px;border-radius:50%;flex:none;display:grid;place-items:center}
+.awn{font-weight:600}.aww{font-family:Forum,serif;font-size:32px;line-height:1.15;margin-top:8px;overflow-wrap:anywhere}.awwho{color:#d6d6d6;font-size:15px}.aws{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-top:10px}.aws b{font-family:Forum,serif;font-weight:400;font-size:40px;line-height:1}
+body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .wrap{max-width:none}
+.bbw{height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:1.1vw}.bbs{display:flex;height:.7vh}.bbs i{flex:1}.bbs i:nth-child(1){background:var(--navy)}.bbs i:nth-child(2){background:#fff}.bbs i:nth-child(3){background:var(--red)}
+.bbh{display:flex;align-items:center;gap:1.4vw;padding:1.2vh 3vw;border-bottom:3px solid #fff}.bblogo{height:7.5vh;width:auto}.bbt{font-family:Forum,serif;font-size:3.2vw;line-height:1}.bbt span{color:var(--red)}
+.bblive{display:inline-flex;align-items:center;gap:.5vw;background:var(--red);border-radius:2vw;padding:.4vh 1vw;font-weight:600;font-size:1.3vw}.bblive i{width:.8vw;height:.8vw;border-radius:50%;background:#fff;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}.bbinfo{margin-left:auto;text-align:right;display:flex;flex-direction:column}.bbinfo b{font-size:1.4vw}.bbinfo span{color:var(--mut);font-size:1.05vw}
+.bbctl{display:flex;gap:8px}:fullscreen .bbctl{display:none}
+.bbmain{flex:1;min-height:0;display:flex;gap:2vw;padding:1.8vh 3vw}.bbst{flex:1 1 62%;min-width:0}.bbsh{display:flex;justify-content:space-between;align-items:baseline}.bbsh h2{font-size:2.8vw;margin:0}.bbsh span{color:var(--mut)}
+.bbhd,.bbr{display:flex;align-items:center;gap:1vw;padding:0 .6vw}.bbhd{color:#8a8a8a;font-size:.95vw;border-bottom:1px solid var(--line);padding-bottom:.4vh;margin-top:.6vh}
+.bbr{height:6.6vh;border-bottom:1px solid #222}.bbr.lead{background:rgba(231,0,0,.14)}.bbk{width:4vw;font-family:Forum,serif;font-size:2.7vw}.bbhd .bbk,.bbhd .bbm{font-family:inherit;font-size:inherit;font-weight:400}.bbr.lead .bbk{color:var(--red)}
+.bbn{flex:1;min-width:0;display:flex;align-items:baseline;gap:.8vw;white-space:nowrap;overflow:hidden}.bbn b{font-size:1.8vw}.bbn span{color:var(--mut);font-size:1.05vw}
+.bbm{width:6vw;text-align:center;font-weight:600;font-size:1.25vw;color:#8a8a8a}.bbm.up{color:#5fd068}.bbm.dn{color:#ff6b6b}.bbp{width:9vw;text-align:right;font-family:Forum,serif;font-size:2.5vw}.bbhd .bbp{font-family:inherit;font-size:inherit}
+.bbside{flex:1 1 38%;min-width:0;min-height:0;display:flex;flex-direction:column;gap:1.4vh}.bbbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.2vh 1.3vw;min-height:0;overflow:hidden}.bbbox h3{font-size:1.9vw;margin:0 0 .4vh}
+.bbl{display:flex;align-items:center;gap:.8vw;padding:.55vh 0;border-top:1px solid #2a2a2d;font-size:1.15vw;line-height:1.25}.bbl i{color:#8a8a8a;font-style:normal}.bbl .tag{font-size:.85vw;min-width:5.2vw;text-align:center}.bbrd{color:var(--mut);font-size:.95vw}.bbhp{margin-left:auto;font-family:Forum,serif;font-weight:400;font-size:1.8vw}
+.bbqrbox{margin-top:auto;flex:none;display:flex;align-items:center;gap:1.2vw;background:var(--red);border-radius:14px;padding:1.2vh 1.3vw}#bbqr{width:min(7vw,13vh);min-width:84px;aspect-ratio:1;background:#fff;padding:6px;border-radius:8px;box-sizing:content-box}#bbqr img,#bbqr canvas{width:100%!important;height:auto!important;display:block}
+.bbq1{font-family:Forum,serif;font-size:2.2vw;line-height:1.05}.bbq2{font-size:1.2vw}.bbmsg{color:var(--mut);font-size:1.3vw}
+.bbtick{display:flex;align-items:center;gap:1.2vw;background:var(--navy);height:5.6vh;padding:0 3vw;overflow:hidden;font-size:1.3vw}.bbtl{background:#fff;color:var(--navy);font-weight:600;padding:.3vh .8vw;border-radius:6px;flex:none}
+.tick{overflow:hidden;flex:1;white-space:nowrap}.tickin{display:inline-flex;gap:1.2vw;animation:tick 60s linear infinite}.tickin .dot{color:#8fa3d6}@keyframes tick{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.tickin,.bblive i{animation:none}}
+@media(max-width:900px){.bbw{font-size:14px}.bbmain{flex-direction:column}}
 .rk small.pjr{display:block;font-family:Pridi,Georgia,serif;font-size:11px;color:var(--mut);white-space:nowrap}
 .tots{text-align:right}.tots small.pj{font-size:14px}
 small.pj{display:block;font-family:Pridi,Georgia,serif;font-size:12px;color:var(--mut);font-weight:400;line-height:1.2;text-align:right}
@@ -198,6 +236,7 @@ tr.cutl td{color:var(--red);font-weight:700;font-size:13px;border-bottom:2px das
 <main class="band"><div class="wrap" id="view"></div></main>
 <footer class="band" style="padding-top:0"><div class="wrap">Fan-made game, not affiliated with the Texas Ringer. Archer list from the Eyes on Score registration for the 2026 Texas Ringer. Bales and flight times may change; check the official schedule.</div></footer>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="modal" class="modal" hidden></div>
 <script src="config.js"></script>
 <script type="module">
 /* Settings live in config.js (edit that file, not this one), so updating index.html never touches them. */
@@ -335,17 +374,18 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");cl
 function lockText(){if(locked())return"Lineups locked";const ms=LOCK-Date.now();const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
   return"Lineups lock in "+(d?d+"d "+h+"h":h?h+"h "+m+"m":m+"m")}
 function header(){$("#sub").textContent=SEASONS[season].label+" · "+A.length+" archers across 5 adult divisions";$("#sub").classList.toggle("testm",season=="2025");const p=$("#lockpill");p.textContent=lockText();p.classList.toggle("lk",locked());
-  const r=route();const tabs=[["team","My Team"],["archers","Archers"],["results","Results"],["standings","Standings"],["rules","How it works"]];
+  const r=route();const tabs=[["team","My Team"],["archers","Archers"],["results","Results"],["standings","Standings"]];if(awardsReady()||isAdmin)tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
   if(isAdmin||mode=="local")tabs.push(["commish","Commissioner"]);
   const ac=$("#acct");ac.innerHTML=authUser?`Signed in as ${esc(ownerName())} · <button class="lnk" data-act="signout">Sign out</button>`:(mode=="shared"?`<a class="lnk" href="#team">Sign in</a>`:"");
   $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}">${l}</a>`).join("")}
-const ROUTES=["team","archers","results","standings","rules","commish"];
+const ROUTES=["team","archers","results","standings","awards","rules","commish","bigboard"];
 function route(){const h=location.hash.slice(1);return ROUTES.includes(h)?h:"team"}
 
 function render(force){const ae=document.activeElement;
   if(!force&&ae&&ae.matches("input:not([type=checkbox]),select")&&view.contains(ae)){pend=true;return}
   pend=false;header();const r=route();
-  view.innerHTML=notes()+(r=="team"?teamView():r=="archers"?archersView():r=="standings"?standingsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
+  document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();return}
+  view.innerHTML=notes()+(r=="team"?teamView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
 }
 
 function notes(){let s="";
@@ -421,6 +461,7 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()
   ${needCap?`<div class="capcall"><b>Pick your captain.</b> Tap <span class="cmini">C</span> next to the archer you think will score the most. Your captain's points count 1.5×.</div>`:""}
   <ol class="roster">${rows}</ol>
   <div class="total"><span>${filled}/7 archers${filled&&!me.cap?" · <b class=\"capwarn\">no captain yet</b>":""}</span><span class="tots"><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b><small class="pj">Projected total: ${Math.round(teamProj(me))}</small></span></div>
+  <div class="row" style="margin:12px 0 0"><button class="btn sharebtn" data-act="sharecard" ${me.picks.some(Boolean)?"":"disabled"}>Share my team</button></div>
   <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>`}
 
 function ownMap(){const o={};teams.forEach(t=>t.picks.forEach(id=>{if(id)o[id]=(o[id]||0)+1}));return o}
@@ -444,7 +485,7 @@ function standingsView(){const P=pts(),sc=anyScores(),show=locked()||mode=="loca
   if(!list.length)return`<h2>Standings</h2><div class="empty-st">No teams yet. Build yours on My Team and share the page with your archery friends.</div>`;
   const PR=projRanks(list),AR={};list.forEach(t=>{AR[t.id]=1+list.filter(o=>o.tot>t.tot+1e-9).length});
   return`<h2>${sc?"Standings":"Projected standings"}</h2>${sc?"":`<p class="note">Ranked by projected points until the commissioner posts scores. ${show?"":"Rosters stay hidden until lineups lock."}</p>`}
-  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?AR[t.id]:PR[t.id]}${sc?`<small class="pjr">proj #${PR[t.id]}</small>`:""}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div></div><span class="tot">${sc?fmt(t.tot):Math.round(teamProj(t))}<small class="pj">${sc?"proj "+Math.round(teamProj(t)):"projected"}</small></span>
+  <ul class="list">${list.map((t,i)=>`<li class="st"><span class="rk">${sc?AR[t.id]:PR[t.id]}${sc?`<small class="pjr">proj #${PR[t.id]}</small>`:""}</span><div><b>${esc(t.name||"Unnamed team")}</b>${!locked()&&!t.cap?` <span class="nocap">No captain yet</span>`:""}<div class="meta">${mode=="local"?"You":esc(t.owner||"A manager")+(t.id==myId?" (you)":"")}</div>${(t.id==myId||t.id=="me")&&t.picks.some(Boolean)?`<button class="btn sharebtn sm" data-act="sharecard">Share my team</button>`:""}</div><span class="tot">${sc?fmt(t.tot):Math.round(teamProj(t))}<small class="pj">${sc?"proj "+Math.round(teamProj(t)):"projected"}</small></span>
   ${show||t.id==myId?`<details><summary>Roster</summary><ol>${t.picks.filter(Boolean).map(id=>`<li>${esc(BY[id].n)} <span class="meta">${DIV[BY[id].d]}${t.cap==id?" · Captain":""}${P[id]!=null?" · "+fmt(P[id]*(t.cap==id?1.5:1))+" pts":""} · proj ${Math.round((PROJ[id]||0)*(t.cap==id?1.5:1))}</span></li>`).join("")}</ol></details>`:""}</li>`).join("")}</ul>`}
 function rulesView(){const w=SC.win;return`<div class="rules"><h2>How it works</h2>
 <h3>Build a roster of 7</h3><ul><li>One archer from each division: Barebow, Traditional, Freestyle Compound, Bowhunter and Recurve.</li><li>Two Flex spots, filled from any division.</li><li>Anyone can pick the same archer, so there's no draft order to fight over.</li><li>Name one captain. Your captain's points count 1.5×.</li></ul>
@@ -482,7 +523,7 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
   const real=teams.filter(t=>t.picks.some(Boolean)||t.name);const noCap=real.filter(t=>!t.cap),short=real.filter(t=>t.picks.filter(Boolean).length<7),noName=real.filter(t=>!(t.name||"").trim());
   const tn=t=>esc(t.name||t.owner||"Unnamed team");
   const check=`<h3 class="sec">Team check</h3>${!real.length?`<p class="meta">No teams yet.</p>`:(!noCap.length&&!short.length&&!noName.length)?`<p class="meta">All ${real.length} teams have a name, 7 archers and a captain.</p>`:`<ul class="chk-list">${noCap.length?`<li><b>${noCap.length} without a captain:</b> ${noCap.map(tn).join(", ")}</li>`:""}${short.length?`<li><b>${short.length} with fewer than 7 archers:</b> ${short.map(t=>tn(t)+" ("+t.picks.filter(Boolean).length+"/7)").join(", ")}</li>`:""}${noName.length?`<li><b>${noName.length} without a team name:</b> ${noName.map(t=>esc(t.owner||"a player")).join(", ")}</li>`:""}</ul><p class="meta">Send these players a reminder before lineups lock.</p>`}`;
-  return`<h2>Commissioner</h2>${check}
+  return`<h2>Commissioner</h2>${check}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a></div>
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
   <h3 class="sec">Results from Eyes on Score</h3>
   <div class="imp"><label for="eoslink">Results page</label><div class="row" style="margin:6px 0 10px"><input id="eoslink" type="url" placeholder="https://texasringer.eyesonscore.com/events/2026/" value="${esc(linkDraft??(league.link||FEEDS[season]))}"><button class="btn ghost" data-act="savelink">Save link</button>${league.link?`<a class="btn ghost ext" href="${esc(league.link)}" target="_blank" rel="noopener">Open ↗</a>`:""}</div>
@@ -529,7 +570,14 @@ function addArcher(id){const a=BY[id];if(!a||locked())return;if(!named()){toast(
   me.picks[i]=id;const back=pendingSlot!=null;pendingSlot=null;schedSave();toast(me.picks.every(Boolean)&&!me.cap?"Team full! Now tap C to pick your captain.":"Added "+a.n+" to slot "+(i+1));
   if(back||me.picks.every(Boolean))location.hash="team";else render(true)}
 
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,i=+b.dataset.i;
+document.addEventListener("click",async e=>{if(e.target.id=="modal"){e.target.hidden=true;return}const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,i=+b.dataset.i;
+  if(act=="sharecard"){if(!me.picks.some(Boolean))return toast("Pick some archers first");toast("Making your team card…");showCard(await drawTeamCard(),(me.name||"my-team").replace(/[^a-z0-9]+/gi,"-").toLowerCase()+"-ringer-fantasy.png","My Ringer Fantasy team");return}
+  if(act=="shareawards"){showCard(await drawAwardsCard(),"ringer-fantasy-awards.png","Ringer Fantasy Awards");return}
+  if(act=="mclose"){$("#modal").hidden=true;return}
+  if(act=="mshare"){shareModal();return}
+  if(act=="react"){react(b.dataset.p,b.dataset.k);return}
+  if(act=="delpost"){delPost(b.dataset.p);return}
+  if(act=="fullscreen"){try{await document.documentElement.requestFullscreen()}catch{toast("Use your browser's full-screen option (F11)")}return}
   if(act=="google"){try{await fa.signInWithPopup(auth,new fa.GoogleAuthProvider())}catch(x){aerr(x)}return}
   if(act=="signout"){await fa.signOut(auth);location.hash="team";return}
   if(act=="authmode"){authMode=authMode=="in"?"up":"in";render(true);return}
@@ -562,20 +610,24 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-act]
   else if(act=="t25all"||act=="t25q"){const T=TEST25;const next={...league,qr:{},scores:{...T.scores},xs:{...T.xs},seeds:act=="t25all"?JSON.parse(JSON.stringify(T.seeds)):{},elim:act=="t25all"?JSON.parse(JSON.stringify(T.elim)):{}};
     if(await writeLeague(next))toast(act=="t25all"?"Loaded all 2025 results":"Loaded 2025 qualification scores")}
   else if(act=="clear"){if(!clearArm){clearArm=true;render(true);return}clearArm=false;if(await writeLeague({season:league.season,link:league.link,scores:{},xs:{},qr:{},seeds:{},elim:{},lock:league.lock}))toast("All results erased")}});
-document.addEventListener("submit",async e=>{if(e.target.id=="nf"){e.preventDefault();const v=$("#nf-name").value.trim().slice(0,40);
+document.addEventListener("submit",async e=>{if(e.target.id=="wf"){e.preventDefault();const ta=$("#wtext"),v=ta.value.trim().slice(0,280);if(!v)return;
+    if(postBusy)return;const last=+(sessionStorage.getItem("rfLastPost")||0);if(Date.now()-last<15000)return toast("Easy there. Wait a few seconds between posts.");
+    postBusy=true;const ok=await addPost(v);postBusy=false;if(ok){ta.value="";try{sessionStorage.setItem("rfLastPost",Date.now())}catch{}ta.blur();render(true)}return}
+  if(e.target.id=="nf"){e.preventDefault();const v=$("#nf-name").value.trim().slice(0,40);
     if(v.length<2){$("#nf-err").textContent="Use at least 2 characters.";return}
     const taken=teams.some(t=>t.id!==myId&&t.id!=="me"&&(t.name||"").trim().toLowerCase()==v.toLowerCase());if(taken){$("#nf-err").textContent="Another team already uses that name. Try a different one.";return}
     me.name=v;overlayMine&&mode=="shared"&&overlayMine();await writeTeam();toast("Team name saved. Now pick your archers!");render(true);return}
   if(e.target.id!="ef")return;e.preventDefault();const em=$("#ee").value.trim(),pw=$("#ep").value;
   try{if(authMode=="up"){const nm=$("#en").value.trim().slice(0,40);const c=await fa.createUserWithEmailAndPassword(auth,em,pw);if(nm){await fa.updateProfile(c.user,{displayName:nm});authUser=auth.currentUser;render(true)}}
   else await fa.signInWithEmailAndPassword(auth,em,pw)}catch(x){aerr(x)}});
-document.addEventListener("input",e=>{if(e.target.id=="eoslink"){linkDraft=e.target.value;return}if(e.target.id=="tname"){me.name=e.target.value.slice(0,40);schedSave()}
+document.addEventListener("input",e=>{if(e.target.id=="wtext"){const c=$("#wcount");if(c)c.textContent=c.textContent.replace(/\d+\/280$/,e.target.value.length+"/280");return}if(e.target.id=="eoslink"){linkDraft=e.target.value;return}if(e.target.id=="tname"){me.name=e.target.value.slice(0,40);schedSave()}
   else if(e.target.id=="q"){q=e.target.value;$("#alist").innerHTML=alist()}});
 document.addEventListener("change",e=>{if(e.target.id=="autopull"){clearInterval(autoT);autoT=null;if(e.target.checked){autoT=setInterval(()=>doPull(false),5*60e3);doPull(true)}render(true);return}if(e.target.id=="sort"){sort=e.target.value;$("#alist").innerHTML=alist()}
   else if(e.target.id=="lock")writeLeague({...league,lock:e.target.value})});
 document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{if(pend)render()},0)});
 window.addEventListener("hashchange",()=>{if(route()!="archers")pendingSlot=null;else if(pendingSlot==null)afilter="ALL";clearArm=false;render(true);window.scrollTo(0,0)});
 setInterval(header,30000);
+document.addEventListener("keydown",e=>{if(e.key=="Escape"){const m=$("#modal");if(m&&!m.hidden)m.hidden=true}});
 
 /* ---- Eyes on Score import: reads a copied (Ctrl+A, Ctrl+C) results page ---- */
 function parseEOS(text){const toks=text.split(/[\t\r\n]+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
@@ -675,8 +727,163 @@ async function doPull(loud){if(pulling)return;const url=league.link;if(!isFeed(u
   catch(e){lastRep="<b>Couldn't reach the results page.</b> Check your connection and try again."}
   pulling=false;if(route()=="commish")render(true)}
 
+/* ================= Share cards (team card, awards card) ================= */
+const DSHORT={BB:"Barebow",TR:"Traditional",FC:"Compound",BH:"Bowhunter",RC:"Recurve"};
+const TAGC={BB:"#2c4f9e",TR:"#8a5a2b",FC:"#c40000",BH:"#4d6a29",RC:"#8f6500"};
+const siteHost=()=>(location.host&&!/^(localhost|127\.)/.test(location.host)&&location.protocol.startsWith("http"))?location.host:"ringerfantasygames.com";
+const siteUrl=()=>location.protocol.startsWith("http")?location.origin+location.pathname:"https://ringerfantasygames.com/";
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function fitText(ctx,text,font,size,maxW,weight=""){let s=size;while(s>10){ctx.font=`${weight} ${s}px ${font}`;if(ctx.measureText(text).width<=maxW)break;s-=2}return s}
+async function cardBase(){const c=document.createElement("canvas");c.width=1080;c.height=1350;const x=c.getContext("2d");
+  try{await Promise.all([document.fonts.load('60px Forum'),document.fonts.load('30px Pridi'),document.fonts.load('600 30px Pridi')])}catch{}
+  x.fillStyle="#000";x.fillRect(0,0,1080,1350);[["#0b2a6b",0],["#ffffff",360],["#e70000",720]].forEach(([c2,o])=>{x.fillStyle=c2;x.fillRect(o,0,360,14)});
+  const src=(document.querySelector(".logo")||{}).src;let lw=0;
+  if(src){const im=new Image();im.src=src;try{await im.decode();lw=96*im.width/im.height;x.drawImage(im,72,40,lw,96)}catch{}}
+  const tx=72+(lw?lw+24:0);x.textBaseline="alphabetic";x.font="54px Forum";x.fillStyle="#fff";x.fillText("Ringer",tx,98);const w1=x.measureText("Ringer ").width;x.fillStyle="#e70000";x.fillText("Fantasy Games",tx+w1,98);
+  x.font="24px Pridi";x.fillStyle="#cfcfcf";x.fillText(season=="2025"?"2025 Texas Ringer (test data)":"2026 Texas Ringer · Dec 4–5",tx,132);return[c,x]}
+function cardFooter(x,head="Think you can beat us?",pre="Pick your team at "){x.font="40px Forum";x.fillStyle="#fff";x.textAlign="left";x.fillText(head,72,1266);
+  x.font="24px Pridi";x.fillStyle="#cfcfcf";x.fillText(pre,72,1304);const pw=x.measureText(pre).width;x.font="600 24px Pridi";x.fillStyle="#fff";x.fillText(siteHost(),72+pw,1304);
+  x.font="18px Pridi";x.fillStyle="#8a8a8a";x.textAlign="right";x.fillText("It's not a competition;",1008,1280);x.fillText("it's an Experience!",1008,1304);x.textAlign="left"}
+async function drawTeamCard(){const P=pts(),sc=anyScores(),[c,x]=await cardBase();
+  const t={...me,id:myId||"me"};const list=teams.filter(o=>o.picks.some(Boolean)).map(o=>o.id==t.id?t:o);
+  const tot=teamTotal(t,P),pj=teamProj(t);const n=list.length;
+  const ar=1+list.filter(o=>teamTotal(o,P)>tot+1e-9).length,pr=projRanks(list)[t.id]||1;
+  x.font="600 24px Pridi";x.fillStyle="#e70000";x.fillText("My fantasy team",72,196);
+  fitText(x,t.name||"My team","Forum",88,936);x.fillStyle="#fff";x.fillText(t.name||"My team",72,276);
+  if(ownerName()){x.font="26px Pridi";x.fillStyle="#b4b4b4";x.fillText("Managed by "+ownerName(),72,316)}
+  const tiles=[[sc?fmt(tot):String(Math.round(pj)),sc?"points":"projected points",false],[n>1?ordn(sc?ar:pr):"–",n>1?(sc?"of "+n+" teams":"projected, of "+n+" teams"):"league rank",false],[t.cap?BY[t.cap].n:"No captain",t.cap?"my captain, 1.5×":"pick one on My Team",true]];
+  tiles.forEach(([big,lab,cap],i)=>{const X=72+i*312,Y=344;rr(x,X,Y,300,128,16);x.fillStyle=cap?"rgba(231,0,0,0.14)":"#111214";x.fill();x.lineWidth=2;x.strokeStyle=cap?"#e70000":"#3b3b3e";x.stroke();
+    x.textAlign="center";const s=fitText(x,big,"Forum",cap?40:60,270);x.fillStyle="#fff";x.fillText(big,X+150,Y+(cap?70:72));x.font="22px Pridi";x.fillStyle=cap?"#ffb3b3":"#b4b4b4";x.fillText(lab,X+150,Y+108);x.textAlign="left"});
+  t.picks.forEach((id,i)=>{const Y=500+i*94;x.fillStyle="#2a2a2d";x.fillRect(72,Y,936,1);if(!id){x.font="24px Pridi";x.fillStyle="#8a8a8a";x.fillText("Empty slot",144,Y+56);return}
+    const a=BY[id],isC=t.cap==id;x.beginPath();x.arc(97,Y+47,25,0,7);x.fillStyle=isC?"#e70000":"#0b2a6b";x.fill();x.lineWidth=2;x.strokeStyle="#fff";x.stroke();
+    x.font="600 22px Pridi";x.fillStyle="#fff";x.textAlign="center";x.fillText(String(i+1),97,Y+55);x.textAlign="left";
+    fitText(x,a.n,"Pridi",30,640,"500");x.fillStyle="#fff";x.fillText(a.n,144,Y+40);
+    x.font="600 18px Pridi";const tg=DSHORT[a.d],tw=x.measureText(tg).width+20;rr(x,144,Y+52,tw,28,6);x.fillStyle=TAGC[a.d];x.fill();x.fillStyle="#fff";x.fillText(tg,154,Y+72);
+    const note=(sc&&status(id))||histText(id,true);x.font="20px Pridi";x.fillStyle="#b4b4b4";let nt=(isC?"Captain · ":"")+note;while(x.measureText(nt).width>660-tw&&nt.length>4)nt=nt.slice(0,-2);if(nt!==(isC?"Captain · ":"")+note)nt+="…";x.fillText(nt,144+tw+12,Y+73);
+    const v=sc?(P[id]!=null?fmt(P[id]*(isC?1.5:1)):"0"):String(Math.round((PROJ[id]||0)*(isC?1.5:1)));x.textAlign="right";x.font="44px Forum";x.fillStyle="#fff";x.fillText(v,1008,Y+52);x.font="17px Pridi";x.fillStyle="#b4b4b4";x.fillText(sc?"pts":"proj",1008,Y+78);x.textAlign="left"});
+  cardFooter(x);return c}
+async function drawAwardsCard(){const A2=computeAwards(),[c,x]=await cardBase();
+  x.textAlign="center";x.font="600 24px Pridi";x.fillStyle="#e70000";x.fillText("Final results",540,206);x.font="64px Forum";x.fillStyle="#fff";x.fillText((season=="2025"?"2025":"2026")+" Ringer Fantasy Awards",540,274);x.textAlign="left";
+  const med=["#ffc72c","#cfd3d8","#c98a4b"];A2.top.slice(0,4).forEach((t,i)=>{const Y=320+i*76;x.beginPath();x.arc(112,Y+30,28,0,7);x.fillStyle=med[Math.min(t.rank,3)-1];x.fill();x.font="34px Forum";x.fillStyle="#000";x.textAlign="center";x.fillText(String(t.rank),112,Y+42);x.textAlign="left";
+    fitText(x,t.name,"Pridi",32,640,"600");x.fillStyle="#fff";x.fillText(t.name,160,Y+30);x.font="20px Pridi";x.fillStyle="#b4b4b4";x.fillText(t.owner,160,Y+56);x.textAlign="right";x.font="44px Forum";x.fillStyle="#fff";x.fillText(fmt(t.tot),1008,Y+44);x.textAlign="left"});
+  A2.cards.forEach((w,i)=>{const X=72+(i%2)*474,Y=640+Math.floor(i/2)*290;rr(x,X,Y,462,270,16);x.fillStyle="#111214";x.fill();x.lineWidth=2;x.strokeStyle="#3b3b3e";x.stroke();
+    x.font="600 24px Pridi";x.fillStyle=w.label;x.fillText(w.award,X+24,Y+44);x.font="18px Pridi";x.fillStyle="#b4b4b4";x.fillText(w.short,X+24,Y+72);
+    const nm=w.winners.join(" & ")||"No winner";fitText(x,nm,"Forum",40,414);x.fillStyle="#fff";x.fillText(nm,X+24,Y+130);
+    x.font="44px Forum";x.fillStyle=w.label;x.fillText(w.stat,X+24,Y+196);x.font="18px Pridi";x.fillStyle="#b4b4b4";let sn=w.statNote;while(x.measureText(sn).width>414&&sn.length>4)sn=sn.slice(0,-2);x.fillText(sn,X+24,Y+232)});
+  cardFooter(x,"Join us next year!","Full results at ");return c}
+function showCard(canvas,fname,title){canvas.toBlob(blob=>{if(!blob)return toast("Couldn't make the image");const url=URL.createObjectURL(blob);
+  const m=$("#modal");m.innerHTML=`<div class="mbox" role="dialog" aria-modal="true" aria-label="${esc(title)}"><button class="mclose" data-act="mclose" aria-label="Close">×</button><h3>${esc(title)}</h3><img src="${url}" alt="${esc(title)}"><div class="row"><button class="btn" data-act="mshare">Share</button><a class="btn ghost" href="${url}" download="${esc(fname)}">Download image</a></div><p class="meta">On a phone, Share sends it straight to Facebook, Instagram or Messages. On a computer, download it and post it.</p></div>`;
+  m.hidden=false;m._blob=blob;m._fname=fname;m._title=title},"image/png")}
+async function shareModal(){const m=$("#modal");if(!m._blob)return;const f=new File([m._blob],m._fname,{type:"image/png"});
+  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:m._title,text:"Pick your team at "+siteUrl()});return}}catch(e){if(e&&e.name=="AbortError")return}
+  const a=m.querySelector("a[download]");if(a)a.click();toast("Image downloaded. Post it anywhere!")}
+
+/* ================= Awards ================= */
+function awardsReady(){const ds=ORDER.filter(d=>A.some(a=>a.d==d));return ds.length>0&&ds.every(d=>{const M=bracket(d);return M&&M.f.w&&(M.b.w||M.b.dead||!M.b.a||!M.b.b)})}
+function computeAwards(){const P=pts();const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({...t,tot:teamTotal(t,P),proj:teamProj(t),owner:t.owner||(mode=="local"?"You":"A manager"),name:t.name||"Unnamed team"}));
+  list.forEach(t=>t.rank=1+list.filter(o=>o.tot>t.tot+1e-9).length);const PR=projRanks(list);list.forEach(t=>t.pr=PR[t.id]);
+  const top=list.filter(t=>t.rank<=3).sort((a,b)=>a.rank-b.rank);const cards=[];
+  const best=(arr,f,min)=>{if(!arr.length)return[];const vals=arr.map(f);const v=min?Math.min(...vals):Math.max(...vals);return arr.filter((a,i)=>Math.abs(vals[i]-v)<1e-9)};
+  const capT=list.filter(t=>t.cap&&P[t.cap]!=null),sh=best(capT,t=>P[t.cap]*1.5);
+  cards.push({key:"sharp",award:"Sharpshooter",short:"Best captain pick",desc:"Best captain pick",color:"#e70000",label:"#ff8a8a",
+    winners:sh.map(t=>BY[t.cap].n+" ("+t.name+")"),big:sh.map(t=>BY[t.cap].n).join(" & "),who:sh.map(t=>"Captain of "+t.name+" · "+t.owner).join("; "),
+    stat:sh.length?fmt(P[sh[0].cap]*1.5):"–",statNote:sh.length?`captain points (${fmt(P[sh[0].cap])} × 1.5)`:"No captains scored"});
+  const picked=[...new Set(list.flatMap(t=>t.picks.filter(Boolean)))];const sl=best(picked,id=>(P[id]||0)-(PROJ[id]||0));
+  const cnt=id=>list.filter(t=>t.picks.includes(id)).length;
+  cards.push({key:"sleeper",award:"Sleeper Pick",short:"Beat its projection by the most",desc:"Picked archer who beat their projection by the most",color:"#0b2a6b",label:"#9fb4ea",
+    winners:sl.map(id=>BY[id].n),big:sl.map(id=>BY[id].n).join(" & "),who:sl.map(id=>DIV[BY[id].d]+" · on "+cnt(id)+" team"+(cnt(id)==1?"":"s")).join("; "),
+    stat:sl.length?((P[sl[0]]||0)-(PROJ[sl[0]]||0)>=0?"+":"")+Math.round((P[sl[0]]||0)-(PROJ[sl[0]]||0)):"–",statNote:sl.length?`scored ${fmt(P[sl[0]]||0)}, projected ${Math.round(PROJ[sl[0]]||0)}`:"No picked archers"});
+  const cb=best(list,t=>Math.abs(t.tot-t.proj),true);
+  cards.push({key:"crystal",award:"Crystal Ball",short:"Closest to its projection",desc:"Team closest to its projection",color:"#4d2a7a",label:"#c8a8f0",
+    winners:cb.map(t=>t.name),big:cb.map(t=>t.name).join(" & "),who:cb.map(t=>t.owner).join("; "),
+    stat:cb.length?fmt(Math.round(Math.abs(cb[0].tot-cb[0].proj)*10)/10):"–",statNote:cb.length?`points off: projected ${Math.round(cb[0].proj)}, scored ${fmt(cb[0].tot)}`:""});
+  const ud=best(top,t=>t.pr);const udOk=ud.length&&ud[0].pr>3;
+  cards.push({key:"under",award:"Underdog",short:"Lowest-projected top 3 team",desc:"Lowest-projected team to finish top 3",color:"#4d6a29",label:"#a9d37a",
+    winners:udOk?ud.map(t=>t.name):[],big:udOk?ud.map(t=>t.name).join(" & "):"No underdog this year",who:udOk?ud.map(t=>t.owner).join("; "):"Every top 3 team was projected top 3",
+    stat:udOk?ordn(ud[0].pr)+" → "+ordn(ud[0].rank):"–",statNote:udOk?`projected ${ordn(ud[0].pr)} of ${list.length}, finished ${ordn(ud[0].rank)}`:""});
+  return{top,cards,n:list.length}}
+const AICON={sharp:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/>',sleeper:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',crystal:'<circle cx="12" cy="10" r="7"/><path d="M6 21h12M8 17.5l-1 3.5M16 17.5l1 3.5M9 8a3 3 0 0 1 3-3"/>',under:'<path d="M12 20V4"/><path d="M5 11l7-7 7 7"/>'};
+function awardsView(){const ready=awardsReady();
+  if(!ready&&!isAdmin)return`<h2>Awards</h2><div class="empty-st">Awards appear here once the last medal match is posted.</div>`;
+  const W=computeAwards();if(!W.n)return`<h2>Awards</h2><div class="empty-st">No teams yet.</div>`;
+  const col=(rank,h,cls)=>{const ts=W.top.filter(t=>t.rank==rank);if(!ts.length)return"";
+    return`<div class="pod ${cls}">${rank==1?`<svg aria-hidden="true" width="44" height="36" viewBox="0 0 48 40" fill="#ffc72c"><path d="M4 34 L2 8 L14 18 L24 2 L34 18 L46 8 L44 34 Z"/><rect x="4" y="35" width="40" height="5" rx="2"/></svg>`:""}${ts.map(t=>`<div class="pn">${esc(t.name)}</div><div class="meta">${esc(t.owner)} · ${fmt(t.tot)} pts</div>`).join("")}<div class="pblock" style="height:${h}px"><span>${rank}</span>${rank==1?"<small>League champion</small>":""}</div></div>`};
+  return`${ready?"":`<p class="note"><b>Commissioner preview.</b> Players see this tab once the last medal match is posted.</p>`}
+  <div class="awh"><div class="ey">Final results · ${W.n} teams</div><h2>${season=="2025"?"2025":"2026"} Ringer Fantasy Awards</h2></div>
+  <section class="podium" aria-label="Top 3 teams">${col(2,150,"p2")}${col(1,210,"p1")}${col(3,115,"p3")}</section><div class="pbase"></div>
+  <section class="awgrid" aria-label="Special awards">${W.cards.map(w=>`<article class="awc"><div class="awi" style="background:${w.color}" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${AICON[w.key]}</svg></div>
+    <div><div class="awn" style="color:${w.label}">${w.award}</div><div class="meta">${w.desc}</div><div class="aww">${esc(w.big||"No winner")}</div><div class="awwho">${esc(w.who)}</div>
+    <div class="aws"><b style="color:${w.label}">${esc(w.stat)}</b><span class="meta">${esc(w.statNote)}</span></div></div></article>`).join("")}</section>
+  <div class="row" style="justify-content:center;margin-top:28px"><button class="btn" data-act="shareawards">Share the awards</button><a class="btn ghost" href="#standings" style="display:inline-flex;align-items:center;text-decoration:none">See full standings</a></div>
+  <p class="meta" style="text-align:center">Ties: every tied winner is shown. Sleeper Pick only counts archers on at least one team.</p>`}
+
+/* ================= Trash-talk wall ================= */
+let posts=[],reacts=[],postBusy=false;const LSP="ringerFantasy.posts";
+function timeAgo(ms){const s=Math.max(0,(Date.now()-ms)/1000);return s<45?"just now":s<3600?Math.round(s/60)+"m ago":s<86400?Math.round(s/3600)+"h ago":Math.round(s/86400)+"d ago"}
+const uidMe=()=>myId||"me";
+function wallView(){const canPost=mode=="local"||(mode=="shared"&&authUser);
+  const rx=id=>{const r=reacts.filter(x=>x.post==id);return{b:r.filter(x=>x.kind=="b").length,o:r.filter(x=>x.kind=="o").length,mine:(r.find(x=>x.uid==uidMe())||{}).kind}};
+  const list=posts.slice(0,100).map(p=>{const r=rx(p.id),own=p.uid==uidMe();
+    return`<article class="post"><div class="pav" aria-hidden="true" style="background:${TAGC[ORDER[Math.abs([...p.uid].reduce((s,c)=>s+c.charCodeAt(0),0))%5]]}">${esc((p.name||"?")[0].toUpperCase())}</div><div class="pbody">
+      <div class="phd"><b>${esc(p.name||"Someone")}</b><span class="meta">${esc(p.team||"No team yet")} · ${timeAgo(p.at)}</span></div><p class="ptx">${esc(p.text)}</p>
+      <div class="pact"><button class="rx${r.mine=="b"?" on":""}" data-act="react" data-p="${esc(p.id)}" data-k="b" aria-pressed="${r.mine=="b"}" ${canPost?"":"disabled"}><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e70000" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="#e70000"/></svg>Bullseye ${r.b||""}</button>
+      <button class="rx${r.mine=="o"?" on":""}" data-act="react" data-p="${esc(p.id)}" data-k="o" aria-pressed="${r.mine=="o"}" ${canPost?"":"disabled"}>Ouch ${r.o||""}</button>
+      ${isAdmin||own?`<button class="rx del" data-act="delpost" data-p="${esc(p.id)}">Delete</button>`:""}</div></div></article>`}).join("");
+  return`<section class="wall card" aria-labelledby="tt-h"><div class="wh"><h2 id="tt-h">Trash talk</h2><span class="meta">${posts.length} post${posts.length==1?"":"s"}</span></div>
+    <p class="meta">Keep it friendly. The commissioner can remove any post.</p>
+    ${canPost?`<form id="wf"><label for="wtext" class="tn">Say something to the league</label><textarea id="wtext" rows="3" maxlength="280" placeholder="Your captain is going home in the Round of 16…"></textarea>
+      <div class="row" style="margin:6px 0 0;justify-content:space-between"><span class="meta" id="wcount">Posting as ${esc(ownerName()||"you")}${me.name?" · "+esc(me.name):""} · 0/280</span><button class="btn" type="submit" ${postBusy?"disabled":""}>Post</button></div></form>`
+    :`<p class="note"><a href="#team">Sign in</a> to post and react.</p>`}
+    ${isAdmin&&mode=="shared"?`<p class="cnote">You're the commissioner, so you see Delete on every post.</p>`:""}
+    <div class="posts">${list||`<p class="meta" style="padding:14px 0">No posts yet. Start the trash talk!</p>`}</div></section>`}
+function cleanPost(d,id){const at=d&&d.at&&typeof d.at.toMillis=="function"?d.at.toMillis():(typeof d?.at=="number"?d.at:Date.now());
+  return{id,uid:String(d?.uid||""),name:String(d?.name||"").slice(0,60),team:String(d?.team||"").slice(0,40),text:String(d?.text||"").slice(0,280),at}}
+function savePostsLocal(){try{localStorage.setItem(LSP,JSON.stringify({posts,reacts}))}catch{}}
+async function addPost(text){if(mode=="local"){posts.unshift({id:"p"+Date.now(),uid:"me",name:ownerName()||"You",team:me.name,text,at:Date.now()});savePostsLocal();render(true);return true}
+  try{await fs.addDoc(fs.collection(db,"posts"),{uid:myId,name:ownerName(),team:(me.name||"").slice(0,40),text,at:fs.serverTimestamp()});return true}
+  catch(e){toast(e&&e.code=="permission-denied"?"Couldn't post. The commissioner needs to update the Firestore rules (setup step 5).":"Couldn't post. Try again.");return false}}
+async function react(pid,k){const id=pid+"_"+uidMe(),cur=reacts.find(x=>x.id==id);
+  if(mode=="local"){reacts=reacts.filter(x=>x.id!=id);if(!cur||cur.kind!=k)reacts.push({id,uid:"me",post:pid,kind:k});savePostsLocal();render(true);return}
+  try{if(cur&&cur.kind==k)await fs.deleteDoc(fs.doc(db,"reacts",id));else await fs.setDoc(fs.doc(db,"reacts",id),{uid:myId,post:pid,kind:k})}catch(e){toast("Couldn't react. Try again.")}}
+async function delPost(pid){if(mode=="local"){posts=posts.filter(p=>p.id!=pid);reacts=reacts.filter(r=>r.post!=pid);savePostsLocal();render(true);return}
+  try{await fs.deleteDoc(fs.doc(db,"posts",pid));toast("Post deleted")}catch(e){toast("Couldn't delete that post.")}}
+
+/* ================= Big Board (TV mode) ================= */
+let bbHist=[];
+function bbRanks(){const P=pts(),sc=anyScores();const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({id:t.id,v:sc?teamTotal(t,P):teamProj(t)}));const R={};list.forEach(t=>R[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);return R}
+function bbTick(){bbHist.push({t:Date.now(),r:bbRanks()});bbHist=bbHist.filter(h=>Date.now()-h.t<12*60e3)}
+function bigBoardView(){const P=pts(),sc=anyScores();
+  const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({...t,v:sc?teamTotal(t,P):teamProj(t)})).sort((a,b)=>b.v-a.v);
+  const cur={};list.forEach(t=>cur[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);
+  const past=bbHist.filter(h=>Date.now()-h.t>=4.5*60e3).pop()||bbHist[0];
+  const rows=list.slice(0,10).map(t=>{const mv=past&&past.r[t.id]?past.r[t.id]-cur[t.id]:0;
+    return`<div class="bbr${cur[t.id]==1?" lead":""}"><span class="bbk">${cur[t.id]}</span><span class="bbn"><b>${esc(t.name||"Unnamed team")}</b><span>${esc(t.owner||"")}</span></span><span class="bbm ${mv>0?"up":mv<0?"dn":""}">${mv>0?"▲ "+mv:mv<0?"▼ "+(-mv):"–"}</span><span class="bbp">${sc?fmt(t.v):Math.round(t.v)}</span></div>`}).join("");
+  const RO={r:0,q:1,s:2,f:3,b:3};let live=[];
+  for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.a&&m.b&&!m.w&&!m.dead)live.push({d,m})}}
+  live.sort((x,y)=>RO[y.m.rd]-RO[x.m.rd]);live=live.slice(0,4);
+  let side1;if(live.length)side1=`<h3>Shooting now</h3>${live.map(({d,m})=>`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span class="bbrd">${RLAB[m.rd]}</span><span>${esc(BY[m.a].n)} <i>vs</i> ${esc(BY[m.b].n)}</span></div>`).join("")}`;
+  else{const lead=ORDER.map(d=>[d,qual(d)[0]]).filter(x=>x[1]);side1=lead.length?`<h3>Qualification leaders</h3>${lead.map(([d,q])=>`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${esc(BY[q.id].n)}</span><span class="bbrd" style="margin-left:auto">${q.s}</span></div>`).join("")}`:`<h3>Coming up</h3><p class="bbmsg">Scores appear here as soon as the first flight is posted.</p>`}
+  const hot=(sc?A.filter(a=>P[a.id]!=null).sort((a,b)=>P[b.id]-P[a.id]):[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))).slice(0,4);
+  const side2=`<h3>${sc?"Hottest archers":"Top projected archers"}</h3>${hot.map(a=>`<div class="bbl"><span>${esc(a.n)}</span><span class="bbrd">${sc?esc(status(a.id)||DSHORT[a.d]):DSHORT[a.d]}</span><b class="bbhp">${sc?fmt(P[a.id]):Math.round(PROJ[a.id]||0)}</b></div>`).join("")}`;
+  const tk=posts.slice(0,10).map(p=>`<span><b>${esc(p.name||"Someone")}:</b> ${esc(p.text)}</span><span class="dot">•</span>`).join("")||`<span>Join the league and pick your team at ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
+  const now=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+  return`<div class="bbw"><div class="bbs"><i></i><i></i><i></i></div>
+  <div class="bbh"><img class="bblogo" alt="" src="${esc((document.querySelector(".logo")||{}).src||"")}"><div class="bbt">Ringer <span>Fantasy Games</span></div><span class="bblive"><i></i>LIVE</span>
+    <div class="bbinfo"><b>${esc(SEASONS[season].label)}</b><span>Updated ${now} · refreshes every minute</span></div>
+    <div class="bbctl"><button class="btn ghost" data-act="fullscreen">Full screen</button><a class="btn ghost" href="#standings" style="text-decoration:none;display:inline-flex;align-items:center">Exit</a></div></div>
+  <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>10?" · top 10 shown":""}</span></div>
+    <div class="bbhd"><span class="bbk">Rank</span><span class="bbn">Team</span><span class="bbm">Move</span><span class="bbp">${sc?"Points":"Projected"}</span></div>${rows||`<p class="bbmsg">No teams yet. Scan the code to join!</p>`}</section>
+    <aside class="bbside"><section class="bbbox">${side1}</section><section class="bbbox">${side2}</section>
+      <section class="bbqrbox"><div id="bbqr" role="img" aria-label="QR code for ${esc(siteHost())}"></div><div><div class="bbq1">Scan to join</div><div class="bbq2">${esc(siteHost())}</div></div></section></aside></div>
+  <div class="bbtick"><span class="bbtl">${posts.length?"Trash talk":"Ringer Fantasy Games"}</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
+function drawQR(){const el=$("#bbqr");if(!el)return;
+  if(!window.QRCode){if(!drawQR.loading){drawQR.loading=true;const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=()=>drawQR();document.head.appendChild(s)}return}
+  el.innerHTML="";const sz=Math.max(96,Math.round(el.clientWidth||140));try{new QRCode(el,{text:siteUrl(),width:sz,height:sz,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})}catch{}}
+setInterval(()=>{bbTick();if(route()=="bigboard")render()},60e3);
+
 function startLocal(){if(mode=="shared")return;mode="local";isAdmin=true;
   try{const d=JSON.parse(localStorage.getItem(LS)||"null");if(d){league=cleanLeague(d.league);me=cleanTeam(d.me,"me")}}catch{}
+  try{const d=JSON.parse(localStorage.getItem(LSP)||"null");if(d){posts=(d.posts||[]).map(p=>cleanPost(p,p.id));reacts=d.reacts||[]}}catch{}
   me.id="me";teams=[me];render(true)}
 function poolChanged(){buildProj();if(mode=="local"){me=cleanTeam(me,"me");me.id="me";teams=[me];return}
   teams=teamsRaw.map(t=>cleanTeam(t.data,t.id));if(authUser&&loadedMine){adoptMine();overlayMine()}}
@@ -697,6 +904,8 @@ buildProj();render(true);
       overlayMine();if(mode=="loading")mode="shared";render()},
     e=>{clearTimeout(slowT);console.error(e);mode="shared";render(true)});
   fs.onSnapshot(fs.doc(db,"league","state"),s=>{league=cleanLeague(s.exists()?s.data():null);render()},e=>console.error(e));
+  fs.onSnapshot(fs.query(fs.collection(db,"posts"),fs.orderBy("at","desc"),fs.limit(100)),s=>{posts=s.docs.map(d=>cleanPost(d.data(),d.id));render()},e=>console.warn("posts",e&&e.code));
+  fs.onSnapshot(fs.collection(db,"reacts"),s=>{reacts=s.docs.map(d=>{const x=d.data();return{id:d.id,uid:String(x.uid||""),post:String(x.post||""),kind:x.kind=="o"?"o":"b"}});render()},e=>console.warn("reacts",e&&e.code));
   fa.onAuthStateChanged(auth,u=>{authUser=u;myId=u?u.uid:null;loadedMine=false;
     isAdmin=!!(u&&u.emailVerified&&u.email&&COMMISSIONER_EMAILS.map(x=>x.toLowerCase()).includes(u.email.toLowerCase()));
     if(u&&teamsLoaded){loadedMine=true;adoptMine();overlayMine()}
