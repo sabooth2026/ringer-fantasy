@@ -43,5 +43,33 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isCommish();
     }
+
+    // Trash-talk wall: everyone reads; signed-in players post as themselves (280 characters max);
+    // the author or the commissioner can delete a post.
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'team', 'text', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 280
+        && request.resource.data.name is string && request.resource.data.name.size() <= 60
+        && request.resource.data.team is string && request.resource.data.team.size() <= 40
+        && request.resource.data.at == request.time;
+      allow delete: if isCommish()
+        || (request.auth != null && resource.data.uid == request.auth.uid);
+    }
+
+    // Reactions (Bullseye / Ouch): one per player per post, saved as "<postId>_<uid>".
+    match /reacts/{reactId} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && request.resource.data.keys().hasOnly(['uid', 'post', 'kind'])
+        && request.resource.data.uid == request.auth.uid
+        && reactId == request.resource.data.post + '_' + request.auth.uid
+        && request.resource.data.kind in ['b', 'o'];
+      allow delete: if isCommish()
+        || (request.auth != null && resource.data.uid == request.auth.uid);
+    }
   }
 }

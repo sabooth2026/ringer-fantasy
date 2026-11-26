@@ -76,6 +76,13 @@ It's normal for these Firebase values to be visible to anyone. They only identif
 - **Scoring:** qualification rank (1st = 16 points down to 16th = 1), +5 for making the top 16, then +10 for a Round of 16 win, +10 for a quarterfinal, +15 for a semifinal, +20 for gold and +10 for bronze. To change these numbers, edit the **Scoring** block near the top of `index.html`.
 - **Signing in as commissioner:** use **Google**, because commissioner powers require a verified email and Google accounts already are.
 
+## Fun extras
+
+- **Share my team:** on My Team (and on your own row in Standings), players tap **Share my team** to get a 1080×1350 image of their team, sized for Instagram and Facebook. On a phone, Share sends it straight to apps; on a computer, it downloads.
+- **Trash-talk wall:** beside Standings. Signed-in players can post (280 characters, one post every 15 seconds) and react with Bullseye or Ouch. Players can delete their own posts, and the commissioner can delete any post. **This needs the updated `firestore.rules`**: paste the whole file into Firebase → Firestore → Rules again (with your email in it) and click **Publish**.
+- **Big Board (TV mode):** on the Commissioner tab, click **Open the Big Board**, or go to `your-site/#bigboard`. Put it on a TV at the venue and click **Full screen**. It shows the top 10 teams with up/down moves, the matches being shot, the hottest archers, a QR code to join, and a scrolling trash-talk ticker. It refreshes every minute.
+- **Awards:** an **Awards** tab appears for everyone once the last medal match is posted. You see it earlier as a preview. It names the top 3 teams plus Sharpshooter (best captain), Sleeper Pick (picked archer who beat their projection by the most), Crystal Ball (team closest to its projection) and Underdog (lowest-projected team to finish top 3). Ties show every winner. **Share the awards** makes an image to post.
+
 ## Troubleshooting
 
 | What you see | Fix |
@@ -84,6 +91,7 @@ It's normal for these Firebase values to be visible to anyone. They only identif
 | "This web address isn't on Firebase's authorized domains list" | Step 4.3: add `YOUR-USERNAME.github.io`. |
 | "That sign-in method isn't turned on" | Step 4.2: enable Google and Email/Password. |
 | A team won't save ("Couldn't save… security rules") | Step 5: the rules weren't published, or the lineups are locked. |
+| Posting on the wall fails ("update the Firestore rules") | Paste the new `firestore.rules` into Firebase and click Publish (step 5). |
 | No Commissioner tab | The email must match in **both** `config.js` and the rules, and you must sign in with Google. |
 | Changes on GitHub don't show up | Wait 2 minutes, then do a hard refresh (Ctrl+Shift+R, or Cmd+Shift+R on a Mac). |
 
