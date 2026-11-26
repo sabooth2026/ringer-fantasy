@@ -64,6 +64,14 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+.scout{margin:6px 0 18px;border:1px solid #2a2a2d;border-radius:12px;padding:4px 16px 12px;background:#0f0f10}
+.scout summary{cursor:pointer;min-height:48px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.sch{font-family:Forum,serif;font-size:26px}
+.scg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:10px}
+.scc{background:#161618;border:1px solid #2a2a2d;border-radius:10px;padding:14px;display:flex;flex-direction:column}
+.scn{display:flex;align-items:center;justify-content:space-between;gap:8px}.scn b{font-family:Forum,serif;font-size:22px;font-weight:400}
+.scc ul{margin:8px 0;padding-left:18px;font-size:14px;line-height:1.5}.scs{display:flex;flex-direction:column;gap:4px;margin:2px 0 10px}.scs a{font-size:13px;color:#ff7070}
+.scf{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #2a2a2d;padding-top:10px}.scf .meta b{display:block;font-family:Forum,serif;font-size:24px;font-weight:400;color:#fff}
+.scpill{display:inline-block;margin-left:8px;border:1px solid #555;border-radius:99px;font-size:11px;padding:1px 8px;vertical-align:middle;color:#ddd}
 .rmlist{list-style:none;margin:0;padding:0}.rmlist li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #2a2a2d;flex-wrap:wrap}.rmlist li>div:first-child{display:flex;flex-direction:column;min-width:0}.rmbtn:not(.ghost){background:#e70000}
 .emd summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--mut);font-weight:600}.emd[open] summary{margin-bottom:6px}
 .emt td,.emt th{font-size:15px}.emt td a{color:#fff;overflow-wrap:anywhere}.wem{margin-top:28px}.wem h3{font-size:26px;margin:0 0 10px}.privn{font-size:13px}
@@ -507,20 +515,48 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()
   <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>${L?"":tw}`}
 
 function ownMap(){const o={};teams.forEach(t=>t.picks.forEach(id=>{if(id)o[id]=(o[id]||0)+1}));return o}
+const RINGER25={t:"2025 Texas Ringer results",u:"https://texasringer.eyesonscore.com/events/2025/"};
+const SCOUT={
+"Matt Hudson":{f:["Won the Barebow class at the 2023 Lancaster Archery Classic","Took a big win at the 2025 USA Archery Target Nationals","Oklahoma archer who shoots for Hoyt and co-hosts the 3 Under Podcast"],s:[{t:"Oklahoma Archery podcast (Sept 2025)",u:"https://blubrry.com/1989138/148275759/oklahoma-archery-visits-with-matt-hudson"},{t:"The Push podcast",u:"https://thepushpodcast.libsyn.com/episode-275-defending-lancaster-champion-matt-hudson"}]},
+"John Winker":{f:["Owns First Flight Archery in Raleigh, North Carolina","Elite Barebow competitor who has talked about his mental game and coming back from a serious injury","His wife, Lesley Winker, is also in this year's Barebow field"],s:[{t:"The Push podcast (Apr 2025)",u:"https://metacast.app/podcast/the-push---a-traditional-archery-podcast/PzAgI6JQ/episode-333---john-winker/Ro25SzyA"}]},
+"Jeremiah Jones":{f:["Defending Texas Ringer Barebow champion: top qualifier and gold medal in 2025"],s:[RINGER25]},
+"Michael Davenport":{f:["Won USA Archery longbow national titles at both Field and 3D Nationals in 2026","Featured on The Push podcast in May 2026 as a longbow big-buck hunter","Qualified 3rd in Traditional at the 2025 Ringer"],s:[{t:"USA Archery: 3D Nationals",u:"https://www.usarchery.org/news/with-3d-complete-a-handful-of-archers-depart-yankton-with-not-one-but-two-national-titles"},{t:"The Push podcast (May 2026)",u:"https://directory.libsyn.com/episode/index/show/thepushpodcast/id/41175125"}]},
+"Julie Jones":{f:["Defending Texas Ringer Traditional champion: won gold in 2025 from the 8th seed"],s:[RINGER25]},
+"Jon Starks":{f:["Silver medal in Traditional at the 2025 Ringer after qualifying 2nd"],s:[RINGER25]},
+"Sawyer Sullivan":{f:["World-class compound shooter: won three golds for Team USA at the 2024 World Cup in Yecheon, Korea","Has been ranked as high as 5th in the world in men's compound","Top qualifier in Freestyle Compound at the 2025 Ringer"],s:[{t:"USA Archery: World Cup triple gold",u:"https://www.usarchery.org/news/compound-class-shines-through-at-world-cup-stage-2-with-triple-gold-for-the-usa-and-sawyer-sullivan"},{t:"World Archery profile",u:"https://worldarchery.sport/athlete/30898"}]},
+"Ryan Booth":{f:["Represented Team USA in compound men at the 2025 World University Games in Essen, Germany, competing for Texas A&M","Top qualifier and silver medalist in Freestyle Compound at the 2024 Ringer","Back in the quarterfinals in 2025 after qualifying 6th"],s:[{t:"USA Archery: World University Games team",u:"https://www.usarchery.org/news/usa-s-collegiate-archery-talent-tackling-the-best-of-the-rest-at-the-world-university-games"},{t:"2024 Texas Ringer results",u:"https://texasringer.eyesonscore.com/events/2024/"},RINGER25]},
+"Carson Krahe":{f:["Won Freestyle Compound gold at the 2024 Ringer from the 7th seed, then reached the quarterfinals in 2025","Won team bronze for the USA at the 2023 World Archery Youth Championships and at a 2024 World Cup stage","Has been ranked in the world top 70 in women's compound"],s:[{t:"World Archery profile",u:"https://worldarchery.sport/athlete/39662"},RINGER25]},
+"Griffin Witty":{f:["Defending Texas Ringer Bowhunter champion: top qualifier and gold medal in 2025","Ranked the No. 2 fixed-pins archer in the US under-18 division for the 2024 outdoor season","Trains with Aslan Archery Academy in Colorado"],s:[{t:"Chickasaw Nation feature (Dec 2024)",u:"https://chickasaw.net/News/Press-Releases/Release/Griffin-ranks-second-as-USA-archer-63541.aspx"},RINGER25]},
+"Craig Cato":{f:["Qualified 2nd in Bowhunter at the 2025 Ringer and reached the quarterfinals"],s:[RINGER25]},
+"Alex Gilliam":{f:["Silver medal in Recurve at the 2025 Ringer","Two-time collegiate All-American for Texas A&M (2021 and 2022)","USA Archery profiled his Olympic dream in 2023. He took up archery as a kid partly because asthma made other sports hard."],s:[{t:"USA Archery profile (Dec 2023)",u:"https://www.usarchery.org/news/archery-is-the-perfect-match-for-alex-gilliam-who-says-the-olympic-dream-has-never-felt-more-real"}]},
+"Pierce McAdam":{f:["Has represented the USA at the World Archery Youth Championships","Reached the quarterfinals as the 5th seed at the 2025 Ringer"],s:[{t:"World Archery profile",u:"https://worldarchery.sport/athlete/45605"},RINGER25]},
+"Jack Krengel":{f:["Qualified 3rd in Recurve at the 2025 Ringer and reached the quarterfinals"],s:[RINGER25]}
+};
+const SCOUTN=Object.fromEntries(Object.entries(SCOUT).map(([k,v])=>[normN(k),v]));
+const scoutOf=a=>SCOUTN[normN(a.n)];
+let scOpen=null;
+function scoutView(){const xs=A.filter(a=>scoutOf(a)&&(afilter=="ALL"||a.d==afilter)).sort((a,b)=>ORDER.indexOf(a.d)-ORDER.indexOf(b.d)||(PROJ[b.id]||0)-(PROJ[a.id]||0));
+  if(!xs.length)return"";const open=scOpen??(afilter!="ALL"),L=locked();
+  return`<details class="scout" id="scd"${open?" open":""}><summary><span class="sch">Scouting report</span><span class="meta">${xs.length} archer${xs.length==1?"":"s"} to know${afilter=="ALL"?"":" in "+DIV[afilter]} · ${open?"Hide":"Show"}</span></summary>
+  <p class="meta">Researched from public news, interviews and past Ringer results. Tap a source to read more.</p>
+  <div class="scg">${xs.map(a=>{const c=scoutOf(a),on=me.picks.includes(a.id);return`<article class="scc"><div class="scn"><b>${esc(a.n)}</b><span class="tag t-${a.d}">${DIV[a.d]}</span></div>
+    <ul>${c.f.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
+    <div class="scs">${c.s.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)} ↗</a>`).join("")}</div>
+    <div class="scf"><span class="meta">Projected<b>${projR(a.id)}</b></span><button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button></div></article>`}).join("")}</div></details>`}
 function alist(){const P=pts(),o=ownMap(),L=locked(),showOwn=(L||mode=="local")&&teams.length,ql=q.trim().toLowerCase();
   let xs=A.filter(a=>(afilter=="ALL"||a.d==afilter)&&(!ql||a.n.toLowerCase().includes(ql)));
   xs.sort(sort=="pts"?(a,b)=>(P[b.id]??-1)-(P[a.id]??-1):sort=="proj"?(a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0):sort=="time"?(a,b)=>TORD[a.tc]-TORD[b.tc]||a.b.localeCompare(b.b):(a,b)=>a.n.localeCompare(b.n));
   if(!xs.length)return`<li class="empty-st">No archers match “${esc(q)}”.</li>`;
   return xs.map(a=>{const on=me.picks.includes(a.id),p=P[a.id];
     const st=(p!=null?`<b>${fmt(p)} pts</b>${esc(status(a.id))}<div>proj ${projR(a.id)}</div>`:`<b>${projR(a.id)}</b>projected`)+(showOwn?`<div>${Math.round(100*(o[a.id]||0)/teams.length)}% rostered</div>`:"");
-    return`<li class="ar"><div class="who"><b>${esc(a.n)}</b><span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span></div><div class="stat">${st}</div>
+    return`<li class="ar"><div class="who"><b>${esc(a.n)}</b>${scoutOf(a)?`<span class="scpill">Scouting report</span>`:""}<span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span></div><div class="stat">${st}</div>
     <button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button></li>`}).join("")}
 function archersView(){const cnt=d=>A.filter(a=>a.d==d).length;
   const ban=pendingSlot!=null?`<p class="note">Choosing for slot ${pendingSlot+1} (${SLOTS[pendingSlot]=="FLEX"?"Flex, any division":DIV[SLOTS[pendingSlot]]}). <a href="#team" data-act="cancelpick">Back to my team</a></p>`:"";
   return`<h2>The field</h2>${ban}${(mode!="shared"||authUser)&&!named()&&!locked()?`<p class="note"><a href="#team">Name your team</a> first, then add archers.</p>`:""}${mode=="shared"&&!authUser?`<p class="note"><a href="#team">Sign in</a> to add archers to a team.</p>`:""}<div class="tools"><input type="search" id="q" placeholder="Search archers" value="${esc(q)}" aria-label="Search archers">
   <select id="sort" aria-label="Sort"><option value="name"${sort=="name"?" selected":""}>Sort: name</option><option value="time"${sort=="time"?" selected":""}>Sort: flight time</option><option value="proj"${sort=="proj"?" selected":""}>Sort: projected points</option><option value="pts"${sort=="pts"?" selected":""}>Sort: fantasy points</option></select></div>
   <div class="chips">${[["ALL","All ("+A.length+")"],...ORDER.map(d=>[d,DIV[d]+" ("+cnt(d)+")"])].map(([d,l])=>`<button class="chip${afilter==d?" on":""}" data-act="filter" data-d="${d}">${l}</button>`).join("")}</div>
-  <ul class="list" id="alist">${alist()}</ul>`}
+  ${scoutView()}<ul class="list" id="alist">${alist()}</ul>`}
 
 function standingsView(){const P=pts(),sc=anyScores(),show=locked()||mode=="local";
   const list=teams.filter(t=>t.picks.some(Boolean)||t.name).map(t=>({...t,tot:teamTotal(t,P)})).sort((a,b)=>sc?(b.tot-a.tot||(a.name||"").localeCompare(b.name||"")):(teamProj(b)-teamProj(a)));
@@ -643,7 +679,7 @@ document.addEventListener("click",async e=>{if(e.target.id=="modal"){e.target.hi
   else if(act=="add")addArcher(b.dataset.id);
   else if(act=="rm"){if(me.cap==me.picks[i])me.cap=null;me.picks[i]=null;schedSave();render(true)}
   else if(act=="cap"){me.cap=me.cap==me.picks[i]?null:me.picks[i];schedSave();render(true)}
-  else if(act=="filter"){afilter=b.dataset.d;render(true)}
+  else if(act=="filter"){afilter=b.dataset.d;scOpen=null;render(true)}
   else if(act=="cdiv"){cdiv=b.dataset.d;clearArm=false;resetArm=false;render(true)}
   else if(act=="rdiv"){rdiv=b.dataset.d;render(true)}
   else if(act=="seed"){const top=qual(cdiv).slice(0,CUT).map(r=>r.id);while(top.length<16)top.push(null);
@@ -682,7 +718,7 @@ document.addEventListener("change",e=>{if(e.target.id=="autopull"){clearInterval
 document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{if(pend)render()},0)});
 window.addEventListener("hashchange",()=>{if(route()!="archers")pendingSlot=null;else if(pendingSlot==null)afilter="ALL";clearArm=false;render(true);window.scrollTo(0,0)});
 setInterval(header,30000);
-document.addEventListener("toggle",e=>{if(e.target&&e.target.id=="rmd"){rmOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,rmOpen?"Hide":"Show");return}if(e.target&&e.target.id=="emd"){emOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,emOpen?"Hide":"Show")}},true);
+document.addEventListener("toggle",e=>{if(e.target&&e.target.id=="scd"){scOpen=e.target.open;const m=e.target.querySelector("summary .meta");if(m)m.textContent=m.textContent.replace(/(Show|Hide)$/,scOpen?"Hide":"Show");return}if(e.target&&e.target.id=="rmd"){rmOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,rmOpen?"Hide":"Show");return}if(e.target&&e.target.id=="emd"){emOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,emOpen?"Hide":"Show")}},true);
 document.addEventListener("keydown",e=>{if(e.key=="Escape"){const m=$("#modal");if(m&&!m.hidden)m.hidden=true}});
 
 /* ---- Eyes on Score import: reads a copied (Ctrl+A, Ctrl+C) results page ---- */
