@@ -70,6 +70,10 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 .stwrap{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}.stcol{flex:1 1 460px;min-width:0}
 .wall{flex:1 1 380px;min-width:0}.wall h2{font-size:38px;margin:0}.wh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .wall textarea{width:100%;margin-top:6px;resize:vertical}.cnote{font-size:13px;color:#cfd7ee;border:1px solid var(--navy);border-radius:8px;padding:8px 10px;margin:12px 0 0}
+.wall.mini{margin:24px 0}.wall.mini h2{font-size:28px}.wall.mini .wh{align-items:center;gap:12px;flex-wrap:wrap}
+.nbadge{display:inline-block;vertical-align:middle;background:#e70000;color:#fff;font:600 13px Pridi,serif;padding:2px 8px;border-radius:99px;margin-left:6px}
+.ndot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e70000;margin-left:6px;vertical-align:top}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .post{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #2a2a2d}.pav{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:600;border:1px solid #fff}
 .pbody{flex:1;min-width:0}.phd{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.ptx{margin:4px 0 8px;overflow-wrap:anywhere;white-space:pre-wrap}
 .pact{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.rx{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border-radius:17px;border:1px solid var(--line);background:#000;color:#fff;font-size:13px}
@@ -413,13 +417,13 @@ function header(){$("#sub").textContent=SEASONS[season].label+" · "+A.length+" 
   const r=route();const tabs=[["team","My Team"],["archers","Archers"],["results","Results"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
   if(isAdmin||mode=="local")tabs.push(["commish","Commissioner"]);
   const ac=$("#acct");ac.innerHTML=authUser?`Signed in as ${esc(ownerName())} · <button class="lnk" data-act="signout">Sign out</button>`:(mode=="shared"?`<a class="lnk" href="#team">Sign in</a>`:"");
-  $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}">${l}</a>`).join("")}
+  $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}">${l}${h=="standings"&&wallNew()?`<span class="ndot" aria-label="${wallNew()} new trash talk posts"></span>`:""}</a>`).join("")}
 const ROUTES=["team","archers","results","standings","awards","rules","commish","bigboard"];
 function route(){const h=location.hash.slice(1);return ROUTES.includes(h)?h:"team"}
 
 function render(force){const ae=document.activeElement;
-  if(!force&&ae&&ae.matches("input:not([type=checkbox]),select")&&view.contains(ae)){pend=true;return}
-  pend=false;header();const r=route();
+  if(!force&&ae&&ae.matches("input:not([type=checkbox]),select,textarea")&&view.contains(ae)){pend=true;return}
+  pend=false;const r=route();if(r=="standings")markWallSeen();header();
   document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();return}
   view.innerHTML=notes()+(r=="team"?teamView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
 }
@@ -492,13 +496,14 @@ function teamView(){if(mode=="shared"&&!authUser)return signInView();if(!named()
     return`<li class="slot${c?" cap":""}"><span class="num">${i+1}</span><div class="who"><small>${lab}${s=="FLEX"?" · "+DIV[a.d]:""}${c?" · Captain":""}</small><b>${esc(a.n)}</b><span class="meta">${st?esc(st)+" · "+brk(id):"Bale "+a.b+" · "+a.t}</span></div><div class="pts">${p==null?"–":fmt(c?p*1.5:p)}<small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}${c?` (${Math.round(PROJ[id]||0)} × 1.5)`:""}</small></div>
       <div class="acts"><button class="ic${c?" on":""}${needCap?" glow":""}" data-act="cap" data-i="${i}" title="Captain scores 1.5×" aria-label="Make ${esc(a.n)} captain" ${dis?"disabled":""}>C</button><button class="ic" data-act="rm" data-i="${i}" aria-label="Remove ${esc(a.n)}" ${dis?"disabled":""}>×</button></div></li>`}).join("");
   const filled=me.picks.filter(Boolean).length;
-  return`<div class="grid"><div>${tracker(P)}</div>
+  const tw=wallView(true);
+  return`${L?tw:""}<div class="grid"><div>${tracker(P)}</div>
   <div class="card"><label class="tn">Team name <span class="req">(required)</span><input type="text" id="tname" required minlength="2" maxlength="40" placeholder="e.g. Bale 4 Bandits" value="${esc(me.name)}" ${dis?"disabled":""}></label>
   ${needCap?`<div class="capcall"><b>Pick your captain.</b> Tap <span class="cmini">C</span> next to the archer you think will score the most. Your captain's points count 1.5×.</div>`:""}
   <ol class="roster">${rows}</ol>
   <div class="total"><span>${filled}/7 archers${filled&&!me.cap?" · <b class=\"capwarn\">no captain yet</b>":""}</span><span class="tots"><b>${anyScores()?fmt(teamTotal(me,P)):"0"} pts</b><small class="pj">Projected total: ${Math.round(teamProj(me))}</small></span></div>
   <div class="row" style="margin:12px 0 0"><button class="btn sharebtn" data-act="sharecard" ${me.picks.some(Boolean)?"":"disabled"}>Share my team</button></div>
-  <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>`}
+  <div class="status" id="status">${L?"Lineups are locked. Good luck out there.":""}</div></div></div>${L?"":tw}`}
 
 function ownMap(){const o={};teams.forEach(t=>t.picks.forEach(id=>{if(id)o[id]=(o[id]||0)+1}));return o}
 function alist(){const P=pts(),o=ownMap(),L=locked(),showOwn=(L||mode=="local")&&teams.length,ql=q.trim().toLowerCase();
@@ -870,14 +875,18 @@ function awardsView(){const ph=awardsPhase(),ready=ph=="final";
 let posts=[],reacts=[],postBusy=false;const LSP="ringerFantasy.posts";
 function timeAgo(ms){const s=Math.max(0,(Date.now()-ms)/1000);return s<45?"just now":s<3600?Math.round(s/60)+"m ago":s<86400?Math.round(s/3600)+"h ago":Math.round(s/86400)+"d ago"}
 const uidMe=()=>myId||"me";
-function wallView(){const canPost=mode=="local"||(mode=="shared"&&authUser);
+function wallView(mini){const canPost=mode=="local"||(mode=="shared"&&authUser);
   const rx=id=>{const r=reacts.filter(x=>x.post==id);return{b:r.filter(x=>x.kind=="b").length,o:r.filter(x=>x.kind=="o").length,mine:(r.find(x=>x.uid==uidMe())||{}).kind}};
-  const list=posts.slice(0,100).map(p=>{const r=rx(p.id),own=p.uid==uidMe();
+  const nw=wallNew(),list=posts.slice(0,mini?3:100).map(p=>{const r=rx(p.id),own=p.uid==uidMe();
     return`<article class="post"><div class="pav" aria-hidden="true" style="background:${TAGC[ORDER[Math.abs([...p.uid].reduce((s,c)=>s+c.charCodeAt(0),0))%5]]}">${esc((p.name||"?")[0].toUpperCase())}</div><div class="pbody">
       <div class="phd"><b>${esc(p.name||"Someone")}</b><span class="meta">${esc(p.team||"No team yet")} · ${timeAgo(p.at)}</span></div><p class="ptx">${esc(p.text)}</p>
       <div class="pact"><button class="rx${r.mine=="b"?" on":""}" data-act="react" data-p="${esc(p.id)}" data-k="b" aria-pressed="${r.mine=="b"}" ${canPost?"":"disabled"}><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e70000" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="#e70000"/></svg>Bullseye ${r.b||""}</button>
       <button class="rx${r.mine=="o"?" on":""}" data-act="react" data-p="${esc(p.id)}" data-k="o" aria-pressed="${r.mine=="o"}" ${canPost?"":"disabled"}>Ouch ${r.o||""}</button>
       ${isAdmin||own?`<button class="rx del" data-act="delpost" data-p="${esc(p.id)}">Delete</button>`:""}</div></div></article>`}).join("");
+  if(mini)return`<section class="wall card mini" aria-labelledby="tt-h"><div class="wh"><h2 id="tt-h">Latest trash talk${nw?` <span class="nbadge">${nw} new</span>`:""}</h2><a class="lnk" href="#standings">See all ${posts.length} →</a></div>
+    ${canPost?`<form id="wf" class="wfmini"><label for="wtext" class="sr">Say something to the league</label><textarea id="wtext" rows="2" maxlength="280" placeholder="Fire back at the league…"></textarea>
+      <div class="row" style="margin:6px 0 0;justify-content:space-between"><span class="meta" id="wcount">0/280</span><button class="btn" type="submit" ${postBusy?"disabled":""}>Post</button></div></form>`:""}
+    <div class="posts">${list||`<p class="meta" style="padding:14px 0">No posts yet. Start the trash talk!</p>`}</div></section>`;
   return`<section class="wall card" aria-labelledby="tt-h"><div class="wh"><h2 id="tt-h">Trash talk</h2><span class="meta">${posts.length} post${posts.length==1?"":"s"}</span></div>
     <p class="meta">Keep it friendly. The commissioner can remove any post.</p>
     ${canPost?`<form id="wf"><label for="wtext" class="tn">Say something to the league</label><textarea id="wtext" rows="3" maxlength="280" placeholder="Your captain is going home in the Round of 16…"></textarea>
@@ -885,6 +894,9 @@ function wallView(){const canPost=mode=="local"||(mode=="shared"&&authUser);
     :`<p class="note"><a href="#team">Sign in</a> to post and react.</p>`}
     ${isAdmin&&mode=="shared"?`<p class="cnote">You're the commissioner, so you see Delete on every post.</p>`:""}
     <div class="posts">${list||`<p class="meta" style="padding:14px 0">No posts yet. Start the trash talk!</p>`}</div></section>`}
+function wallSeen(){try{return+(localStorage.getItem("rfWallSeen")||0)}catch{return 0}}
+function wallNew(){const t=wallSeen();return posts.filter(p=>p.at>t&&p.uid!=uidMe()).length}
+function markWallSeen(){const m=Math.max(0,...posts.map(p=>p.at));if(m>wallSeen())try{localStorage.setItem("rfWallSeen",m)}catch{}}
 function cleanPost(d,id){const at=d&&d.at&&typeof d.at.toMillis=="function"?d.at.toMillis():(typeof d?.at=="number"?d.at:Date.now());
   return{id,uid:String(d?.uid||""),name:String(d?.name||"").slice(0,60),team:String(d?.team||"").slice(0,40),text:String(d?.text||"").slice(0,280),at}}
 function savePostsLocal(){try{localStorage.setItem(LSP,JSON.stringify({posts,reacts}))}catch{}}
