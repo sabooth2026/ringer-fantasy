@@ -1012,9 +1012,10 @@ buildProj();render(true);
   fa.onAuthStateChanged(auth,u=>{authUser=u;myId=u?u.uid:null;loadedMine=false;
     isAdmin=!!(u&&u.emailVerified&&u.email&&COMMISSIONER_EMAILS.map(x=>x.toLowerCase()).includes(u.email.toLowerCase()));
     if(u&&teamsLoaded){loadedMine=true;adoptMine();overlayMine()}
+    if(mode=="loading")mode="shared";
     if(u&&me.name)setTimeout(saveContact,500);watchContacts();
     if(!u){me={name:"",picks:Array(7).fill(null),cap:null};teams=teams.filter(t=>t.picks.some(Boolean)||t.name)}
-    if(mode=="loading")mode="shared";render(true)});
+    render(true)});
 })();
 </script>
 </body>
