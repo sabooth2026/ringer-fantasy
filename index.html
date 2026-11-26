@@ -87,7 +87,17 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 .bbtick{display:flex;align-items:center;gap:1.2vw;background:var(--navy);height:5.6vh;padding:0 3vw;overflow:hidden;font-size:1.3vw}.bbtl{background:#fff;color:var(--navy);font-weight:600;padding:.3vh .8vw;border-radius:6px;flex:none}
 .tick{overflow:hidden;flex:1;white-space:nowrap}.tickin{display:inline-flex;gap:1.2vw;animation:tick 60s linear infinite}.tickin .dot{color:#8fa3d6}@keyframes tick{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.tickin,.bblive i{animation:none}}
-@media(max-width:900px){.bbw{font-size:14px}.bbmain{flex-direction:column}}
+.bbsh2{display:flex;justify-content:space-between;align-items:baseline;gap:1vw}.bbsh2 h3{font-size:1.9vw;margin:0}.bbsh2 .lv{color:#ff8a8a;font-weight:600;font-size:1vw}
+.bbsub{margin:.2vh 0 .4vh;color:var(--mut);font-size:.95vw}.bbl.dim{color:#8a8a8a}
+.bbband{flex:none;padding:0 3vw 1.4vh}.bbbh{display:flex;align-items:baseline;gap:1vw;margin-bottom:.8vh}.bbbh h2{font-size:1.9vw;margin:0}.bbbh span{color:var(--mut);font-size:.95vw}
+.bbfl{display:grid;gap:.7vw}.bbfc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.9vh .8vw}.bbfc.live{border:2px solid var(--red);background:rgba(231,0,0,.10)}.bbfc.next{opacity:.5}
+.bbfh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4vh}.bbfh b{font-size:1.1vw}.bbfh span{font-size:.8vw;font-weight:600;color:var(--mut)}.bbfc.live .bbfh span{color:#ff8a8a}
+.bbfr{display:flex;align-items:center;gap:.5vw;padding:.3vh 0;border-top:1px solid #2a2a2d;font-size:.95vw}.bbfr i{width:.5vw;height:.5vw;border-radius:2px;flex:none}.bbfr span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bbfr span.nw{color:#ff6b6b}.bbfr b{font-family:Forum,serif;font-weight:400;font-size:1.25vw}
+.bbw.qm .bbr{height:5.4vh}.bbw.qm .bbr .bbk{font-size:2.2vw}.bbw.qm .bbr .bbn b{font-size:1.5vw}.bbw.qm .bbr .bbp{font-size:2vw}
+.bbw.qm .bbmain{padding-top:1.4vh;padding-bottom:1vh}.bbw.qm .bbl{padding:.45vh 0;font-size:1.1vw}.bbw.qm .bbbox{padding:1vh 1.2vw}
+.bbw.qm #bbqr{width:min(5vw,9vh);min-width:72px}.bbw.qm .bbqrbox{padding:.9vh 1.2vw}.bbw.qm .bbq1{font-size:1.8vw}
+.bbw.qm .bbfr{padding:.15vh 0;font-size:.9vw}.bbw.qm .bbfc{padding:.6vh .7vw}.bbw.qm .bbbh{margin-bottom:.5vh}.bbw.qm .bbbh h2{font-size:1.7vw}
+@media(max-width:900px){.bbw{font-size:14px;height:auto;overflow:visible}.bbmain{flex-direction:column}.bbfl{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 .rk small.pjr{display:block;font-family:Pridi,Georgia,serif;font-size:11px;color:var(--mut);white-space:nowrap}
 .tots{text-align:right}.tots small.pj{font-size:14px}
 small.pj{display:block;font-family:Pridi,Georgia,serif;font-size:12px;color:var(--mut);font-weight:400;line-height:1.2;text-align:right}
@@ -861,11 +871,35 @@ async function delPost(pid){if(mode=="local"){posts=posts.filter(p=>p.id!=pid);r
 let bbHist=[];
 function bbRanks(){const P=pts(),sc=anyScores();const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({id:t.id,v:sc?teamTotal(t,P):teamProj(t)}));const R={};list.forEach(t=>R[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);return R}
 function bbTick(){bbHist.push({t:Date.now(),r:bbRanks()});bbHist=bbHist.filter(h=>Date.now()-h.t<12*60e3)}
-function bigBoardView(){const P=pts(),sc=anyScores();
+/* Qualification flights: start times (Central) per season, from the schedule */
+const FLIGHT_AT={F2:"2026-12-04T14:00:00-06:00",F6:"2026-12-04T18:00:00-06:00",S8:"2026-12-05T08:00:00-06:00",S12:"2026-12-05T12:00:00-06:00",S4:"2026-12-05T16:00:00-06:00",
+  F6P:"2025-09-19T18:00:00-05:00",S9A:"2025-09-20T09:00:00-05:00",S1P:"2025-09-20T13:00:00-05:00",S5P:"2025-09-20T17:00:00-05:00"};
+const FLIGHT_LEN=3.5*36e5;
+function flights(){const codes=[...new Set(A.map(a=>a.tc))].filter(c=>TORD[c]!=null).sort((x,y)=>TORD[x]-TORD[y]);const now=Date.now();
+  const fl=codes.map(c=>{const ids=A.filter(a=>a.tc==c).map(a=>a.id),scored=ids.filter(id=>league.scores[id]!=null).length,at=Date.parse(FLIGHT_AT[c]||"");
+    return{c,label:SEASONS[season].times[c]||c,ids,scored,at,started:scored>0||(at&&now>=at)}});
+  let live=-1;fl.forEach((f,i)=>{if(f.at&&now>=f.at&&now<f.at+FLIGHT_LEN)live=i});
+  fl.forEach((f,i)=>{f.state=i==live?"live":(f.scored&&(i<live||live<0))||(f.at&&now>=f.at+FLIGHT_LEN&&f.scored)?"final":f.started?"final":"next"});
+  return{fl,live}}
+function leadersAfter(fl,k){const allowed=new Set(fl.slice(0,k+1).flatMap(f=>f.ids));const out={};
+  for(const d of ORDER){const xs=A.filter(a=>a.d==d&&allowed.has(a.id)&&league.scores[a.id]!=null).sort((a,b)=>league.scores[b.id]-league.scores[a.id]||(league.xs[b.id]||0)-(league.xs[a.id]||0));out[d]=xs[0]||null}return out}
+function bbQual(){const {fl,live}=flights();
+  const cols=fl.map((f,i)=>{const L=f.state=="next"?null:leadersAfter(fl,i),prev=i>0&&fl[i-1].state!="next"?leadersAfter(fl,i-1):{};
+    return`<div class="bbfc ${f.state}"><div class="bbfh"><b>After ${esc(f.label)}</b><span>${f.state=="live"?"Live":f.state=="final"?"Final":"Up next"}</span></div>${ORDER.map(d=>{const a=L&&L[d];
+      return`<div class="bbfr"><i style="background:${TAGC[d]}"></i><span class="${a&&(!prev[d]||prev[d].id!=a.id)&&i>0?"nw":a&&i==0?"nw":""}">${a?esc(a.n):"–"}</span><b>${a?league.scores[a.id]:""}</b></div>`}).join("")}</div>`}).join("");
+  let f=live>=0?fl[live]:null,title="On the line now",sub="";
+  if(!f){const nx=fl.find(x=>x.state=="next");if(nx){f=nx;title="Up next";sub=`${esc(nx.label)} flight`}else{const last=[...fl].reverse().find(x=>x.scored);f=last;title=last?"Last flight":"On the line now";sub=last?`${esc(last.label)} flight · qualification complete`:""}}
+  else sub=`${esc(f.label)} flight · live`;
+  const rows=f?ORDER.map(d=>{const ids=f.ids.filter(id=>BY[id].d==d);if(!ids.length)return`<div class="bbl dim"><span class="tag t-${d}">${DSHORT[d]}</span><span>No ${DIV[d]} archers this flight</span></div>`;
+    const sc2=ids.filter(id=>league.scores[id]!=null).sort((a,b)=>league.scores[b]-league.scores[a]||(league.xs[b]||0)-(league.xs[a]||0));const top=sc2[0];
+    return`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${top?esc(BY[top].n):title=="Up next"?esc(ids.length+" archer"+(ids.length==1?"":"s")):"Waiting for scores"}</span><span class="bbrd">${top?"bale "+esc(BY[top].b)+" · ":""}${ids.length} shooting</span><b class="bbhp">${top?league.scores[top]:""}</b></div>`}).join(""):`<p class="bbmsg">Flight times will show here.</p>`;
+  return{band:`<section class="bbband"><div class="bbbh"><h2>Division leaders after each flight</h2><span>Red marks a new leader in that flight</span></div><div class="bbfl" style="grid-template-columns:repeat(${fl.length},minmax(0,1fr))">${cols}</div></section>`,
+    panel:`<div class="bbsh2"><h3>${title}</h3><span class="lv">${sub}</span></div><p class="bbsub">Top archer in each division${title=="Up next"?"":", live scores"}</p>${rows}`}}
+function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(d=>league.seeds[d]);const maxRows=qualMode?8:10;
   const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({...t,v:sc?teamTotal(t,P):teamProj(t)})).sort((a,b)=>b.v-a.v);
   const cur={};list.forEach(t=>cur[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);
   const past=bbHist.filter(h=>Date.now()-h.t>=4.5*60e3).pop()||bbHist[0];
-  const rows=list.slice(0,10).map(t=>{const mv=past&&past.r[t.id]?past.r[t.id]-cur[t.id]:0;
+  const rows=list.slice(0,maxRows).map(t=>{const mv=past&&past.r[t.id]?past.r[t.id]-cur[t.id]:0;
     return`<div class="bbr${cur[t.id]==1?" lead":""}"><span class="bbk">${cur[t.id]}</span><span class="bbn"><b>${esc(t.name||"Unnamed team")}</b><span>${esc(t.owner||"")}</span></span><span class="bbm ${mv>0?"up":mv<0?"dn":""}">${mv>0?"▲ "+mv:mv<0?"▼ "+(-mv):"–"}</span><span class="bbp">${sc?fmt(t.v):Math.round(t.v)}</span></div>`}).join("");
   const RO={r:0,q:1,s:2,f:3,b:3};let live=[];
   for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.a&&m.b&&!m.w&&!m.dead)live.push({d,m})}}
@@ -875,16 +909,16 @@ function bigBoardView(){const P=pts(),sc=anyScores();
   const hot=(sc?A.filter(a=>P[a.id]!=null).sort((a,b)=>P[b.id]-P[a.id]):[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))).slice(0,4);
   const side2=`<h3>${sc?"Hottest archers":"Top projected archers"}</h3>${hot.map(a=>`<div class="bbl"><span>${esc(a.n)}</span><span class="bbrd">${sc?esc(status(a.id)||DSHORT[a.d]):DSHORT[a.d]}</span><b class="bbhp">${sc?fmt(P[a.id]):Math.round(PROJ[a.id]||0)}</b></div>`).join("")}`;
   const tk=posts.slice(0,10).map(p=>`<span><b>${esc(p.name||"Someone")}:</b> ${esc(p.text)}</span><span class="dot">•</span>`).join("")||`<span>Join the league and pick your team at ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
-  const now=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
-  return`<div class="bbw"><div class="bbs"><i></i><i></i><i></i></div>
+  const now=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});const Q=qualMode?bbQual():null;
+  return`<div class="bbw${qualMode?" qm":""}"><div class="bbs"><i></i><i></i><i></i></div>
   <div class="bbh"><img class="bblogo" alt="" src="${esc((document.querySelector(".logo")||{}).src||"")}"><div class="bbt">Ringer <span>Fantasy Games</span></div><span class="bblive"><i></i>LIVE</span>
     <div class="bbinfo"><b>${esc(SEASONS[season].label)}</b><span>Updated ${now} · refreshes every minute</span></div>
     <div class="bbctl"><button class="btn ghost" data-act="fullscreen">Full screen</button><a class="btn ghost" href="#standings" style="text-decoration:none;display:inline-flex;align-items:center">Exit</a></div></div>
-  <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>10?" · top 10 shown":""}</span></div>
+  <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>maxRows?" · top "+maxRows+" shown":""}</span></div>
     <div class="bbhd"><span class="bbk">Rank</span><span class="bbn">Team</span><span class="bbm">Move</span><span class="bbp">${sc?"Points":"Projected"}</span></div>${rows||`<p class="bbmsg">No teams yet. Scan the code to join!</p>`}</section>
-    <aside class="bbside"><section class="bbbox">${side1}</section><section class="bbbox">${side2}</section>
+    <aside class="bbside">${qualMode?`<section class="bbbox">${Q.panel}</section>`:`<section class="bbbox">${side1}</section><section class="bbbox">${side2}</section>`}
       <section class="bbqrbox"><div id="bbqr" role="img" aria-label="QR code for ${esc(siteHost())}"></div><div><div class="bbq1">Scan to join</div><div class="bbq2">${esc(siteHost())}</div></div></section></aside></div>
-  <div class="bbtick"><span class="bbtl">${posts.length?"Trash talk":"Ringer Fantasy Games"}</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
+  ${qualMode?Q.band:""}<div class="bbtick"><span class="bbtl">${posts.length?"Trash talk":"Ringer Fantasy Games"}</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
 function drawQR(){const el=$("#bbqr");if(!el)return;
   if(!window.QRCode){if(!drawQR.loading){drawQR.loading=true;const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=()=>drawQR();document.head.appendChild(s)}return}
   el.innerHTML="";const sz=Math.max(96,Math.round(el.clientWidth||140));try{new QRCode(el,{text:siteUrl(),width:sz,height:sz,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})}catch{}}
