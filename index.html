@@ -50,6 +50,7 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+.emd summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--mut);font-weight:600}.emd[open] summary{margin-bottom:6px}
 .emt td,.emt th{font-size:15px}.emt td a{color:#fff;overflow-wrap:anywhere}.wem{margin-top:28px}.wem h3{font-size:26px;margin:0 0 10px}.privn{font-size:13px}
 .sharebtn{display:inline-flex;align-items:center;gap:8px}.sharebtn.sm{min-height:36px;padding:0 14px;font-size:14px;margin-top:6px}
 .stwrap{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}.stcol{flex:1 1 460px;min-width:0}
@@ -544,7 +545,7 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
   const tn=t=>esc(t.name||t.owner||"Unnamed team");
   const check=`<h3 class="sec">Team check</h3>${!real.length?`<p class="meta">No teams yet.</p>`:(!noCap.length&&!short.length&&!noName.length)?`<p class="meta">All ${real.length} teams have a name, 7 archers and a captain.</p>`:`<ul class="chk-list">${noCap.length?`<li><b>${noCap.length} without a captain:</b> ${noCap.map(tn).join(", ")}</li>`:""}${short.length?`<li><b>${short.length} with fewer than 7 archers:</b> ${short.map(t=>tn(t)+" ("+t.picks.filter(Boolean).length+"/7)").join(", ")}</li>`:""}${noName.length?`<li><b>${noName.length} without a team name:</b> ${noName.map(t=>esc(t.owner||"a player")).join(", ")}</li>`:""}</ul><p class="meta">Send these players a reminder before lineups lock.</p>`}`;
   const emRows=real.map(t=>({team:t.name||"Unnamed team",owner:t.owner||"A player",email:emailOf(t.id)})).sort((a,b)=>a.team.localeCompare(b.team));
-  const emails=`<h3 class="sec">Player emails</h3>${mode!="shared"?`<p class="meta">Emails appear here in the shared league.</p>`:!real.length?`<p class="meta">No teams yet.</p>`:`<p class="meta">Only you can see these. Players are told at sign-up. A player who joined before this feature is added the next time they open the site. Use BCC when emailing several people.</p>${emailsBlock(emRows,"Copy all emails")}`}`;
+  const emails=`<h3 class="sec">Player emails</h3>${mode!="shared"?`<p class="meta">Emails appear here in the shared league.</p>`:!real.length?`<p class="meta">No teams yet.</p>`:`<p class="meta">Only you can see these. Players are told at sign-up. A player who joined before this feature is added the next time they open the site. Use BCC when emailing several people.</p>${emailsBlock(emRows,"Copy all emails",true)}`}`;
   return`<h2>Commissioner</h2>${check}${emails}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a></div>
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
   <h3 class="sec">Results from Eyes on Score</h3>
@@ -650,6 +651,7 @@ document.addEventListener("change",e=>{if(e.target.id=="autopull"){clearInterval
 document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{if(pend)render()},0)});
 window.addEventListener("hashchange",()=>{if(route()!="archers")pendingSlot=null;else if(pendingSlot==null)afilter="ALL";clearArm=false;render(true);window.scrollTo(0,0)});
 setInterval(header,30000);
+document.addEventListener("toggle",e=>{if(e.target&&e.target.id=="emd"){emOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,emOpen?"Hide":"Show")}},true);
 document.addEventListener("keydown",e=>{if(e.key=="Escape"){const m=$("#modal");if(m&&!m.hidden)m.hidden=true}});
 
 /* ---- Eyes on Score import: reads a copied (Ctrl+A, Ctrl+C) results page ---- */
@@ -939,9 +941,13 @@ async function saveContact(){if(mode!="shared"||!authUser||!authUser.email||!myI
 function watchContacts(){if(mode!="shared")return;if(isAdmin&&!contactSub){contactSub=fs.onSnapshot(fs.collection(db,"contacts"),s=>{contacts={};s.docs.forEach(d=>{const x=d.data();contacts[d.id]={email:String(x.email||""),name:String(x.name||""),team:String(x.team||"")}});render()},e=>{console.warn("contacts",e&&e.code);contactSub=null})}
   else if(!isAdmin&&contactSub){contactSub();contactSub=null;contacts={}}}
 const emailOf=id=>(contacts[id]&&contacts[id].email)||"";
-function emailsBlock(rows,btnLabel){const list=rows.filter(r=>r.email);const all=[...new Set(list.map(r=>r.email))].join(", ");
-  return`<table class="emt"><thead><tr><th>${rows[0]&&rows[0].label!=null?"Award":"Team"}</th><th>Manager</th><th>Email</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.label!=null?r.label+": "+r.team:r.team)}</td><td>${esc(r.owner)}</td><td>${r.email?`<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`:`<span class="meta">Not recorded yet</span>`}</td></tr>`).join("")}</tbody></table>
-  <div class="row"><button class="btn" data-act="copyemails" data-e="${esc(all)}" ${all?"":"disabled"}>${btnLabel} (${new Set(list.map(r=>r.email)).size})</button></div>`}
+let emOpen=false;
+function emailsBlock(rows,btnLabel,collapse){const list=rows.filter(r=>r.email);const all=[...new Set(list.map(r=>r.email))].join(", ");
+  const tbl=`<table class="emt"><thead><tr><th>${rows[0]&&rows[0].label!=null?"Award":"Team"}</th><th>Manager</th><th>Email</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.label!=null?r.label+": "+r.team:r.team)}</td><td>${esc(r.owner)}</td><td>${r.email?`<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`:`<span class="meta">Not recorded yet</span>`}</td></tr>`).join("")}</tbody></table>`;
+  const btn=`<div class="row"><button class="btn" data-act="copyemails" data-e="${esc(all)}" ${all?"":"disabled"}>${btnLabel} (${new Set(list.map(r=>r.email)).size})</button></div>`;
+  if(!collapse)return tbl+btn;
+  const missing=rows.length-list.length;
+  return`${btn}<details class="emd" id="emd"${emOpen?" open":""}><summary>${emOpen?"Hide":"Show"} the list: ${rows.length} team${rows.length==1?"":"s"}, ${list.length} email${list.length==1?"":"s"} recorded${missing?`, ${missing} not yet`:""}</summary>${tbl}</details>`}
 async function copyText(t){try{await navigator.clipboard.writeText(t);toast("Copied. Paste into the BCC line of your email.");return}catch{}
   const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied. Paste into the BCC line of your email.")}catch{toast("Couldn't copy. Select the emails and copy them yourself.")}ta.remove()}
 
