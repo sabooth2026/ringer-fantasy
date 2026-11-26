@@ -64,6 +64,7 @@ h2{font-size:clamp(36px,5vw,54px);margin-bottom:16px}
 @keyframes glow{50%{box-shadow:0 0 0 6px rgba(231,0,0,.12)}}
 @media(prefers-reduced-motion:reduce){.ic.glow{animation:none}}
 .capwarn{color:var(--red)}
+.rmlist{list-style:none;margin:0;padding:0}.rmlist li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #2a2a2d;flex-wrap:wrap}.rmlist li>div:first-child{display:flex;flex-direction:column;min-width:0}.rmbtn:not(.ghost){background:#e70000}
 .emd summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--mut);font-weight:600}.emd[open] summary{margin-bottom:6px}
 .emt td,.emt th{font-size:15px}.emt td a{color:#fff;overflow-wrap:anywhere}.wem{margin-top:28px}.wem h3{font-size:26px;margin:0 0 10px}.privn{font-size:13px}
 .sharebtn{display:inline-flex;align-items:center;gap:8px}.sharebtn.sm{min-height:36px;padding:0 14px;font-size:14px;margin-top:6px}
@@ -566,7 +567,12 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
   const check=`<h3 class="sec">Team check</h3>${!real.length?`<p class="meta">No teams yet.</p>`:(!noCap.length&&!short.length&&!noName.length)?`<p class="meta">All ${real.length} teams have a name, 7 archers and a captain.</p>`:`<ul class="chk-list">${noCap.length?`<li><b>${noCap.length} without a captain:</b> ${noCap.map(tn).join(", ")}</li>`:""}${short.length?`<li><b>${short.length} with fewer than 7 archers:</b> ${short.map(t=>tn(t)+" ("+t.picks.filter(Boolean).length+"/7)").join(", ")}</li>`:""}${noName.length?`<li><b>${noName.length} without a team name:</b> ${noName.map(t=>esc(t.owner||"a player")).join(", ")}</li>`:""}</ul><p class="meta">Send these players a reminder before lineups lock.</p>`}`;
   const emRows=real.map(t=>({team:t.name||"Unnamed team",owner:t.owner||"A player",email:emailOf(t.id)})).sort((a,b)=>a.team.localeCompare(b.team));
   const emails=`<h3 class="sec">Player emails</h3>${mode!="shared"?`<p class="meta">Emails appear here in the shared league.</p>`:!real.length?`<p class="meta">No teams yet.</p>`:`<p class="meta">Only you can see these. Players are told at sign-up. A player who joined before this feature is added the next time they open the site. Use BCC when emailing several people.</p>${emailsBlock(emRows,"Copy all emails",true)}`}`;
-  return`<h2>Commissioner</h2>${check}${emails}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a></div>
+  const rmRows=real.slice().sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+  const remove=`<h3 class="sec">Remove a player</h3>${!rmRows.length?`<p class="meta">No teams yet.</p>`:`<p class="meta">Deletes the player's team from the league and standings, and their saved email. Their trash-talk posts stay; delete those on the wall if needed. Anyone removed can sign in and make a new team while lineups are open.</p>
+    <details class="emd" id="rmd"${rmOpen?" open":""}><summary>${rmOpen?"Hide":"Show"} the list: ${rmRows.length} team${rmRows.length==1?"":"s"}</summary>
+    <ul class="rmlist">${rmRows.map(t=>{const arm=rmArm==t.id,you=t.id==myId||t.id=="me";return`<li><div><b>${tn(t)}</b><span class="meta">${esc(t.owner||"A player")}${you?" (you)":""} · ${t.picks.filter(Boolean).length}/7 archers${emailOf(t.id)?" · "+esc(emailOf(t.id)):""}</span></div>
+      <div class="row" style="margin:0">${arm?`<button class="btn ghost" data-act="rmcancel">Cancel</button>`:""}<button class="btn ${arm?"":"ghost "}rmbtn" data-act="rmteam" data-id="${esc(t.id)}">${arm?"Yes, remove":"Remove"}</button></div></li>`}).join("")}</ul></details>`}`;
+  return`<h2>Commissioner</h2>${check}${emails}${remove}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a></div>
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
   <h3 class="sec">Results from Eyes on Score</h3>
   <div class="imp"><label for="eoslink">Results page</label><div class="row" style="margin:6px 0 10px"><input id="eoslink" type="url" placeholder="https://texasringer.eyesonscore.com/events/2026/" value="${esc(linkDraft??(league.link||FEEDS[season]))}"><button class="btn ghost" data-act="savelink">Save link</button>${league.link?`<a class="btn ghost ext" href="${esc(league.link)}" target="_blank" rel="noopener">Open ↗</a>`:""}</div>
@@ -620,6 +626,11 @@ document.addEventListener("click",async e=>{if(e.target.id=="modal"){e.target.hi
   if(act=="copyemails"){copyText(b.dataset.e||"");return}
   if(act=="mshare"){shareModal();return}
   if(act=="react"){react(b.dataset.p,b.dataset.k);return}
+  if(act=="rmcancel"){rmArm=null;render(true);return}
+  if(act=="rmteam"){const id=b.dataset.id;if(rmArm!=id){rmArm=id;render(true);return}rmArm=null;const t=teams.find(x=>x.id==id),nm=t?(t.name||t.owner||"Team"):"Team";
+    if(mode=="local"){if(id=="me"){me={name:"",picks:Array(7).fill(null),cap:null,id:"me"};teams=[me];saveLocal()}else teams=teams.filter(x=>x.id!=id);render(true);toast("Removed "+nm);return}
+    try{await fs.deleteDoc(fs.doc(db,"teams",id));try{await fs.deleteDoc(fs.doc(db,"contacts",id))}catch{}teams=teams.filter(x=>x.id!=id);delete contacts[id];render(true);toast("Removed "+nm)}
+    catch(e){toast(e&&e.code=="permission-denied"?"Couldn't remove. Check that your email is in the Firestore rules.":"Couldn't remove. Try again.")}return}
   if(act=="delpost"){delPost(b.dataset.p);return}
   if(act=="fullscreen"){try{await document.documentElement.requestFullscreen()}catch{toast("Use your browser's full-screen option (F11)")}return}
   if(act=="google"){try{await fa.signInWithPopup(auth,new fa.GoogleAuthProvider())}catch(x){aerr(x)}return}
@@ -671,7 +682,7 @@ document.addEventListener("change",e=>{if(e.target.id=="autopull"){clearInterval
 document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{if(pend)render()},0)});
 window.addEventListener("hashchange",()=>{if(route()!="archers")pendingSlot=null;else if(pendingSlot==null)afilter="ALL";clearArm=false;render(true);window.scrollTo(0,0)});
 setInterval(header,30000);
-document.addEventListener("toggle",e=>{if(e.target&&e.target.id=="emd"){emOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,emOpen?"Hide":"Show")}},true);
+document.addEventListener("toggle",e=>{if(e.target&&e.target.id=="rmd"){rmOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,rmOpen?"Hide":"Show");return}if(e.target&&e.target.id=="emd"){emOpen=e.target.open;const sm=e.target.querySelector("summary");if(sm)sm.textContent=sm.textContent.replace(/^(Show|Hide)/,emOpen?"Hide":"Show")}},true);
 document.addEventListener("keydown",e=>{if(e.key=="Escape"){const m=$("#modal");if(m&&!m.hidden)m.hidden=true}});
 
 /* ---- Eyes on Score import: reads a copied (Ctrl+A, Ctrl+C) results page ---- */
@@ -974,7 +985,7 @@ async function saveContact(){if(mode!="shared"||!authUser||!authUser.email||!myI
 function watchContacts(){if(mode!="shared")return;if(isAdmin&&!contactSub){contactSub=fs.onSnapshot(fs.collection(db,"contacts"),s=>{contacts={};s.docs.forEach(d=>{const x=d.data();contacts[d.id]={email:String(x.email||""),name:String(x.name||""),team:String(x.team||"")}});render()},e=>{console.warn("contacts",e&&e.code);contactSub=null})}
   else if(!isAdmin&&contactSub){contactSub();contactSub=null;contacts={}}}
 const emailOf=id=>(contacts[id]&&contacts[id].email)||"";
-let emOpen=false;
+let emOpen=false,rmOpen=false,rmArm=null;
 function emailsBlock(rows,btnLabel,collapse){const list=rows.filter(r=>r.email);const all=[...new Set(list.map(r=>r.email))].join(", ");
   const tbl=`<table class="emt"><thead><tr><th>${rows[0]&&rows[0].label!=null?"Award":"Team"}</th><th>Manager</th><th>Email</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.label!=null?r.label+": "+r.team:r.team)}</td><td>${esc(r.owner)}</td><td>${r.email?`<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`:`<span class="meta">Not recorded yet</span>`}</td></tr>`).join("")}</tbody></table>`;
   const btn=`<div class="row"><button class="btn" data-act="copyemails" data-e="${esc(all)}" ${all?"":"disabled"}>${btnLabel} (${new Set(list.map(r=>r.email)).size})</button></div>`;
