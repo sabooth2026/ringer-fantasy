@@ -60,6 +60,18 @@ service cloud.firestore {
         || (request.auth != null && resource.data.uid == request.auth.uid);
     }
 
+    // Private contact list: each player's email, saved under their own account.
+    // ONLY the commissioner can read it. A player can only save their own real sign-in email.
+    match /contacts/{uid} {
+      allow read: if isCommish();
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'name', 'team', 'at'])
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.name is string && request.resource.data.name.size() <= 60
+        && request.resource.data.team is string && request.resource.data.team.size() <= 40;
+      allow delete: if isCommish() || (request.auth != null && request.auth.uid == uid);
+    }
+
     // Reactions (Bullseye / Ouch): one per player per post, saved as "<postId>_<uid>".
     match /reacts/{reactId} {
       allow read: if true;

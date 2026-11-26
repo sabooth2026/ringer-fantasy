@@ -83,6 +83,8 @@ It's normal for these Firebase values to be visible to anyone. They only identif
 - **Big Board (TV mode):** on the Commissioner tab, click **Open the Big Board**, or go to `your-site/#bigboard`. Put it on a TV at the venue and click **Full screen**. During qualification (Fri–Sat) it shows the top 8 teams, **On the line now** (the top archer in each division for the flight being shot) and **Division leaders after each flight**. Once you start the brackets it switches to the top 10 teams, the matches being shot and the hottest archers. Both layouts have a QR code to join and a scrolling trash-talk ticker, and refresh every minute.
 - **Awards:** an **Awards** tab appears for everyone once the last medal match is posted. You see it earlier as a preview. It names the top 3 teams plus Sharpshooter (best captain), Sleeper Pick (picked archer who beat their projection by the most), Crystal Ball (team closest to its projection) and Underdog (lowest-projected team to finish top 3). Ties show every winner. **Share the awards** makes an image to post.
 
+- **Player emails (commissioner only):** each signed-in player's email is saved in a private list that only the commissioner's account can read, and players are told this at sign-up. The Commissioner tab shows every team's email with **Copy all emails**, and the Awards tab shows a **Winners' emails** box with **Copy winners' emails**. Paste them into the BCC line. Players who joined earlier are added the next time they open the site. **This needs the updated `firestore.rules`** (paste and Publish again, with your email in it).
+
 ## Troubleshooting
 
 | What you see | Fix |
