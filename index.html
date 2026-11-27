@@ -137,6 +137,19 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 .stn{font-size:1.15vw;line-height:1.25}.stn b{font-family:Forum,serif;font-weight:400;font-size:1.6vw}.stn span{color:var(--mut);font-size:.9vw;margin-right:.2vw}
 .stl{font-size:1.15vw;margin:.6vh 0 .4vh;color:#ffd0d0}.stl b{color:#fff}
 .stm{font-size:.9vw;color:var(--mut)}
+.bbst{display:flex;flex-direction:column;min-height:0}
+.bbrest{position:relative;height:4.6vh;border-bottom:1px solid #222;flex:none}
+.rsp{position:absolute;inset:0;display:none;align-items:center;gap:2.2vw;padding:0 .6vw;font-size:1.15vw;color:#cfcfcf;white-space:nowrap;overflow:hidden}.rsp.on{display:flex}
+.rsp i{font-style:normal;color:var(--mut);font-family:Forum,serif;font-size:1.4vw}.rsp b{font-family:Forum,serif;font-weight:400;font-size:1.4vw;color:#fff;margin-left:.3vw}
+.bbw.tk .bbr{height:5.4vh}.bbw.tk .bbr .bbk{font-size:2.2vw}.bbw.tk .bbr .bbn b{font-size:1.5vw}.bbw.tk .bbr .bbp{font-size:2vw}
+.bbtalk{flex:1;min-height:0;overflow:hidden;margin-top:1.4vh;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1vh 1.3vw}
+.bbtalk .bbsh h2{font-size:1.9vw;margin:0}.bbtalk .bbsh span{color:var(--mut);font-size:.95vw}
+.tkp{border-top:1px solid #2a2a2d;padding:.8vh 0;font-size:1.15vw;line-height:1.3}
+.tkp b{display:block;font-size:1vw;color:#ff8a8a}.tkp b span{color:var(--mut);font-weight:400}
+.tkp q{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;quotes:"\201C" "\201D"}
+.tkp.nw{animation:tkfl 1.4s ease-in-out 6;border-radius:8px}
+@keyframes tkfl{0%,100%{background:transparent}50%{background:rgba(231,0,0,.28)}}
+.tkhl{color:#ffd45a;font-weight:600}
 .bbua.rec{background:#c99a1e;color:#111}.tkrec{color:#ffd45a;font-weight:700}
 .bbua.on{transform:scaleY(1)}
 .bbuat{font-family:Forum,serif;font-size:6vw;line-height:1}
@@ -399,7 +412,7 @@ const fmt=n=>(Math.round(n*10)/10).toString();
 
 let mode="loading",db=null,fs=null,fa=null,auth=null,authUser=null,myId=null,isAdmin=false,canWrite=true,loadedMine=false,slow=false,authMode="in";
 let me={name:"",picks:Array(7).fill(null),cap:null};
-let teams=[],teamsRaw=[],league={scores:{},xs:{},qr:{},seeds:{},elim:{},lock:"auto",season:"2026",link:""},DET={},lastRep="",linkDraft=null,testArm=false,autoT=null,pulling=false;
+let teams=[],teamsRaw=[],league={scores:{},xs:{},qr:{},seeds:{},elim:{},lock:"auto",season:"2026",link:"",bbTalk:true},DET={},lastRep="",linkDraft=null,testArm=false,autoT=null,pulling=false;
 let afilter="ALL",q="",sort="name",pendingSlot=null,cdiv="BB",rdiv="BB",resetArm=false,clearArm=false,pend=false,saveT=null;
 
 const cleanTeam=(d,id)=>{const p=Array.isArray(d?.picks)?d.picks.slice(0,7):[];while(p.length<7)p.push(null);
@@ -409,7 +422,7 @@ const cleanLeague=d=>{const sn=SEASONS[d?.season]?d.season:"2026";if(sn!==season
   for(const dv of ORDER){const sd=d?.seeds?.[dv];if(Array.isArray(sd))seeds[dv]=Array.from({length:16},(_,i)=>typeof sd[i]=="string"&&BY[sd[i]]&&BY[sd[i]].d==dv?sd[i]:null);
     const e=d?.elim?.[dv];if(e&&typeof e=="object"){const o={};for(const k of MIDS)if(typeof e[k]=="string"&&BY[e[k]])o[k]=e[k];elim[dv]=o}}
   const link=typeof d?.link=="string"&&/^https:\/\//.test(d.link)?d.link.slice(0,500):"";
-  return{season:sn,link,scores:num(d?.scores),xs:num(d?.xs),qr:num(d?.qr),seeds,elim,lock:["auto","locked","open"].includes(d?.lock)?d.lock:"auto"}};
+  return{season:sn,link,scores:num(d?.scores),xs:num(d?.xs),qr:num(d?.qr),seeds,elim,lock:["auto","locked","open"].includes(d?.lock)?d.lock:"auto",bbTalk:d?.bbTalk!==false}};
 
 function locked(){return league.lock=="locked"||(league.lock!="open"&&Date.now()>=LOCK.getTime())}
 function qual(d){const xs=A.filter(a=>a.d==d&&league.scores[a.id]!=null).map(a=>({id:a.id,s:league.scores[a.id],x:league.xs[a.id]||0,r:league.qr[a.id]}));
@@ -461,7 +474,7 @@ function route(){const h=location.hash.slice(1);return ROUTES.includes(h)?h:"tea
 function render(force){const ae=document.activeElement;
   if(!force&&ae&&ae.matches("input:not([type=checkbox]),select,textarea")&&view.contains(ae)){pend=true;return}
   pend=false;const r=route();if(r=="standings")markWallSeen();header();
-  document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();bbDemoCheck();bbNextAlert();return}
+  document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();bbFitTalk();bbDemoCheck();bbNextAlert();return}
   view.innerHTML=notes()+(r=="team"?teamView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
 }
 
@@ -637,6 +650,7 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
     <ul class="rmlist">${rmRows.map(t=>{const arm=rmArm==t.id,you=t.id==myId||t.id=="me";return`<li><div><b>${tn(t)}</b><span class="meta">${esc(t.owner||"A player")}${you?" (you)":""} · ${t.picks.filter(Boolean).length}/7 archers${emailOf(t.id)?" · "+esc(emailOf(t.id)):""}</span></div>
       <div class="row" style="margin:0">${arm?`<button class="btn ghost" data-act="rmcancel">Cancel</button>`:""}<button class="btn ${arm?"":"ghost "}rmbtn" data-act="rmteam" data-id="${esc(t.id)}">${arm?"Yes, remove":"Remove"}</button></div></li>`}).join("")}</ul></details>`}`;
   return`<h2>Commissioner</h2>${check}${emails}${remove}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a><a class="btn ghost" href="#bigboard" target="_blank" rel="noopener" data-act="bbdemo" style="display:inline-flex;align-items:center;text-decoration:none">Preview an upset alert</a><a class="btn ghost" href="#bigboard" target="_blank" rel="noopener" data-act="bbdemorec" style="display:inline-flex;align-items:center;text-decoration:none">Preview a record alert</a></div>
+<label class="row" style="gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="bbtalk"${league.bbTalk?" checked":""} style="width:20px;height:20px"> Show trash talk on the Big Board <span class="meta">(it stays on the website either way)</span></label>
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
   <h3 class="sec">Results from Eyes on Score</h3>
   <div class="imp"><label for="eoslink">Results page</label><div class="row" style="margin:6px 0 10px"><input id="eoslink" type="url" placeholder="https://texasringer.eyesonscore.com/events/2026/" value="${esc(linkDraft??(league.link||FEEDS[season]))}"><button class="btn ghost" data-act="savelink">Save link</button>${league.link?`<a class="btn ghost ext" href="${esc(league.link)}" target="_blank" rel="noopener">Open ↗</a>`:""}</div>
@@ -744,7 +758,8 @@ document.addEventListener("submit",async e=>{if(e.target.id=="wf"){e.preventDefa
 document.addEventListener("input",e=>{if(e.target.id=="wtext"){const c=$("#wcount");if(c)c.textContent=c.textContent.replace(/\d+\/280$/,e.target.value.length+"/280");return}if(e.target.id=="eoslink"){linkDraft=e.target.value;return}if(e.target.id=="tname"){me.name=e.target.value.slice(0,40);schedSave()}
   else if(e.target.id=="q"){q=e.target.value;$("#alist").innerHTML=alist()}});
 document.addEventListener("change",e=>{if(e.target.id=="autopull"){clearInterval(autoT);autoT=null;if(e.target.checked){autoT=setInterval(()=>doPull(false),5*60e3);doPull(true)}render(true);return}if(e.target.id=="sort"){sort=e.target.value;$("#alist").innerHTML=alist()}
-  else if(e.target.id=="lock")writeLeague({...league,lock:e.target.value})});
+  else if(e.target.id=="lock")writeLeague({...league,lock:e.target.value});
+  else if(e.target.id=="bbtalk")writeLeague({...league,bbTalk:e.target.checked})});
 document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{if(pend)render()},0)});
 window.addEventListener("hashchange",()=>{if(route()!="archers")pendingSlot=null;else if(pendingSlot==null)afilter="ALL";clearArm=false;render(true);window.scrollTo(0,0)});
 setInterval(header,30000);
@@ -1043,6 +1058,34 @@ function bbStake(live){const xs=live.map(({d,m})=>stakeFor(d,m)).filter(Boolean)
     <div class="stg">${x.sides.map(o=>`<div class="sto"><div class="stn"><span>#${o.seed}</span> If <b>${esc(BY[o.id].n)}</b> wins</div><div class="stl">${o.line}</div><div class="stm">On ${o.n} team${o.n==1?"":"s"}${o.caps?` · captain for ${o.caps}`:""}</div></div>`).join("")}</div></div>`).join("")}${top.length>1?`<div class="spd">${top.map((_,i)=>`<i class="${i==stI?"on":""}"></i>`).join("")}</div>`:""}</section>`}
 let stI=0;
 setInterval(()=>{const cs=document.querySelectorAll(".bbstk .spc");if(cs.length<2)return;stI=(stI+1)%cs.length;cs.forEach((c,i)=>c.classList.toggle("on",i==stI));document.querySelectorAll(".bbstk .spd i").forEach((d,i)=>d.classList.toggle("on",i==stI))},15e3);
+/* Standings beyond the top 8, cycling */
+let rsI=0;
+function bbRest(list,cur,sc,from){const rest=list.slice(from);if(!rest.length)return"";const pages=[];for(let i=0;i<rest.length;i+=4)pages.push(rest.slice(i,i+4));rsI%=pages.length;
+  return`<div class="bbrest">${pages.map((pg,i)=>`<div class="rsp${i==rsI?" on":""}">${pg.map(t=>`<span><i>${cur[t.id]}.</i> ${esc(t.name||"Unnamed team")} <b>${sc?fmt(t.v):Math.round(t.v)}</b></span>`).join("")}</div>`).join("")}</div>`}
+setInterval(()=>{const cs=document.querySelectorAll(".bbrest .rsp");if(cs.length<2)return;rsI=(rsI+1)%cs.length;cs.forEach((c,i)=>c.classList.toggle("on",i==rsI))},6e3);
+/* Trash talk box under the standings */
+let talkLast=null,talkAt=0;
+function bbFitTalk(){const box=$(".bbtalk");if(!box)return;const lim=box.getBoundingClientRect().bottom-4;box.querySelectorAll(".tkp").forEach((p,i)=>{if(i>0&&p.getBoundingClientRect().bottom>lim)p.style.display="none"})}
+function bbTalk(){if(!league.bbTalk)return"";const xs=posts.slice(0,3);const top=xs[0]&&xs[0].id;
+  if(talkLast===null)talkLast=top||"";else if(top&&top!=talkLast){talkLast=top;talkAt=Date.now()}
+  const fresh=talkAt&&Date.now()-talkAt<90e3;
+  return`<section class="bbtalk"><div class="bbsh"><h2>Trash talk</h2><span>Post yours at ${esc(siteHost())}</span></div>${xs.length?xs.map((p,i)=>`<div class="tkp${i==0&&fresh?" nw":""}"><b>${esc(p.name||"Someone")}${p.team?` <span>· ${esc(p.team)}</span>`:""}</b><q>${esc(p.text)}</q></div>`).join(""):`<p class="bbmsg">No trash talk yet. Be the first!</p>`}</section>`}
+/* Live qualification news for the ticker */
+const HILITE={FC:400,BH:385,RC:365,BB:315,TR:285};
+const DTK={BB:"Barebow",TR:"Traditional",FC:"Freestyle",BH:"Bowhunter",RC:"Recurve"};
+function liveTicker(){const sc=league.scores;const out=[];const dot='<span class="dot">•</span>';
+  // highlights: at/over the division mark but under the record (record breaks have their own item)
+  const hl=A.filter(a=>sc[a.id]!=null&&HILITE[a.d]&&sc[a.id]>=HILITE[a.d]&&!(RINGER_REC[a.d]&&sc[a.id]>=RINGER_REC[a.d].s)).sort((a,b)=>ORDER.indexOf(a.d)-ORDER.indexOf(b.d)||sc[b.id]-sc[a.id]).filter((a,i,arr)=>arr.slice(0,i).filter(o=>o.d==a.d).length<2);
+  hl.forEach(a=>out.push(`<span class="tkhl">★ ${esc(a.n)} shoots ${sc[a.id]} in ${DIV[a.d]}</span>${dot}`));
+  // close calls: 1st to 3rd within 3 points
+  for(const d of ORDER){const q=qual(d).filter(x=>x.s!=null);if(q.length<3)continue;const gap=q[0].s-q[2].s;if(gap<=3)out.push(`<span><b>Close call</b> · ${DTK[d]}: ${gap==0?"1st through 3rd are tied in qualification":`only ${gap} point${gap==1?"":"s"} separate 1st and 3rd in qualification`}</span>${dot}`)}
+  // big flight scores: latest flight with scores
+  const {fl}=flights();let k=-1;fl.forEach((f,i)=>{if(f.scored>0)k=i});
+  if(k>=0){const f=fl[k],upto=new Set(fl.slice(0,k+1).flatMap(x=>x.ids));
+    for(const d of ORDER){const ids=f.ids.filter(id=>BY[id].d==d&&sc[id]!=null).sort((a,b)=>sc[b]-sc[a]||(league.xs[b]||0)-(league.xs[a]||0));if(!ids.length)continue;const top=ids[0];
+      const best=!A.some(a=>a.d==d&&upto.has(a.id)&&a.id!=top&&sc[a.id]!=null&&sc[a.id]>sc[top]);
+      out.push(`<span><b>${esc(f.label)} flight</b> · ${best?`${esc(BY[top].n)} posts ${sc[top]}, the best ${DTK[d]} score so far`:`top ${DTK[d]} score is ${sc[top]} by ${esc(BY[top].n)}`}</span>${dot}`)}}
+  return out.join("")}
 /* Rotating spotlight */
 let spI=0;
 function bbSpot(sc,P,liveIds){const N=teams.filter(t=>t.picks.some(Boolean)),L=locked(),cards=[];
@@ -1094,7 +1137,7 @@ function bbQual(){const {fl,live}=flights();
     return{lbox:"",band:"",panel:tbl}}
   return{lbox:"",band:"",
     panel:`<div class="bbsh2"><h3>${title}</h3><span class="lv">${sub}</span></div><p class="bbsub">Top archer in each division${title=="Up next"?"":", live scores"}</p>${rows}`}}
-function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(d=>league.seeds[d]);const maxRows=10;
+function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(d=>league.seeds[d]);const maxRows=8;
   const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({...t,v:sc?teamTotal(t,P):teamProj(t)})).sort((a,b)=>b.v-a.v);
   const cur={};list.forEach(t=>cur[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);
   const past=bbHist.filter(h=>Date.now()-h.t>=4.5*60e3).pop()||bbHist[0];
@@ -1108,20 +1151,20 @@ function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(
   else{const lead=ORDER.map(d=>[d,qual(d)[0]]).filter(x=>x[1]);side1=lead.length?`<h3>Qualification leaders</h3>${lead.map(([d,q])=>`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${esc(BY[q.id].n)}</span><span class="bbrd" style="margin-left:auto">${q.s}</span></div>`).join("")}`:`<h3>Coming up</h3><p class="bbmsg">Scores appear here as soon as the first flight is posted.</p>`}
   const hot=(sc?A.filter(a=>P[a.id]!=null).sort((a,b)=>P[b.id]-P[a.id]):[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))).slice(0,4);
   const side2=`<h3>${sc?"Hottest archers":"Top projected archers"}</h3>${hot.map(a=>`<div class="bbl"><span>${esc(a.n)}</span><span class="bbrd">${sc?esc(status(a.id)||DSHORT[a.d]):DSHORT[a.d]}</span><b class="bbhp">${sc?fmt(P[a.id]):Math.round(PROJ[a.id]||0)}</b></div>`).join("")}`;
-  const tkp=posts.slice(0,10).map(p=>`<span><b>${esc(p.name||"Someone")}:</b> ${esc(p.text)}</span><span class="dot">•</span>`).join("")||`<span>${locked()?"Follow along at":"Join the league and pick your team at"} ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
-  const tk=recTicker(true)+tkp+recTicker(false);
+  const tkp=`<span>${locked()?"Follow along at":"Join the league and pick your team at"} ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
+  const tk=recTicker(true)+(qualMode?liveTicker():"")+tkp+recTicker(false);
   const now=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});const Q=qualMode?bbQual():null;
   const liveIds=new Set(qualMode?(()=>{const {fl,live:lv}=flights();return lv>=0?fl[lv].ids:[]})():live.flatMap(({m})=>[m.a,m.b]));
   const spot=bbSpot(sc,P,liveIds);
-  return`<div class="bbw${qualMode?" qm":""}"><div class="bbs"><i></i><i></i><i></i></div>
+  return`<div class="bbw${qualMode?" qm":""}${league.bbTalk?" tk":""}"><div class="bbs"><i></i><i></i><i></i></div>
   <div class="bbh"><img class="bblogo" alt="" src="${esc((document.querySelector(".logo")||{}).src||"")}"><div class="bbt">Ringer <span>Fantasy Games</span></div><span class="bblive"><i></i>LIVE</span>
     <div class="bbinfo"><b>${esc(SEASONS[season].label)}</b><span>Updated ${now} · refreshes every minute</span></div>
     <div class="bbctl"><button class="btn ghost" data-act="fullscreen">Full screen</button><a class="btn ghost" href="#standings" style="text-decoration:none;display:inline-flex;align-items:center">Exit</a></div></div>
-  <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>maxRows?" · top "+maxRows+" shown":""}</span></div>
-    <div class="bbhd"><span class="bbk">Rank</span><span class="bbn">Team</span><span class="bbm">Move</span><span class="bbp">${sc?"Points":"Projected"}</span></div>${rows||`<p class="bbmsg">No teams yet.${locked()?"":" Scan the code to join!"}</p>`}</section>
+  <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>maxRows?" · top "+maxRows+", the rest below":""}</span></div>
+    <div class="bbhd"><span class="bbk">Rank</span><span class="bbn">Team</span><span class="bbm">Move</span><span class="bbp">${sc?"Points":"Projected"}</span></div>${rows||`<p class="bbmsg">No teams yet.${locked()?"":" Scan the code to join!"}</p>`}${bbRest(list,cur,sc,maxRows)}${bbTalk()}</section>
     <aside class="bbside">${qualMode?`<section class="bbbox">${Q.panel}</section>${Q.lbox?`<section class="bbbox">${Q.lbox}</section>`:""}`:`<section class="bbbox">${side1}</section>${stake}`}${spot}
       ${locked()?"":`<section class="bbqrbox"><div id="bbqr" role="img" aria-label="QR code for ${esc(siteHost())}"></div><div><div class="bbq1">Scan to join</div><div class="bbq2">${esc(siteHost())}</div></div></section>`}</aside></div>
-  ${qualMode?Q.band:""}<div class="bbtick"><span class="bbtl">${posts.length?"Trash talk":"Ringer Fantasy Games"}</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
+  ${qualMode?Q.band:""}<div class="bbtick"><span class="bbtl">Ringer Fantasy Games</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
 function drawQR(){const el=$("#bbqr");if(!el)return;
   if(!window.QRCode){if(!drawQR.loading){drawQR.loading=true;const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=()=>drawQR();document.head.appendChild(s)}return}
   el.innerHTML="";const sz=Math.max(96,Math.round(el.clientWidth||140));try{new QRCode(el,{text:siteUrl(),width:sz,height:sz,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})}catch{}}
