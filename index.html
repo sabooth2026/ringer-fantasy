@@ -172,6 +172,7 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 .lvic{flex:none;min-width:30px;height:30px;padding:0 4px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
 .lvic.gold{background:#c99a1e;color:#111}.lvic.red{background:var(--red);color:#fff}.lvic.gray{background:#2a2a2d;color:#ddd}.lvic.yel,.lvic.hl{background:#3a3010;color:#ffd45a}
 .hlt{color:#ffd45a}.lvtm{display:block;font-size:12px;color:var(--mut);margin-top:2px}
+.awtb{margin-top:10px;padding:10px 12px;border:1px solid #5a4a14;background:#1c1708;border-radius:10px}.awtb b{color:#ffd45a;font-weight:600}.awtb p{margin:4px 0 0}
 .bbua.rec{background:#c99a1e;color:#111}.tkrec{color:#ffd45a;font-weight:700}
 .bbua.on{transform:scaleY(1)}
 .bbuat{font-family:Forum,serif;font-size:6vw;line-height:1}
@@ -927,7 +928,8 @@ async function drawAwardsCard(){const A2=computeAwards(),[c,x]=await cardBase();
     fitText(x,t.name,"Pridi",32,640,"600");x.fillStyle="#fff";x.fillText(t.name,160,Y+30);x.font="20px Pridi";x.fillStyle="#b4b4b4";x.fillText(t.owner,160,Y+56);x.textAlign="right";x.font="44px Forum";x.fillStyle="#fff";x.fillText(fmt(t.tot),1008,Y+44);x.textAlign="left"});
   A2.cards.forEach((w,i)=>{const X=72+(i%2)*474,Y=640+Math.floor(i/2)*290;rr(x,X,Y,462,270,16);x.fillStyle="#111214";x.fill();x.lineWidth=2;x.strokeStyle="#3b3b3e";x.stroke();
     x.font="600 24px Pridi";x.fillStyle=w.label;x.fillText(w.award,X+24,Y+44);x.font="18px Pridi";x.fillStyle="#b4b4b4";x.fillText(w.short,X+24,Y+72);
-    const nm=w.winners.join(" & ")||w.big||"No winner";fitText(x,nm,"Forum",40,414);x.fillStyle="#fff";x.fillText(nm,X+24,Y+130);
+    const nm=w.winners.join(" & ")||w.big||"No winner";fitText(x,nm,"Forum",40,414);x.fillStyle="#fff";x.fillText(nm,X+24,Y+122);
+    if(w.tb){x.font="18px Pridi";x.fillStyle="#ffd45a";let tl=w.tb.win?`Prize: ${w.tb.win.name} (tiebreaker, most points)`:`Tied on points: ${w.tb.tied.length} teams`;while(x.measureText(tl).width>414&&tl.length>4)tl=tl.slice(0,-2);x.fillText(tl,X+24,Y+152)}
     x.font="44px Forum";x.fillStyle=w.label;x.fillText(w.stat,X+24,Y+196);x.font="18px Pridi";x.fillStyle="#b4b4b4";let sn=w.statNote;while(x.measureText(sn).width>414&&sn.length>4)sn=sn.slice(0,-2);x.fillText(sn,X+24,Y+232)});
   cardFooter(x,"Join us next year!","Full results at ");return c}
 function showCard(canvas,fname,title){canvas.toBlob(blob=>{if(!blob)return toast("Couldn't make the image");const url=URL.createObjectURL(blob);
@@ -949,11 +951,11 @@ function computeAwards(){const P=pts(),fav=awardsPhase()=="fav";const list=teams
   const best=(arr,f,min)=>{if(!arr.length)return[];const vals=arr.map(f);const v=min?Math.min(...vals):Math.max(...vals);return arr.filter((a,i)=>Math.abs(vals[i]-v)<1e-9)};
   const CP=fav?Object.fromEntries(list.filter(t=>t.cap).map(t=>[t.cap,Math.round(PROJ[t.cap]||0)])):P;const capT=(locked()||isAdmin)?list.filter(t=>t.cap&&CP[t.cap]!=null):[],sh=best(capT,t=>CP[t.cap]*1.5);
   cards.push({tids:sh.map(t=>t.id),key:"sharp",award:"Sharpshooter",short:"Best captain pick",desc:"Best captain pick",color:"#e70000",label:"#ff8a8a",
-    winners:sh.map(t=>BY[t.cap].n+" ("+t.name+")"),big:sh.map(t=>BY[t.cap].n).join(" & "),who:sh.map(t=>"Captain of "+t.name+" · "+t.owner).join("; "),
+    winners:[...new Set(sh.map(t=>BY[t.cap].n))],big:[...new Set(sh.map(t=>BY[t.cap].n))].join(" & "),who:sh.map(t=>"Captain of "+t.name+" · "+t.owner).join("; "),
     stat:sh.length?fmt(CP[sh[0].cap]*1.5):"–",statNote:sh.length?`${fav?"projected ":""}captain points (${fmt(CP[sh[0].cap])} × 1.5)`:(locked()||isAdmin?"No captains scored":"Revealed when lineups lock")});
   if(fav){cards.push(TBD({key:"sleeper",award:"Sleeper Pick",short:"Beat its projection by the most",desc:"Picked archer who beat their projection by the most",color:"#0b2a6b",label:"#9fb4ea",how:"Goes to the picked archer who beats their projection by the most"}),
     TBD({key:"crystal",award:"Crystal Ball",short:"Closest to its projection",desc:"Team closest to its projection",color:"#4d2a7a",label:"#c8a8f0",how:"Goes to the team that finishes closest to its projected total"}),
-    TBD({key:"under",award:"Underdog",short:"Lowest-projected top 3 team",desc:"Lowest-projected team to finish top 3",color:"#4d6a29",label:"#a9d37a",how:"Goes to the lowest-projected team that finishes top 3"}));return{top,cards,n:list.length,list,fav}}
+    TBD({key:"under",award:"Underdog",short:"Lowest-projected top 3 team",desc:"Lowest-projected team to finish top 3",color:"#4d6a29",label:"#a9d37a",how:"Goes to the lowest-projected team that finishes top 3"}));tieBreak(cards[0],sh,true);return{top,cards,n:list.length,list,fav}}
   const picked=[...new Set(list.flatMap(t=>t.picks.filter(Boolean)))];const sl=best(picked,id=>(P[id]||0)-(PROJ[id]||0));
   const cnt=id=>list.filter(t=>t.picks.includes(id)).length;
   cards.push({key:"sleeper",award:"Sleeper Pick",short:"Beat its projection by the most",desc:"Picked archer who beat their projection by the most",color:"#0b2a6b",label:"#9fb4ea",
@@ -967,8 +969,15 @@ function computeAwards(){const P=pts(),fav=awardsPhase()=="fav";const list=teams
   cards.push({tids:udOk?ud.map(t=>t.id):[],key:"under",award:"Underdog",short:"Lowest-projected top 3 team",desc:"Lowest-projected team to finish top 3",color:"#4d6a29",label:"#a9d37a",
     winners:udOk?ud.map(t=>t.name):[],big:udOk?ud.map(t=>t.name).join(" & "):"No underdog this year",who:udOk?ud.map(t=>t.owner).join("; "):"Every top 3 team was projected top 3",
     stat:udOk?ordn(ud[0].pr)+" → "+ordn(ud[0].rank):"–",statNote:udOk?`projected ${ordn(ud[0].pr)} of ${list.length}, finished ${ordn(ud[0].rank)}`:""});
+  const slT=list.filter(t=>sl.some(id=>t.picks.includes(id)));cards[1].tids=slT.map(t=>t.id);
+  tieBreak(cards[0],sh);tieBreak(cards[1],slT);tieBreak(cards[2],cb);tieBreak(cards[3],udOk?ud:[]);
   return{top,cards,n:list.length,list,fav}}
+function tieBreak(c,ts,fav){if(!ts||ts.length<2){c.tb=null;return}const srt=[...ts].sort((a,b)=>b.tot-a.tot);const mx=srt[0].tot;const top=srt.filter(t=>Math.abs(t.tot-mx)<1e-9);
+  c.tb={tied:srt,win:top.length==1?top[0]:null,fav};if(c.tb.win)c.tids=[c.tb.win.id]}
 const AICON={sharp:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/>',sleeper:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',crystal:'<circle cx="12" cy="10" r="7"/><path d="M6 21h12M8 17.5l-1 3.5M16 17.5l1 3.5M9 8a3 3 0 0 1 3-3"/>',under:'<path d="M12 20V4"/><path d="M5 11l7-7 7 7"/>'};
+function awTie(w){const tb=w.tb,pl=tb.fav?"projected points":"total points",win=tb.win;
+  const lst=tb.tied.map(t=>`${esc(t.name)} ${fmt(t.tot)}`).join(", ");
+  return`<div class="awtb">${win?`<div><span class="meta">${tb.fav?"Favorite for the prize":"Prize winner"}</span> <b>${esc(win.name)}</b> <span class="meta">· ${esc(win.owner)}</span></div><p class="meta">${tb.tied.length} teams tied for this award. Tiebreaker: most ${pl}. ${lst}.</p>`:`<div><span class="meta">Prize winner</span> <b>Still tied</b></div><p class="meta">${tb.tied.length} teams tied for this award and are also tied on ${pl}: ${lst}.</p>`}</div>`}
 function awardsView(){const ph=awardsPhase(),ready=ph=="final";
   const W=computeAwards();if(!W.n)return`<h2>Awards</h2><div class="empty-st">No teams yet.</div>`;
   const col=(rank,h,cls)=>{const ts=W.top.filter(t=>t.rank==rank);if(!ts.length)return"";
@@ -978,12 +987,12 @@ function awardsView(){const ph=awardsPhase(),ready=ph=="final";
   <section class="podium" aria-label="Top 3 teams">${col(2,150,"p2")}${col(1,210,"p1")}${col(3,115,"p3")}</section><div class="pbase"></div>
   <section class="awgrid" aria-label="Special awards">${W.cards.map(w=>`<article class="awc"><div class="awi" style="background:${w.color}" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${AICON[w.key]}</svg></div>
     <div><div class="awn" style="color:${w.label}">${w.award}</div><div class="meta">${w.desc}</div><div class="aww">${esc(w.big||"No winner")}</div><div class="awwho">${esc(w.who)}</div>
-    <div class="aws"><b style="color:${w.label}">${esc(w.stat)}</b><span class="meta">${esc(w.statNote)}</span></div></div></article>`).join("")}</section>
+    <div class="aws"><b style="color:${w.label}">${esc(w.stat)}</b><span class="meta">${esc(w.statNote)}</span></div>${w.tb?awTie(w):""}</div></article>`).join("")}</section>
   ${ready&&isAdmin&&mode=="shared"?(()=>{const byId=Object.fromEntries(W.list.map(t=>[t.id,t]));const rows=[...W.top.map(t=>({label:ordn(t.rank)+" place",team:t.name,owner:t.owner,email:emailOf(t.id)})),
       ...W.cards.flatMap(c=>(c.tids||[]).map(id=>({label:c.award,team:byId[id].name,owner:byId[id].owner,email:emailOf(id)})))];
-    return`<section class="card wem"><h3>Winners' emails <span class="meta">(only you see this)</span></h3>${rows.length?emailsBlock(rows,"Copy winners' emails"):`<p class="meta">No winners yet.</p>`}<p class="meta">Sleeper Pick goes to an archer, not a team, so it has no email here.</p></section>`})():""}
+    return`<section class="card wem"><h3>Winners' emails <span class="meta">(only you see this)</span></h3>${rows.length?emailsBlock(rows,"Copy winners' emails"):`<p class="meta">No winners yet.</p>`}<p class="meta">When teams tie for an award, only the tiebreaker winner is listed. For Sleeper Pick, that is the team that picked the archer.</p></section>`})():""}
   <div class="row" style="justify-content:center;margin-top:28px"><button class="btn" data-act="shareawards">Share the awards</button><a class="btn ghost" href="#standings" style="display:inline-flex;align-items:center;text-decoration:none">See full standings</a></div>
-  <p class="meta" style="text-align:center">Ties: every tied winner is shown. Sleeper Pick only counts archers on at least one team.</p>`}
+  <p class="meta" style="text-align:center">Ties: every tied team is shown, and the prize goes to the tied team with the most total points. Sleeper Pick only counts archers on at least one team.</p>`}
 
 /* ================= Trash-talk wall ================= */
 let posts=[],reacts=[],postBusy=false;const LSP="ringerFantasy.posts";
