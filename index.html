@@ -118,6 +118,27 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 @media(prefers-reduced-motion:reduce){.tickin,.bblive i{animation:none}}
 .bbsh2{display:flex;justify-content:space-between;align-items:baseline;gap:1vw}.bbsh2 h3{font-size:1.9vw;margin:0}.bbsh2 .lv{color:#ff8a8a;font-weight:600;font-size:1vw}
 .bbsub{margin:.2vh 0 .4vh;color:var(--mut);font-size:.95vw}.bbl.dim{color:#8a8a8a}
+.bbr.newlead{animation:bbfl 1.6s ease-in-out infinite;outline:2px solid var(--red);outline-offset:-2px}
+@keyframes bbfl{0%,100%{background:rgba(231,0,0,.14)}50%{background:rgba(231,0,0,.42)}}
+.bbnl{font-family:inherit;font-size:.8vw;font-weight:700;background:var(--red);color:#fff;border-radius:.3vw;padding:.1vh .4vw;margin-left:.7vw;vertical-align:middle;letter-spacing:.03em}
+.bbnw{font-size:.75vw;font-weight:700;background:var(--red);color:#fff;border-radius:.3vw;padding:0 .35vw;vertical-align:middle}
+.bbsp{position:relative;flex:1;display:flex;flex-direction:column}
+.spc{display:none;flex:1;flex-direction:column}.spc.on{display:flex}
+.spk{color:#ff8a8a;font-weight:700;font-size:.95vw;letter-spacing:.05em;text-transform:uppercase}
+.spt{font-family:Forum,serif;font-size:2.4vw;line-height:1.1;margin:.5vh 0 .2vh}
+.sps{color:var(--mut);font-size:1vw;margin-bottom:.8vh}
+.spb{font-size:1.15vw;line-height:1.45}.spb ul{margin:0;padding-left:1.2vw}
+.spbig{font-family:Forum,serif;font-size:3.6vw;line-height:1.05;color:#fff}
+.spd{display:flex;gap:.4vw;margin-top:.8vh}.spd i{width:.5vw;height:.5vw;min-width:6px;min-height:6px;border-radius:50%;background:#444}.spd i.on{background:var(--red)}
+.bbua{position:absolute;left:0;right:0;top:36%;z-index:5;background:var(--red);color:#fff;text-align:center;padding:2.4vh 3vw;transform:scaleY(0);transition:transform .3s;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
+.bbua.on{transform:scaleY(1)}
+.bbuat{font-family:Forum,serif;font-size:6vw;line-height:1}
+.bbuas{font-size:1.9vw;margin-top:1vh}.bbuan{font-size:1.5vw;margin-top:.6vh;opacity:.92}
+.bbw{position:relative}
+.bbdl{display:grid;grid-template-columns:6.2vw minmax(0,1fr) minmax(0,1fr);gap:.8vw;align-items:center;padding:.7vh 0;border-top:1px solid #2a2a2d;font-size:1.1vw;line-height:1.2}
+.bbdl b{font-family:Forum,serif;font-weight:400;font-size:1.5vw;margin-left:.3vw}.bbdl .mut{color:var(--mut);font-style:normal}
+.bbdl>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bbdl .tag{font-size:.8vw;padding:.3vh .4vw;text-align:center;display:block}
+.bbdlh{color:var(--mut);font-size:.9vw;border-top:0;padding:.3vh 0}
 .bbband{flex:none;padding:0 3vw 1.4vh}.bbbh{display:flex;align-items:baseline;gap:1vw;margin-bottom:.8vh}.bbbh h2{font-size:1.9vw;margin:0}.bbbh span{color:var(--mut);font-size:.95vw}
 .bbfl{display:grid;gap:.7vw}.bbfc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.9vh .8vw}.bbfc.live{border:2px solid var(--red);background:rgba(231,0,0,.10)}.bbfc.next{opacity:.5}
 .bbfh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4vh}.bbfh b{font-size:1.1vw}.bbfh span{font-size:.8vw;font-weight:600;color:var(--mut)}.bbfc.live .bbfh span{color:#ff8a8a}
@@ -433,7 +454,7 @@ function route(){const h=location.hash.slice(1);return ROUTES.includes(h)?h:"tea
 function render(force){const ae=document.activeElement;
   if(!force&&ae&&ae.matches("input:not([type=checkbox]),select,textarea")&&view.contains(ae)){pend=true;return}
   pend=false;const r=route();if(r=="standings")markWallSeen();header();
-  document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();return}
+  document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();bbDemoCheck();bbNextAlert();return}
   view.innerHTML=notes()+(r=="team"?teamView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
 }
 
@@ -608,7 +629,7 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
     <details class="emd" id="rmd"${rmOpen?" open":""}><summary>${rmOpen?"Hide":"Show"} the list: ${rmRows.length} team${rmRows.length==1?"":"s"}</summary>
     <ul class="rmlist">${rmRows.map(t=>{const arm=rmArm==t.id,you=t.id==myId||t.id=="me";return`<li><div><b>${tn(t)}</b><span class="meta">${esc(t.owner||"A player")}${you?" (you)":""} · ${t.picks.filter(Boolean).length}/7 archers${emailOf(t.id)?" · "+esc(emailOf(t.id)):""}</span></div>
       <div class="row" style="margin:0">${arm?`<button class="btn ghost" data-act="rmcancel">Cancel</button>`:""}<button class="btn ${arm?"":"ghost "}rmbtn" data-act="rmteam" data-id="${esc(t.id)}">${arm?"Yes, remove":"Remove"}</button></div></li>`}).join("")}</ul></details>`}`;
-  return`<h2>Commissioner</h2>${check}${emails}${remove}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a></div>
+  return`<h2>Commissioner</h2>${check}${emails}${remove}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a><a class="btn ghost" href="#bigboard" target="_blank" rel="noopener" data-act="bbdemo" style="display:inline-flex;align-items:center;text-decoration:none">Preview an upset alert</a></div>
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
   <h3 class="sec">Results from Eyes on Score</h3>
   <div class="imp"><label for="eoslink">Results page</label><div class="row" style="margin:6px 0 10px"><input id="eoslink" type="url" placeholder="https://texasringer.eyesonscore.com/events/2026/" value="${esc(linkDraft??(league.link||FEEDS[season]))}"><button class="btn ghost" data-act="savelink">Save link</button>${league.link?`<a class="btn ghost ext" href="${esc(league.link)}" target="_blank" rel="noopener">Open ↗</a>`:""}</div>
@@ -662,6 +683,7 @@ document.addEventListener("click",async e=>{if(e.target.id=="modal"){e.target.hi
   if(act=="copyemails"){copyText(b.dataset.e||"");return}
   if(act=="mshare"){shareModal();return}
   if(act=="react"){react(b.dataset.p,b.dataset.k);return}
+  if(act=="bbdemo"){try{localStorage.setItem("rfBBDemo",Date.now())}catch{}return}
   if(act=="rmcancel"){rmArm=null;render(true);return}
   if(act=="rmteam"){const id=b.dataset.id;if(rmArm!=id){rmArm=id;render(true);return}rmArm=null;const t=teams.find(x=>x.id==id),nm=t?(t.name||t.owner||"Team"):"Team";
     if(mode=="local"){if(id=="me"){me={name:"",picks:Array(7).fill(null),cap:null,id:"me"};teams=[me];saveLocal()}else teams=teams.filter(x=>x.id!=id);render(true);toast("Removed "+nm);return}
@@ -960,6 +982,40 @@ async function delPost(pid){if(mode=="local"){posts=posts.filter(p=>p.id!=pid);r
 let bbHist=[];
 function bbRanks(){const P=pts(),sc=anyScores();const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({id:t.id,v:sc?teamTotal(t,P):teamProj(t)}));const R={};list.forEach(t=>R[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);return R}
 function bbTick(){bbHist.push({t:Date.now(),r:bbRanks()});bbHist=bbHist.filter(h=>Date.now()-h.t<12*60e3)}
+/* New leader flash */
+let bbLead=null;
+function bbLeader(list,cur){const top=list.filter(t=>cur[t.id]==1);if(top.length!=1||!anyScores())return null;const id=top[0].id;
+  if(!bbLead)bbLead={id,t:0};else if(bbLead.id!=id)bbLead={id,t:Date.now()};return bbLead.t&&Date.now()-bbLead.t<3*60e3?id:null}
+/* Upset alerts */
+let bbSeen=null,bbQ=[],bbShowing=false;
+function bbScanUpsets(){const done=[];for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.w&&!m.bye&&m.a&&m.b)done.push({d,m})}}
+  const keys=done.map(x=>x.d+x.m.id+x.m.w);if(!bbSeen){bbSeen=new Set(keys);return}
+  done.forEach((x,i)=>{if(bbSeen.has(keys[i]))return;bbSeen.add(keys[i]);const w=x.m.w,l=x.m.a==w?x.m.b:x.m.a,sw=seedOf(w)||99,sl=seedOf(l)||99;
+    if(sw-sl>=4)bbQ.push({d:x.d,w,l,sw,sl,rd:x.m.rd,n:teams.filter(t=>t.picks.includes(l)).length})});
+  if(bbQ.length>3)bbQ=bbQ.sort((a,b)=>(b.sw-b.sl)-(a.sw-a.sl)).slice(0,3)}
+function bbAlertHTML(u){if(u.demo)return`<div class="bbuat">UPSET!</div><div class="bbuas">This is a preview. When a lower seed knocks out a higher seed, the alert shows here for a few seconds.</div>`;
+  return`<div class="bbuat">UPSET!</div><div class="bbuas">#${u.sw} ${esc(BY[u.w].n)} knocks out #${u.sl} ${esc(BY[u.l].n)} · ${DIV[u.d]} ${esc(RLAB[u.rd]||"")}</div><div class="bbuan">${u.n?`${u.n} fantasy team${u.n==1?"":"s"} just lost ${u.n==1?"their":"a"} pick`:"No fantasy team had picked "+esc(BY[u.l].n)}</div>`}
+function bbDemoCheck(){try{const t=+localStorage.getItem("rfBBDemo")||0;if(t&&Date.now()-t<60e3){localStorage.removeItem("rfBBDemo");bbQ.push({demo:true})}}catch{}}
+function bbNextAlert(){if(bbShowing||!bbQ.length||route()!="bigboard")return;const w=$(".bbw");if(!w)return;const u=bbQ.shift();bbShowing=true;
+  const el=document.createElement("div");el.className="bbua";el.setAttribute("role","status");el.innerHTML=bbAlertHTML(u);w.appendChild(el);requestAnimationFrame(()=>el.classList.add("on"));
+  setTimeout(()=>{el.classList.remove("on");setTimeout(()=>{el.remove();bbShowing=false;bbNextAlert()},400)},8000)}
+/* Rotating spotlight */
+let spI=0;
+function bbSpot(sc,P,liveIds){const N=teams.filter(t=>t.picks.some(Boolean)),L=locked(),cards=[];
+  const sco=A.filter(a=>scoutOf(a));let pool=sco.filter(a=>liveIds.has(a.id));const now=pool.length>0;
+  if(!now)pool=sco.filter(a=>!sc||path(a.id).alive);pool=pool.sort(()=>0).slice(0,40);
+  const pick=[];const step=Math.max(1,Math.floor(pool.length/3));for(let i=(Math.floor(Date.now()/9e5))%Math.max(1,pool.length),c=0;c<Math.min(3,pool.length);c++,i=(i+step)%pool.length)if(!pick.includes(pool[i]))pick.push(pool[i]);
+  pick.forEach(a=>{const f=scoutOf(a).f;cards.push({k:now?"Scouting report · on the line now":"Scouting report",t:a.n,s:`${DIV[a.d]} · ${sc&&P[a.id]!=null?fmt(P[a.id])+" pts so far":"projected "+projR(a.id)+" pts"}`,b:`<ul>${f.slice(0,2).map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`})});
+  if(N.length>=2){const cnt={};N.forEach(t=>t.picks.forEach(id=>{if(id)cnt[id]=(cnt[id]||0)+1}));const top=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+    if(top&&cnt[top]>1){const caps=L?N.filter(t=>t.cap==top).length:0;cards.push({k:"Most picked",t:BY[top].n,s:DIV[BY[top].d],b:`<div class="spbig">${cnt[top]} of ${N.length}</div>teams have ${esc(BY[top].n.split(" ")[0])} on their roster.${caps?` ${caps} made ${caps==1?"them":"them"} captain.`:""}`})}}
+  if(L&&sc){const ct=N.filter(t=>t.cap&&P[t.cap]!=null).sort((a,b)=>P[b.cap]-P[a.cap])[0];if(ct)cards.push({k:"Captain watch",t:BY[ct.cap].n,s:`Captain of ${esc(ct.name||"Unnamed team")}`,b:`<div class="spbig">${fmt(P[ct.cap]*1.5)} pts</div>after the 1.5× bonus. The best-scoring captain right now.`})}
+  if(sc){const h=A.filter(a=>P[a.id]!=null).sort((a,b)=>P[b.id]-P[a.id])[0];if(h)cards.push({k:"Hottest archer",t:h.n,s:`${DIV[h.d]} · ${esc(status(h.id)||"")}`,b:`<div class="spbig">${fmt(P[h.id])} pts</div>The most fantasy points of any archer so far.`});
+    const picked=new Set(N.flatMap(t=>t.picks).filter(Boolean));const sl=[...picked].filter(id=>P[id]!=null).map(id=>[id,P[id]-(PROJ[id]||0)]).sort((a,b)=>b[1]-a[1])[0];
+    if(sl&&sl[1]>0){const n=N.filter(t=>t.picks.includes(sl[0])).length;cards.push({k:"Award race · preliminary",t:"Sleeper Pick",s:"Beating their projection by the most",b:`<div class="spbig">+${fmt(sl[1])}</div>${esc(BY[sl[0]].n)}, projected ${projR(sl[0])} and already at ${fmt(P[sl[0]])}. Picked by ${n} team${n==1?"":"s"}.`})}}
+  else{const tp=[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))[0];if(tp)cards.push({k:"Top projected archer",t:tp.n,s:DIV[tp.d],b:`<div class="spbig">${projR(tp.id)} pts</div>projected, the highest in the field.`})}
+  if(!cards.length)return"";spI%=cards.length;
+  return`<section class="bbbox bbsp" aria-live="polite">${cards.map((c,i)=>`<div class="spc${i==spI?" on":""}"><div class="spk">${esc(c.k)}</div><div class="spt">${esc(c.t)}</div><div class="sps">${c.s}</div><div class="spb">${c.b}</div></div>`).join("")}<div class="spd">${cards.map((_,i)=>`<i class="${i==spI?"on":""}"></i>`).join("")}</div></section>`}
+setInterval(()=>{const cs=document.querySelectorAll(".bbsp .spc");if(!cs.length)return;spI=(spI+1)%cs.length;cs.forEach((c,i)=>c.classList.toggle("on",i==spI));document.querySelectorAll(".bbsp .spd i").forEach((d,i)=>d.classList.toggle("on",i==spI))},15e3);
 /* Qualification flights: start times (Central) per season, from the schedule */
 const FLIGHT_AT={F2:"2026-12-04T14:00:00-06:00",F6:"2026-12-04T18:00:00-06:00",S8:"2026-12-05T08:00:00-06:00",S12:"2026-12-05T12:00:00-06:00",S4:"2026-12-05T16:00:00-06:00",
   F6P:"2025-09-19T18:00:00-05:00",S9A:"2025-09-20T09:00:00-05:00",S1P:"2025-09-20T13:00:00-05:00",S5P:"2025-09-20T17:00:00-05:00"};
@@ -982,14 +1038,25 @@ function bbQual(){const {fl,live}=flights();
   const rows=f?ORDER.map(d=>{const ids=f.ids.filter(id=>BY[id].d==d);if(!ids.length)return`<div class="bbl dim"><span class="tag t-${d}">${DSHORT[d]}</span><span>No ${DIV[d]} archers this flight</span></div>`;
     const sc2=ids.filter(id=>league.scores[id]!=null).sort((a,b)=>league.scores[b]-league.scores[a]||(league.xs[b]||0)-(league.xs[a]||0));const top=sc2[0];
     return`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${top?esc(BY[top].n):title=="Up next"?esc(ids.length+" archer"+(ids.length==1?"":"s")):"Waiting for scores"}</span><span class="bbrd">${top?"bale "+esc(BY[top].b)+" · ":""}${ids.length} shooting</span><b class="bbhp">${top?league.scores[top]:""}</b></div>`}).join(""):`<p class="bbmsg">Flight times will show here.</p>`;
-  return{band:`<section class="bbband"><div class="bbbh"><h2>Division leaders after each flight</h2><span>Red marks a new leader in that flight</span></div><div class="bbfl" style="grid-template-columns:repeat(${fl.length},minmax(0,1fr))">${cols}</div></section>`,
+  const sIdx=fl.map((x,i)=>x.state!="next"&&x.scored?i:-1).filter(i=>i>=0),li=sIdx.length?sIdx[sIdx.length-1]:-1;
+  const LD=li>=0?leadersAfter(fl,li):null,PV=sIdx.length>1?leadersAfter(fl,sIdx[sIdx.length-2]):{};
+  const lbox=LD?`<div class="bbsh2"><h3>Division leaders</h3><span class="lv">after ${esc(fl[li].label)}</span></div><p class="bbsub">Overall qualification leader in each division. <span class="bbnw">NEW</span> means they took the lead in the latest flight.</p>${ORDER.map(d=>{const a=LD[d];const nw=a&&sIdx.length>1&&(!PV[d]||PV[d].id!=a.id);
+    return`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${a?esc(a.n):"–"}${nw?' <span class="bbnw">NEW</span>':""}</span><b class="bbhp">${a?league.scores[a.id]:""}</b></div>`}).join("")}`:"";
+  if(LD&&f){const flTop=d=>{const ids=f.ids.filter(id=>BY[id].d==d&&league.scores[id]!=null).sort((a,b)=>league.scores[b]-league.scores[a]||(league.xs[b]||0)-(league.xs[a]||0));return ids[0]?BY[ids[0]]:null};
+    const tbl=`<div class="bbsh2"><h3>Division leaders</h3><span class="lv">${sub}</span></div>
+    <div class="bbdl bbdlh"><span></span><span>${title=="On the line now"?"Top this flight":"Top in "+esc(f.label)}</span><span>Overall leader</span></div>
+    ${ORDER.map(d=>{const t=flTop(d),a=LD[d],nw=a&&sIdx.length>1&&(!PV[d]||PV[d].id!=a.id);
+      return`<div class="bbdl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${t?`${esc(t.n)} <b>${league.scores[t.id]}</b>`:f.ids.some(id=>BY[id].d==d)?'<i class="mut">Waiting</i>':'<i class="mut">None shooting</i>'}</span><span>${a?`${esc(a.n)} <b>${league.scores[a.id]}</b>${nw?' <span class="bbnw">NEW</span>':""}`:"–"}</span></div>`}).join("")}`;
+    return{lbox:"",band:"",panel:tbl}}
+  return{lbox:"",band:"",
     panel:`<div class="bbsh2"><h3>${title}</h3><span class="lv">${sub}</span></div><p class="bbsub">Top archer in each division${title=="Up next"?"":", live scores"}</p>${rows}`}}
-function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(d=>league.seeds[d]);const maxRows=qualMode?8:10;
+function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(d=>league.seeds[d]);const maxRows=10;
   const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({...t,v:sc?teamTotal(t,P):teamProj(t)})).sort((a,b)=>b.v-a.v);
   const cur={};list.forEach(t=>cur[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);
   const past=bbHist.filter(h=>Date.now()-h.t>=4.5*60e3).pop()||bbHist[0];
+  const nl=bbLeader(list,cur);bbScanUpsets();
   const rows=list.slice(0,maxRows).map(t=>{const mv=past&&past.r[t.id]?past.r[t.id]-cur[t.id]:0;
-    return`<div class="bbr${cur[t.id]==1?" lead":""}"><span class="bbk">${cur[t.id]}</span><span class="bbn"><b>${esc(t.name||"Unnamed team")}</b><span>${esc(t.owner||"")}</span></span><span class="bbm ${mv>0?"up":mv<0?"dn":""}">${mv>0?"▲ "+mv:mv<0?"▼ "+(-mv):"–"}</span><span class="bbp">${sc?fmt(t.v):Math.round(t.v)}</span></div>`}).join("");
+    return`<div class="bbr${cur[t.id]==1?" lead":""}${nl==t.id?" newlead":""}"><span class="bbk">${cur[t.id]}</span><span class="bbn"><b>${esc(t.name||"Unnamed team")}${nl==t.id?'<span class="bbnl">NEW LEADER</span>':""}</b><span>${esc(t.owner||"")}</span></span><span class="bbm ${mv>0?"up":mv<0?"dn":""}">${mv>0?"▲ "+mv:mv<0?"▼ "+(-mv):"–"}</span><span class="bbp">${sc?fmt(t.v):Math.round(t.v)}</span></div>`}).join("");
   const RO={r:0,q:1,s:2,f:3,b:3};let live=[];
   for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.a&&m.b&&!m.w&&!m.dead)live.push({d,m})}}
   live.sort((x,y)=>RO[y.m.rd]-RO[x.m.rd]);live=live.slice(0,4);
@@ -999,13 +1066,15 @@ function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(
   const side2=`<h3>${sc?"Hottest archers":"Top projected archers"}</h3>${hot.map(a=>`<div class="bbl"><span>${esc(a.n)}</span><span class="bbrd">${sc?esc(status(a.id)||DSHORT[a.d]):DSHORT[a.d]}</span><b class="bbhp">${sc?fmt(P[a.id]):Math.round(PROJ[a.id]||0)}</b></div>`).join("")}`;
   const tk=posts.slice(0,10).map(p=>`<span><b>${esc(p.name||"Someone")}:</b> ${esc(p.text)}</span><span class="dot">•</span>`).join("")||`<span>${locked()?"Follow along at":"Join the league and pick your team at"} ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
   const now=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});const Q=qualMode?bbQual():null;
+  const liveIds=new Set(qualMode?(()=>{const {fl,live:lv}=flights();return lv>=0?fl[lv].ids:[]})():live.flatMap(({m})=>[m.a,m.b]));
+  const spot=bbSpot(sc,P,liveIds);
   return`<div class="bbw${qualMode?" qm":""}"><div class="bbs"><i></i><i></i><i></i></div>
   <div class="bbh"><img class="bblogo" alt="" src="${esc((document.querySelector(".logo")||{}).src||"")}"><div class="bbt">Ringer <span>Fantasy Games</span></div><span class="bblive"><i></i>LIVE</span>
     <div class="bbinfo"><b>${esc(SEASONS[season].label)}</b><span>Updated ${now} · refreshes every minute</span></div>
     <div class="bbctl"><button class="btn ghost" data-act="fullscreen">Full screen</button><a class="btn ghost" href="#standings" style="text-decoration:none;display:inline-flex;align-items:center">Exit</a></div></div>
   <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>maxRows?" · top "+maxRows+" shown":""}</span></div>
     <div class="bbhd"><span class="bbk">Rank</span><span class="bbn">Team</span><span class="bbm">Move</span><span class="bbp">${sc?"Points":"Projected"}</span></div>${rows||`<p class="bbmsg">No teams yet.${locked()?"":" Scan the code to join!"}</p>`}</section>
-    <aside class="bbside">${qualMode?`<section class="bbbox">${Q.panel}</section>`:`<section class="bbbox">${side1}</section><section class="bbbox">${side2}</section>`}
+    <aside class="bbside">${qualMode?`<section class="bbbox">${Q.panel}</section>${Q.lbox?`<section class="bbbox">${Q.lbox}</section>`:""}`:`<section class="bbbox">${side1}</section>`}${spot}
       ${locked()?"":`<section class="bbqrbox"><div id="bbqr" role="img" aria-label="QR code for ${esc(siteHost())}"></div><div><div class="bbq1">Scan to join</div><div class="bbq2">${esc(siteHost())}</div></div></section>`}</aside></div>
   ${qualMode?Q.band:""}<div class="bbtick"><span class="bbtl">${posts.length?"Trash talk":"Ringer Fantasy Games"}</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
 function drawQR(){const el=$("#bbqr");if(!el)return;
