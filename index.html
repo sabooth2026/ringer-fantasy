@@ -174,6 +174,27 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 .hlt{color:#ffd45a}.lvtm{display:block;font-size:12px;color:var(--mut);margin-top:2px}
 .awtb{margin-top:10px;padding:10px 12px;border:1px solid #5a4a14;background:#1c1708;border-radius:10px}.awtb b{color:#ffd45a;font-weight:600}.awtb p{margin:4px 0 0}
 .wdpill{display:inline-block;margin-left:8px;border:1px solid #e70000;color:#ff8a8a;border-radius:99px;font-size:11px;padding:1px 8px;vertical-align:middle}
+.sch2{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}.sch2 h2{margin:0}
+.lvpill{font-size:13px;color:#ff8a8a;border:1px solid #7a1a1a;border-radius:99px;padding:2px 10px}
+.scv{display:flex;gap:8px;margin:10px 0 14px;flex-wrap:wrap}.scv button{background:var(--card);color:#ddd;border:1px solid var(--line);border-radius:99px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}.scv button.on{background:var(--red);border-color:var(--red);color:#fff}
+.sckey{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:0 0 8px}.sckey i{display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px;margin-right:5px;vertical-align:-1px}.sckey .g{color:#ffd45a}.sckey .lvk{color:#ff8a8a}
+.sctw{overflow-x:auto}.sct{width:100%;border-collapse:collapse;font-size:15px}.sct th{color:var(--mut);font-weight:400;font-size:12px;text-align:left;padding:6px 8px;border-bottom:1px solid #2a2a2d}
+.sct td{padding:9px 8px;border-bottom:1px solid #1d1d20;vertical-align:top}.sct .r{text-align:right}.sct .g{color:#ffd45a}.sct b{font-weight:600}
+.sct tr.mine td{background:#1b1420}.sct tr.mine td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+.sct tr.cut16 td{border-bottom:2px dashed #666}.sct tr.cut32 td{border-bottom:2px dotted #555}
+.prg{font-size:12px;color:#ff9b9b;margin-top:2px}.pbar{height:3px;background:#2a2a2d;border-radius:2px;margin-top:4px;max-width:220px}.pbar i{display:block;height:3px;background:var(--red);border-radius:2px}
+.sbw{overflow-x:auto;padding-bottom:6px}.sbg{display:grid;gap:10px;min-width:min-content}
+.sbcol h4{font-size:12px;color:var(--mut);font-weight:400;margin:0 0 8px;font-family:inherit}
+.sbm{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden;font-size:14px}
+.sbm>div{display:flex;justify-content:space-between;gap:6px;padding:7px 9px}.sbm>div+div{border-top:1px solid #222}
+.sbm .w{color:#fff;font-weight:600}.sbm .l{color:#777}.sbm .me{box-shadow:inset 3px 0 0 var(--red)}.sbm .sbye{color:#555}
+.sbm s{text-decoration:none;color:#888;font-size:11px;margin-right:5px}.sbm b{font-family:Forum,serif;font-weight:400;font-size:17px}
+.sbm.lv{border-color:#7a1a1a}.sbm .sblvt{font-size:11px;color:#ff8a8a;padding:4px 9px 0}
+.sblab{font-size:11px;color:#ffd45a;margin:2px 0 4px;text-transform:uppercase;letter-spacing:.05em}
+.pod3{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:10px;align-items:end}
+.pod1{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center}.pod1 b{display:block;font-family:Forum,serif;font-weight:400;font-size:22px;margin:4px 0}
+.pod1.g{border-color:#c99a1e;padding:22px 10px}.pod1.s{border-color:#8a8a8a}.pod1.bz{border-color:#8a5a2b}.pod1.me{box-shadow:0 0 0 3px rgba(231,0,0,.5)}
+@media(max-width:560px){.pod3{grid-template-columns:1fr}.pod1.g{order:-1}}
 .bbua.rec{background:#c99a1e;color:#111}.tkrec{color:#ffd45a;font-weight:700}
 .bbua.on{transform:scaleY(1)}
 .bbuat{font-family:Forum,serif;font-size:6vw;line-height:1}
@@ -403,7 +424,7 @@ function buildProj(){PROJ={};PHIST={};const yr=season=="2025"?2025:2026,PRIOR=0.
   for(const d of ORDER){const ids=A.filter(a=>a.d==d).map(a=>a.id),tot={};ids.forEach(i=>tot[i]=0);
     const win=(x,y)=>x&&!y?x:y&&!x?y:!x?null:(S[x]+SIG*gauss()>S[y]+SIG*gauss()?x:y);
     for(let it=0;it<N;it++){const perf={};ids.forEach(i=>perf[i]=S[i]+SIG*gauss());const ord=[...ids].sort((x,y)=>perf[y]-perf[x]);
-      ord.forEach((i,k)=>{if(k<CUT)tot[i]+=qualPts(k+1)+SC.cut});
+      ord.forEach((i,k)=>{tot[i]+=qualPts(k+1)+(k<CUT?SC.cut:0)});
       const sd=ord.slice(0,16);while(sd.length<16)sd.push(null);
       const w1=PAIRS.map(([x,y])=>{const w=win(sd[x-1],sd[y-1]);if(w)tot[w]+=SC.win.r;return w});
       const w2=[0,1,2,3].map(k=>{const w=win(w1[2*k],w1[2*k+1]);if(w)tot[w]+=SC.win.q;return w});
@@ -423,8 +444,9 @@ const LOCK=new Date("2026-12-04T14:00:00-06:00");
 const CUT=16;            // top 16 per division move on to eliminations
 const SC={cut:5,         // bonus for making the top 16
   win:{r:10,q:10,s:15,f:20,b:10}}; // points per match won: Round of 16, Quarterfinal, Semifinal, Gold match, Bronze match
-// Qualification rank points: 1st = 16, 2nd = 15 ... 16th = 1, below the cut = 0
-const qualPts=r=>r<=CUT?CUT+1-r:0;
+const QCUT=32;           // qualification rank points go down to 32nd place
+// Qualification rank points: 1st = 32, 2nd = 31 ... 32nd = 1, below 32nd = 0
+const qualPts=r=>r>=1&&r<=QCUT?QCUT+1-r:0;
 const RLAB={r:"Round of 16",q:"Quarterfinal",s:"Semifinal",f:"Gold match",b:"Bronze match"};
 const PAIRS=[[1,16],[8,9],[5,12],[4,13],[3,14],[6,11],[7,10],[2,15]];
 const MIDS=["r0","r1","r2","r3","r4","r5","r6","r7","q0","q1","q2","q3","s0","s1","f","b"];
@@ -489,7 +511,7 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");cl
 function lockText(){if(locked())return"Lineups locked";const ms=LOCK-Date.now();const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
   return"Lineups lock in "+(d?d+"d "+h+"h":h?h+"h "+m+"m":m+"m")}
 function header(){$("#sub").textContent=SEASONS[season].label+" · "+A.length+" archers across 5 adult divisions";$("#sub").classList.toggle("testm",season=="2025");const p=$("#lockpill");p.textContent=lockText();p.classList.toggle("lk",locked());
-  const r=route();const tabs=[["team","My Team"],["live","Live"],["archers","Archers"],["results","Results"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
+  const r=route();const tabs=[["team","My Team"],["live","Live"],["archers","Archers"],["results","Scores"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
   if(isAdmin||mode=="local")tabs.push(["commish","Commissioner"]);
   const ac=$("#acct");ac.innerHTML=authUser?`Signed in as ${esc(ownerName())} · <button class="lnk" data-act="signout">Sign out</button>`:(mode=="shared"?`<a class="lnk" href="#team">Sign in</a>`:"");
   $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}${h=="live"&&liveNow()?" lvon":""}">${h=="live"&&liveNow()?'<span class="lvdot" aria-hidden="true"></span>':""}${l}${h=="standings"&&wallNew()?`<span class="ndot" aria-label="${wallNew()} new trash talk posts"></span>`:""}</a>`).join("")}
@@ -498,7 +520,7 @@ function route(){const h=location.hash.slice(1);return ROUTES.includes(h)?h:"tea
 
 function render(force){const ae=document.activeElement;
   if(!force&&ae&&ae.matches("input:not([type=checkbox]),select,textarea")&&view.contains(ae)){pend=true;return}
-  pend=false;const r=route();if(r=="standings")markWallSeen();header();
+  pend=false;const r=route();if(r=="standings")markWallSeen();eosResume();header();
   document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();bbFitTalk();bbDemoCheck();bbNextAlert();return}
   view.innerHTML=notes()+(r=="team"?teamView():r=="live"?liveView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
 }
@@ -635,7 +657,7 @@ function rulesView(){const w=SC.win;return`<div class="rules"><h2>How it works</
 <h3>Build a roster of 7</h3><ul><li>One archer from each division: Barebow, Traditional, Freestyle Compound, Bowhunter and Recurve.</li><li>Two Flex spots, filled from any division.</li><li>Anyone can pick the same archer, so there's no draft order to fight over.</li><li>Name one captain. Your captain's points count 1.5×.</li></ul>
 <h3>Lineups lock at the first flight</h3><p>Rosters lock Friday, December 4 at 2:00 PM Central. After that, everyone's rosters and how often each archer was picked become visible.</p>
 <h3>Points, part 1: qualification</h3><p>Archers are ranked within their own division, so a compound score never competes with a barebow score. Ties on score are broken by the number of 7s.</p>
-<table><tbody><tr><td>Qualification rank</td><td class="n">1st = ${qualPts(1)}, 2nd = ${qualPts(2)} … ${CUT}th = ${qualPts(CUT)}</td></tr><tr><td>Below ${CUT}th</td><td class="n">0</td></tr><tr><td>Make the top ${CUT} (eliminations)</td><td class="n">+${SC.cut}</td></tr></tbody></table>
+<table><tbody><tr><td>Qualification rank</td><td class="n">1st = ${qualPts(1)}, 2nd = ${qualPts(2)} … ${QCUT}nd = ${qualPts(QCUT)}</td></tr><tr><td>Below ${QCUT}nd</td><td class="n">0</td></tr><tr><td>Make the top ${CUT} (eliminations)</td><td class="n">+${SC.cut}</td></tr></tbody></table>
 <h3>Points, part 2: eliminations</h3><p>The top ${CUT} in each division go into a seeded bracket (1 vs 16, 8 vs 9, and so on). Every match your archer wins earns points:</p>
 <table><tbody><tr><td>Win in the Round of 16</td><td class="n">+${w.r}</td></tr><tr><td>Win a quarterfinal</td><td class="n">+${w.q}</td></tr><tr><td>Win a semifinal</td><td class="n">+${w.s}</td></tr><tr><td>Win the gold match</td><td class="n">+${w.f}</td></tr><tr><td>Win the bronze match</td><td class="n">+${w.b}</td></tr></tbody></table>
 <p>A bye counts as a win. Divisions with fewer than ${CUT} archers (Bowhunter, Recurve) give byes to their top seeds.</p>
@@ -659,8 +681,37 @@ function qualTable(d,edit){const Q=qual(d),P=pts();const done=new Set(Q.map(r=>r
   if(!rows)return`<div class="empty-st">No qualification scores posted yet.</div>`;
   return`<table class="qt"><thead><tr><th class="n">Rank</th><th>Archer</th><th class="n">Score</th><th class="n">7s</th>${edit?"":`<th class="n">Fantasy pts</th><th class="n pjc">Projected</th>`}</tr></thead><tbody>${rows}</tbody></table>`}
 function divChips(act,cur){return`<div class="chips">${ORDER.map(d=>`<button class="chip${cur==d?" on":""}" data-act="${act}" data-d="${d}">${DIV[d]}</button>`).join("")}</div>`}
-function resultsView(){const d=rdiv,M=bracket(d);
-  return`<h2>Results</h2>${league.link?`<p><a class="ext" href="${esc(league.link)}" target="_blank" rel="noopener">Official live scores on Eyes on Score ↗</a></p>`:""}${divChips("rdiv",d)}${M?`<h3 class="sec">${DIV[d]} eliminations</h3>${bracketHtml(d,false)}`:""}<h3 class="sec">${DIV[d]} qualification</h3>${qualTable(d,false)}`}
+let rview=null;
+function liveDiv(d){return live&&live.season==season&&live.divs&&live.divs[d]?live.divs[d]:null}
+function resultsView(){const d=rdiv,P=pts(),L=locked(),M=bracket(d),LD=liveDiv(d);const N=teams.filter(t=>t.picks.some(Boolean));
+  const own=id=>N.filter(t=>t.picks.includes(id)).length,showOwn=(L||mode=="local")&&N.length;
+  const mine=id=>id&&me.picks.includes(id),cap=id=>id&&me.cap==id;
+  const hasBr=!!(M||(LD&&LD.rounds&&LD.rounds.length)),done=M&&M.f&&M.f.w&&M.b&&M.b.w;
+  const v=rview||(done?"p":hasBr?"b":"q");
+  const lvNow=liveNow(),upd=live&&live.season==season&&live.at?Math.max(0,Math.round((Date.now()-live.at)/60e3)):null;
+  const head=`<div class="sch2"><h2>Scores</h2>${lvNow?`<span class="lvpill">● Live</span>`:""}${upd!=null?`<span class="meta">Updated ${upd<1?"just now":upd+" min ago"}</span>`:""}</div>`;
+  const views=`<div class="scv">${[["q","Qualification"],["b","Bracket"],["p","Final placings"]].map(([k,l])=>`<button class="${v==k?"on":""}" data-act="rview" data-v="${k}">${l}</button>`).join("")}</div>`;
+  const key=`<p class="sckey"><span><i></i>Your team</span>${showOwn?"<span>Teams = fantasy teams that picked them</span>":""}<span class="g">Gold = fantasy points</span></p>`;
+  let body="";
+  if(v=="q"){let rows;
+    if(LD)rows=LD.q.map(([id,n,run,shot,of,x,rk])=>({id,n,sc:run,shot,of,x,rk}));
+    else rows=qual(d).map(r=>({id:r.id,n:BY[r.id].n,sc:r.score,shot:0,of:0,x:league.xs[r.id],rk:r.rank}));
+    rows=rows.filter(r=>r.sc>0||(r.shot>0)).sort((a,b)=>(b.sc||0)-(a.sc||0)||(b.x||0)-(a.x||0));
+    body=!rows.length?`<p class="empty-st">No ${DIV[d]} scores yet. Qualification scores show up here as soon as archers start shooting.</p>`:
+    `${key}<div class="sctw"><table class="sct"><thead><tr><th>#</th><th>Archer</th><th class="r">Score</th><th class="r">7s</th><th class="r">Pts</th></tr></thead><tbody>${rows.map((r,i)=>{const rk=i+1,prog=r.of&&r.shot&&r.shot<r.of;const p=r.id?P[r.id]:null;
+      return`<tr class="${mine(r.id)?"mine":""}${rk==CUT?" cut16":""}${rk==QCUT?" cut32":""}"><td>${rk}</td><td><b>${esc(r.n)}</b>${cap(r.id)?'<span class="lvcap">C</span>':""}${prog?`<div class="prg">● Shooting · ${r.shot} of ${r.of} arrows</div><div class="pbar"><i style="width:${Math.round(100*r.shot/r.of)}%"></i></div>`:showOwn&&r.id?`<div class="meta sm">On ${own(r.id)} team${own(r.id)==1?"":"s"}</div>`:""}</td><td class="r">${r.sc||"–"}</td><td class="r">${r.x??"–"}</td><td class="r g">${p!=null&&!prog?fmt(cap(r.id)?p*1.5:p):"–"}</td></tr>`}).join("")}</tbody></table></div>
+      <p class="meta sm">Dashed line: top ${CUT} go to the bracket. Dotted line: qualification points stop at ${QCUT}${QCUT==32?"nd":"th"}. Ties on score are broken by 7s.</p>`}
+  else if(v=="b"){
+    if(LD&&LD.rounds&&LD.rounds.length){const cols=LD.rounds.map((rd,ri)=>{const fin=/final/i.test(rd.n)&&!/semi|quarter/i.test(rd.n);
+        return`<div class="sbcol"><h4>${esc(rd.n.replace(/^1\/8th Round$/,"Round of 16"))}</h4>${rd.m.map((m,mi)=>{const [a,b]=m,won=(a&&a[4])||(b&&b[4]),lvm=a&&b&&!won&&((a[5]||0)>0||(b[5]||0)>0);
+          const side=x=>!x?`<div class="sbye"><span>Bye</span></div>`:`<div class="${won?(x[4]?"w":"l"):""}${mine(x[0])?" me":""}"><span><s>${x[2]||""}</s>${esc(x[1])}${cap(x[0])?' <span class="lvcap">C</span>':""}</span><b>${x[3]!=null&&(won||lvm)?x[3]:"–"}</b></div>`;
+          return`${fin?`<div class="sblab">${mi==0?"Gold":"Bronze"}</div>`:""}<div class="sbm${lvm?" lv":""}">${lvm?`<div class="sblvt">● LIVE · end ${Math.max(a[5]||0,b[5]||0)}${a[6]?" of "+a[6]:""}</div>`:""}${side(a)}${side(b)}</div>`}).join("")}</div>`}).join("");
+      body=`${key.replace('<span class="g">Gold = fantasy points</span>','<span class="lvk">● Being shot now</span>').replace('<span>Teams = fantasy teams that picked them</span>','')}<div class="sbw"><div class="sbg" style="grid-template-columns:repeat(${LD.rounds.length},minmax(150px,1fr))">${cols}</div></div>`}
+    else body=M?bracketHtml(d,false):`<p class="empty-st">The ${DIV[d]} bracket starts after qualification. The top ${CUT} are seeded 1 vs ${CUT}, 8 vs 9, and so on.</p>`}
+  else{if(!done)body=`<p class="empty-st">Medals show up here once the ${DIV[d]} gold and bronze matches are done.</p>`;
+    else{const g=M.f.w,sv=M.f.a==g?M.f.b:M.f.a,bz=M.b.w;const card=(cls,lab,id)=>`<div class="pod1 ${cls}${mine(id)?" me":""}"><span>${lab}</span><b>${esc(BY[id].n)}</b><span class="meta sm">${P[id]!=null?fmt(P[id])+" fantasy pts":""}${showOwn?` · on ${own(id)} team${own(id)==1?"":"s"}`:""}</span></div>`;
+      body=`<div class="pod3">${card("s","2nd",sv)}${card("g","🥇 Champion",g)}${card("bz","3rd",bz)}</div>`}}
+  return`${head}${divChips("rdiv",d)}${views}${body}`}
 
 function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">Only the commissioner can post results.</div>`;
   const d=cdiv,xs=A.filter(a=>a.d==d),done=xs.filter(a=>league.scores[a.id]!=null).length,M=bracket(d);
@@ -677,7 +728,13 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
   return`<h2>Commissioner</h2>${check}${emails}${remove}<h3 class="sec">Big Board (TV mode)</h3><p class="meta">Open this on a laptop connected to the TV at the venue and click Full screen. It updates itself every minute.</p><div class="row"><a class="btn" href="#bigboard" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none">Open the Big Board</a><a class="btn ghost" href="#bigboard" target="_blank" rel="noopener" data-act="bbdemo" style="display:inline-flex;align-items:center;text-decoration:none">Preview an upset alert</a><a class="btn ghost" href="#bigboard" target="_blank" rel="noopener" data-act="bbdemorec" style="display:inline-flex;align-items:center;text-decoration:none">Preview a record alert</a></div>
 <label class="row" style="gap:10px;align-items:center;cursor:pointer"><input type="checkbox" id="bbtalk"${league.bbTalk?" checked":""} style="width:20px;height:20px"> Show trash talk on the Big Board <span class="meta">(it stays on the website either way)</span></label>
   <div class="row"><label for="lock">Lineup lock</label><select id="lock"><option value="auto"${league.lock=="auto"?" selected":""}>Automatic (Fri 2:00 PM)</option><option value="locked"${league.lock=="locked"?" selected":""}>Locked now</option><option value="open"${league.lock=="open"?" selected":""}>Keep open</option></select></div>
-  <h3 class="sec">Results from Eyes on Score</h3>
+  <h3 class="sec">Live scores from Eyes on Score</h3>
+  <div class="imp eosbox"><p class="meta">Connected to the Eyes on Score scoreboard for <b>${esc((EOS_EVENT[season]||EOS_EVENT["2026"]).name)}</b>. Pulls adult qualification scores and bracket results straight from Eyes on Score.</p>
+    <div class="row"><button class="btn" data-act="eospull" ${eosPulling?"disabled":""}>${eosPulling?"Pulling…":"Pull scores now"}</button>
+    <label class="chk"><input type="checkbox" id="eosauto" ${eosT?"checked":""}> Auto-pull every 2 minutes while the site is open on this device</label></div>
+    <p class="meta">${eosT?"Auto-pull is on. It keeps running on the Big Board too, so a laptop signed in as commissioner keeps scores updated by itself.":"Tip: turn on auto-pull on the laptop running the Big Board."}${eosLast?" Last pull: "+new Date(eosLast).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})+".":""}</p>
+    ${eosRep?`<div class="rep">${eosRep}</div>`:""}</div>
+  <h3 class="sec">Backup: results page or copy and paste</h3>
   <div class="imp"><label for="eoslink">Results page</label><div class="row" style="margin:6px 0 10px"><input id="eoslink" type="url" placeholder="https://texasringer.eyesonscore.com/events/2026/" value="${esc(linkDraft??(league.link||FEEDS[season]))}"><button class="btn ghost" data-act="savelink">Save link</button>${league.link?`<a class="btn ghost ext" href="${esc(league.link)}" target="_blank" rel="noopener">Open ↗</a>`:""}</div>
   ${isFeed(league.link)?`<p class="meta">This page can be read automatically. Pull whenever you like; it only changes what's new.</p>
     <div class="row"><button class="btn" data-act="pull" ${pulling?"disabled":""}>${pulling?"Pulling…":"Pull results now"}</button>
@@ -729,6 +786,8 @@ document.addEventListener("click",async e=>{if(e.target.id=="modal"){e.target.hi
   if(act=="copyemails"){copyText(b.dataset.e||"");return}
   if(act=="mshare"){shareModal();return}
   if(act=="react"){react(b.dataset.p,b.dataset.k);return}
+  if(act=="rview"){rview=b.dataset.v;render(true);return}
+  if(act=="eospull"){doPullEOS(true);return}
   if(act=="bbdemorec"){try{localStorage.setItem("rfBBDemoRec",Date.now())}catch{}return}
   if(act=="bbdemo"){try{localStorage.setItem("rfBBDemo",Date.now())}catch{}return}
   if(act=="rmcancel"){rmArm=null;render(true);return}
@@ -782,7 +841,7 @@ document.addEventListener("submit",async e=>{if(e.target.id=="wf"){e.preventDefa
   else await fa.signInWithEmailAndPassword(auth,em,pw)}catch(x){aerr(x)}});
 document.addEventListener("input",e=>{if(e.target.id=="wtext"){const c=$("#wcount");if(c)c.textContent=c.textContent.replace(/\d+\/280$/,e.target.value.length+"/280");return}if(e.target.id=="eoslink"){linkDraft=e.target.value;return}if(e.target.id=="tname"){me.name=e.target.value.slice(0,40);schedSave()}
   else if(e.target.id=="q"){q=e.target.value;$("#alist").innerHTML=alist()}});
-document.addEventListener("change",e=>{if(e.target.id=="autopull"){clearInterval(autoT);autoT=null;if(e.target.checked){autoT=setInterval(()=>doPull(false),5*60e3);doPull(true)}render(true);return}if(e.target.id=="sort"){sort=e.target.value;$("#alist").innerHTML=alist()}
+document.addEventListener("change",e=>{if(e.target.id=="eosauto"){eosAutoSet(e.target.checked);render(true);return}if(e.target.id=="autopull"){clearInterval(autoT);autoT=null;if(e.target.checked){autoT=setInterval(()=>doPull(false),5*60e3);doPull(true)}render(true);return}if(e.target.id=="sort"){sort=e.target.value;$("#alist").innerHTML=alist()}
   else if(e.target.id=="lock")writeLeague({...league,lock:e.target.value});
   else if(e.target.id=="bbtalk")writeLeague({...league,bbTalk:e.target.checked})});
 document.addEventListener("focusout",()=>{if(pend)setTimeout(()=>{if(pend)render()},0)});
@@ -856,12 +915,59 @@ async function fetchFeed(url){const base=url.replace(/[?#].*$/,"").replace(/\/?$
     const parts=[...h.matchAll(/self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)/g)].map(m=>{try{return JSON.parse('"'+m[1]+'"')}catch{return""}}).join("");ev=findDivs(parts)}
   return ev}
 const divName=n=>{const k=String(n||"").toLowerCase();return k.startsWith("trad")?"TR":k.includes("compound")?"FC":k.startsWith("bowhunter")?"BH":k.startsWith("barebow")?"BB":k.startsWith("recurve")?"RC":null};
+/* ================= Eyes on Score API (live scores) =================
+   Public scoreboard key from the EOS Scoreboard Site API documentation. Read-only. */
+const EOS_API="https://api.eyesonscore.com/api/",EOS_KEY="08a42685c4d02c948fd16848e38e194bab23d2ba90d390e14b772122f631c3b0b18f8cc3170040fa";
+const EOS_EVENT={"2026":{name:"2026 Texas Ringer"},"2025":{id:"V0V0bVVGaUNzUjZrajNQN0p4eUU3QT09",name:"2025 Texas Ringer"}};
+const eosIds={};let eosPulling=false,eosRep="",eosLast=0,eosT=null;
+async function eosPost(path){const r=await fetch(EOS_API+path,{method:"POST",headers:{Authorization:"Bearer "+EOS_KEY},cache:"no-store"});const j=await r.json();if(j.status_code&&j.status_code!=200)throw new Error(j.message||"Eyes on Score error");return j.data}
+async function eosEventId(){const ev=EOS_EVENT[season]||EOS_EVENT["2026"];if(ev.id)return ev.id;if(eosIds[season])return eosIds[season];
+  for(const st of ["ongoing","upcoming","completed"]){const d=await eosPost(`tournament_list?is_private=false&page=1&tournament_status=${st}&source=globalSearch&search=${encodeURIComponent(ev.name)}`);
+    const t=(d.tournamentData||[]).find(x=>String(x.tournament_name).trim().toLowerCase()==ev.name.toLowerCase());if(t)return eosIds[season]=t.tournaments_id}
+  throw new Error(`Couldn't find "${ev.name}" on Eyes on Score`)}
+const eosRows=o=>Object.keys(o||{}).filter(k=>/^\d+$/.test(k)).sort((a,b)=>a-b).map(k=>o[k]);
+/* Builds the same shape fetchFeed() returns, so applyFeed() does the rest. Emails in the API response are ignored. */
+async function fetchEOS(){const id=await eosEventId();const q=await eosPost(`tournament_score_list?is_private=false&id=${encodeURIComponent(id)}&for_fav=true`);
+  const groups=(q&&q.sortingResult)||{};const divisions=[];
+  for(const [gname,g] of Object.entries(groups)){if(!/adult/i.test(gname)||!divName(gname))continue;
+    const qualification=eosRows(g).filter(r=>r&&r.name&&String(r.name).toUpperCase()!="BYE").map(r=>{const done=!(r.total_arrow_count>0)||r.total_attended_arrows_count>=r.total_arrow_count;
+      return{name:r.name,rank:+r.rank_with_score||+r.rank||0,score:done?+r.total_score||0:0,x:r.dynamic_one_shooter_score!=null?+r.dynamic_one_shooter_score:null,run:+r.total_score||0,shot:+r.total_attended_arrows_count||0,of:+r.total_arrow_count||0,bale:r.target||""}});
+    const rounds=[];
+    for(const er of (g.elimination_round_list||[]).filter(e=>!/^qualification$/i.test(String(e.tournament_name).trim()))){
+      let s=null;try{const b=await eosPost(`bracket_tournament_score_list?is_private=false&id=${encodeURIComponent(er.id)}&for_fav=true&elimination_group=${encodeURIComponent(gname)}`);s=b&&b.sortingResult&&b.sortingResult[gname]}catch{}
+      const ents=eosRows(s);if(!ents.length)break;const P=e=>{const ends=Object.keys(e).filter(k=>/^end_\d+$/.test(k));return{name:e.name,seed:+e.rank||0,winner:e.winner==1||e.is_winner=="1",sc:e.total_score!=null&&e.total_score!==""?+e.total_score:null,ends:ends.filter(k=>e[k]!==null&&e[k]!=="").length,of:+e.total_ends||ends.length||0}};
+      const matches=[];for(let i=0;i+1<ents.length;i+=2)matches.push({a:P(ents[i]),b:P(ents[i+1])});
+      /* first bracket round: seeds come from bracket position (Eyes on Score lists tied archers with the same rank) */
+      if(!rounds.length&&matches.length==8)matches.forEach((m,i)=>{const [lo,hi]=PAIRS[i];const ra=m.a.seed||99,rb=m.b.seed||99;if(ra<=rb){m.a.seed=lo;m.b.seed=hi}else{m.a.seed=hi;m.b.seed=lo}});
+      rounds.push({name:er.tournament_name,matches});
+      if(!matches.some(m=>m.a.winner||m.b.winner))break}
+    divisions.push({name:gname,qualification,bracket:{rounds}})}
+  return{divisions}}
+/* Live scores for the Scores tab: one record everyone reads, written by the commissioner's pull. */
+let live=null;
+function buildLive(ev){const divs={};
+  for(const dv of ev.divisions||[]){const d=divName(dv.name);if(!d)continue;
+    const q=(dv.qualification||[]).map(r=>{const a=findArcher(d,r.name);return[a?a.id:null,a?a.n:r.name,r.run||0,r.shot||0,r.of||0,r.x??null,r.rank||0]});
+    const rounds=((dv.bracket&&dv.bracket.rounds)||[]).map(rd=>({n:rd.name,m:rd.matches.map(m=>[m.a,m.b].map(p=>{const bye=!p.name||String(p.name).toUpperCase()=="BYE";const a=bye?null:findArcher(d,p.name);return bye?null:[a?a.id:null,a?a.n:p.name,p.seed||0,p.sc,p.winner?1:0,p.ends||0,p.of||0]}))}));
+    divs[d]={q,rounds}}
+  return{season,divs}}
+async function writeLive(L){const body=JSON.stringify(L.divs);if(live&&live.season==L.season&&JSON.stringify(live.divs)==body)return;const doc={season:L.season,at:Date.now(),divs:body};
+  if(mode=="local"){live={...doc,divs:L.divs};return}try{await fs.setDoc(fs.doc(db,"league","live"),doc)}catch(e){console.warn("live",e&&e.code)}}
+function cleanLive(d){if(!d||!d.divs)return null;try{return{season:String(d.season||""),at:+d.at||0,divs:typeof d.divs=="string"?JSON.parse(d.divs):d.divs}}catch{return null}}
+async function doPullEOS(loud){if(eosPulling||!isAdmin)return;eosPulling=true;if(route()=="commish")render(true);
+  try{const ev=await fetchEOS();const [L,h]=applyFeed(ev);eosLast=Date.now();await writeLive(buildLive(ev));
+    if(!L)eosRep="<b>Connected to Eyes on Score.</b> No qualification scores have been posted for this event yet.";
+    else{const same=["scores","xs","qr","seeds","elim"].every(k=>JSON.stringify(L[k])==JSON.stringify(league[k]));if(!same)await writeLeague(L);eosRep=h+(same?" Nothing new since the last pull.":"")}}
+  catch(e){eosRep=`<b>Couldn't get scores from Eyes on Score.</b> ${esc(e&&e.message||"Check your connection and try again.")}`}
+  eosPulling=false;if(route()=="commish")render(true)}
+function eosAutoSet(on){clearInterval(eosT);eosT=null;try{localStorage.setItem("rfEOSAuto",on?"1":"")}catch{}if(on){eosT=setInterval(()=>doPullEOS(false),2*60e3);doPullEOS(false)}}
+function eosAutoOn(){try{return localStorage.getItem("rfEOSAuto")=="1"}catch{return false}}
 function applyFeed(ev){const L={...league,scores:{...league.scores},xs:{...league.xs},qr:{...league.qr},seeds:{...league.seeds},elim:JSON.parse(JSON.stringify(league.elim))};
   let nq=0,nw=0;const miss=new Set(),unplaced=[],seeded=[];const real=p=>p&&p.name&&p.name.toUpperCase()!="BYE";
   const saved=league;league=L;
   try{for(const dv of ev.divisions||[]){const d=divName(dv.name);if(!d)continue;
     for(const q of dv.qualification||[]){if(!q.name||!(q.score>0))continue;const a=findArcher(d,q.name);if(!a){miss.add(q.name+" ("+DIV[d]+")");continue}
-      L.scores[a.id]=q.score;if(q.rank>0)L.qr[a.id]=q.rank;nq++}
+      L.scores[a.id]=q.score;if(q.rank>0)L.qr[a.id]=q.rank;if(q.x!=null&&!isNaN(q.x))L.xs[a.id]=q.x;nq++}
     const rounds=(dv.bracket&&dv.bracket.rounds)||[];if(!rounds.length)continue;
     const S=Array(16).fill(null);let ns=0;
     for(const m of rounds[0].matches||[])for(const p of [m.a,m.b])if(real(p)&&p.seed>=1&&p.seed<=16){const a=findArcher(d,p.name);if(a){S[p.seed-1]=a.id;ns++}else miss.add(p.name+" ("+DIV[d]+")")}
@@ -1053,6 +1159,7 @@ function bbAlertHTML(u){if(u.rec)return`<div class="bbuat">${u.tie?"RECORD TIED!
   if(u.demo&&u.demoRec)return`<div class="bbuat">NEW RINGER RECORD!</div><div class="bbuas">This is a preview. When an archer beats a Texas Ringer record, the alert shows here and the new record stays in the scrolling ticker.</div>`;
   if(u.demo)return`<div class="bbuat">UPSET!</div><div class="bbuas">This is a preview. When a lower seed knocks out a higher seed, the alert shows here for a few seconds.</div>`;
   return`<div class="bbuat">UPSET!</div><div class="bbuas">#${u.sw} ${esc(BY[u.w].n)} knocks out #${u.sl} ${esc(BY[u.l].n)} · ${DIV[u.d]} ${esc(RLAB[u.rd]||"")}</div><div class="bbuan">${u.n?`${u.n} fantasy team${u.n==1?"":"s"} just lost ${u.n==1?"their":"a"} pick`:"No fantasy team had picked "+esc(BY[u.l].n)}</div>`}
+function eosResume(){if(isAdmin&&!eosT&&eosAutoOn())eosAutoSet(true)}
 function bbDemoCheck(){try{const t=+localStorage.getItem("rfBBDemo")||0;if(t&&Date.now()-t<60e3){localStorage.removeItem("rfBBDemo");bbQ.push({demo:true})}const r=+localStorage.getItem("rfBBDemoRec")||0;if(r&&Date.now()-r<60e3){localStorage.removeItem("rfBBDemoRec");bbQ.push({demo:true,demoRec:true})}}catch{}}
 function bbNextAlert(){if(bbShowing||!bbQ.length||route()!="bigboard")return;const w=$(".bbw");if(!w)return;const u=bbQ.shift();bbShowing=true;
   const el=document.createElement("div");el.className="bbua"+(u.rec||u.demoRec?" rec":"");el.setAttribute("role","status");el.innerHTML=bbAlertHTML(u);w.appendChild(el);requestAnimationFrame(()=>el.classList.add("on"));
@@ -1293,6 +1400,7 @@ buildProj();render(true);
       overlayMine();if(mode=="loading")mode="shared";render()},
     e=>{clearTimeout(slowT);console.error(e);mode="shared";render(true)});
   fs.onSnapshot(fs.doc(db,"league","state"),s=>{league=cleanLeague(s.exists()?s.data():null);render()},e=>console.error(e));
+  fs.onSnapshot(fs.doc(db,"league","live"),s=>{live=cleanLive(s.exists()?s.data():null);if(["scores","live","bigboard"].includes(route()))render()},e=>console.warn("live",e&&e.code));
   fs.onSnapshot(fs.query(fs.collection(db,"posts"),fs.orderBy("at","desc"),fs.limit(100)),s=>{posts=s.docs.map(d=>cleanPost(d.data(),d.id));render()},e=>console.warn("posts",e&&e.code));
   fs.onSnapshot(fs.collection(db,"reacts"),s=>{reacts=s.docs.map(d=>{const x=d.data();return{id:d.id,uid:String(x.uid||""),post:String(x.post||""),kind:x.kind=="o"?"o":"b"}});render()},e=>console.warn("reacts",e&&e.code));
   fa.onAuthStateChanged(auth,u=>{authUser=u;myId=u?u.uid:null;loadedMine=false;
