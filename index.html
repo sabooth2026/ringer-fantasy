@@ -131,6 +131,12 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 .spbig{font-family:Forum,serif;font-size:3.6vw;line-height:1.05;color:#fff}
 .spd{display:flex;gap:.4vw;margin-top:.8vh}.spd i{width:.5vw;height:.5vw;min-width:6px;min-height:6px;border-radius:50%;background:#444}.spd i.on{background:var(--red)}
 .bbua{position:absolute;left:0;right:0;top:36%;z-index:5;background:var(--red);color:#fff;text-align:center;padding:2.4vh 3vw;transform:scaleY(0);transition:transform .3s;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
+.bbstk{flex:none}.bbstk .spc.on{display:block}
+.stg{display:grid;grid-template-columns:1fr 1fr;gap:1vw;margin-top:.8vh}
+.sto{background:#1b1b1e;border:1px solid #2a2a2d;border-radius:10px;padding:1vh .9vw}
+.stn{font-size:1.15vw;line-height:1.25}.stn b{font-family:Forum,serif;font-weight:400;font-size:1.6vw}.stn span{color:var(--mut);font-size:.9vw;margin-right:.2vw}
+.stl{font-size:1.15vw;margin:.6vh 0 .4vh;color:#ffd0d0}.stl b{color:#fff}
+.stm{font-size:.9vw;color:var(--mut)}
 .bbua.rec{background:#c99a1e;color:#111}.tkrec{color:#ffd45a;font-weight:700}
 .bbua.on{transform:scaleY(1)}
 .bbuat{font-family:Forum,serif;font-size:6vw;line-height:1}
@@ -1011,9 +1017,32 @@ let recSeen=null;
 function bbScanRecords(){const hits=ORDER.map(d=>[d,recBest(d)]).filter(x=>x[1]);const keys=hits.map(([d,h])=>d+h.a.id+h.s);
   if(!recSeen){recSeen=new Set(keys);return}
   hits.forEach(([d,h],i)=>{if(recSeen.has(keys[i]))return;recSeen.add(keys[i]);bbQ.unshift({rec:true,d,id:h.a.id,s:h.s,tie:h.tie,r:h.r})})}
-function recTicker(){return ORDER.map(d=>{const r=RINGER_REC[d];if(!r)return"";const h=recBest(d);
+function recTicker(broken){return ORDER.map(d=>{const r=RINGER_REC[d];if(!r)return"";const h=recBest(d);if(!!h!==broken)return"";
   if(h)return`<span class="tkrec">${h.tie?"TIES THE RINGER RECORD":"NEW RINGER RECORD"} · ${DIV[d]}: ${esc(h.a.n)} ${h.s}${h.tie?"":` (old record ${r.s}, ${esc(r.n)}, ${r.y})`}</span><span class="dot">•</span>`;
   return`<span><b>Ringer record to beat</b> · ${DIV[d]}: ${r.s} by ${esc(r.n)} (${r.y})</span><span class="dot">•</span>`}).join("")}
+/* What's at stake: how each live match would move the league */
+const ORD=n=>n+(n%100>=11&&n%100<=13?"th":["th","st","nd","rd"][n%10]||"th");
+function stakeFor(d,m){const N=teams.filter(t=>t.picks.some(Boolean));if(N.length<2)return null;
+  const rank=P=>{const v=N.map(t=>({id:t.id,v:teamTotal(t,P)}));const r={};v.forEach(x=>r[x.id]=1+v.filter(o=>o.v>x.v+1e-9).length);return r};
+  const P0=pts(),R0=rank(P0),lead0=N.filter(t=>R0[t.id]==1);
+  const E=league.elim[d]||(league.elim[d]={}),had=Object.prototype.hasOwnProperty.call(E,m.id),old=E[m.id];
+  const side=x=>{E[m.id]=x;const P1=pts(),R1=rank(P1);const lead1=N.filter(t=>R1[t.id]==1);const on=N.filter(t=>t.picks.includes(x));
+    let line,imp=0;const nm=t=>`<b>${esc(t.name||"Unnamed team")}</b>`;
+    const mv=N.map(t=>({t,g:R0[t.id]-R1[t.id]})).filter(o=>o.g>0).sort((a,b)=>R1[a.t.id]-R1[b.t.id]||b.g-a.g)[0];
+    if(lead1.length==1&&!(lead0.length==1&&lead0[0].id==lead1[0].id)){line=`${nm(lead1[0])} takes over 1st`;imp=100}
+    else if(mv){line=`${nm(mv.t)} climbs from ${ORD(R0[mv.t.id])} to ${ORD(R1[mv.t.id])}`;imp=10+mv.g}
+    else{const gain=N.map(t=>({t,g:teamTotal(t,P1)-teamTotal(t,P0)})).filter(o=>o.g>0).sort((a,b)=>b.g-a.g)[0];
+      line=gain?`${nm(gain.t)} gains ${fmt(gain.g)} pts${R1[gain.t.id]==1?" and stays in 1st":""}`:"No fantasy team has them";imp=gain?1:0}
+    const caps=on.filter(t=>t.cap==x).length;
+    return{id:x,seed:seedOf(x),line,n:on.length,caps,imp}};
+  let out;try{out=[side(m.a),side(m.b)]}finally{if(had)E[m.id]=old;else delete E[m.id];pts()}
+  const swing=out.reduce((a,o)=>a+o.imp,0)*100+out.reduce((a,o)=>a+o.n,0);return{d,m,sides:out,swing}}
+function bbStake(live){const xs=live.map(({d,m})=>stakeFor(d,m)).filter(Boolean);if(!xs.length)return"";
+  const RW={f:0,b:0,s:1,q:2,r:3};xs.sort((a,b)=>RW[a.m.rd]-RW[b.m.rd]||b.swing-a.swing);const top=xs.slice(0,3);stI%=top.length;
+  return`<section class="bbbox bbstk">${top.map((x,i)=>`<div class="spc${i==stI?" on":""}"><div class="bbsh2"><h3>What's at stake</h3><span class="lv">${DIV[x.d]} ${esc(RLAB[x.m.rd])}</span></div>
+    <div class="stg">${x.sides.map(o=>`<div class="sto"><div class="stn"><span>#${o.seed}</span> If <b>${esc(BY[o.id].n)}</b> wins</div><div class="stl">${o.line}</div><div class="stm">On ${o.n} team${o.n==1?"":"s"}${o.caps?` · captain for ${o.caps}`:""}</div></div>`).join("")}</div></div>`).join("")}${top.length>1?`<div class="spd">${top.map((_,i)=>`<i class="${i==stI?"on":""}"></i>`).join("")}</div>`:""}</section>`}
+let stI=0;
+setInterval(()=>{const cs=document.querySelectorAll(".bbstk .spc");if(cs.length<2)return;stI=(stI+1)%cs.length;cs.forEach((c,i)=>c.classList.toggle("on",i==stI));document.querySelectorAll(".bbstk .spd i").forEach((d,i)=>d.classList.toggle("on",i==stI))},15e3);
 /* Rotating spotlight */
 let spI=0;
 function bbSpot(sc,P,liveIds){const N=teams.filter(t=>t.picks.some(Boolean)),L=locked(),cards=[];
@@ -1074,12 +1103,13 @@ function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(
     return`<div class="bbr${cur[t.id]==1?" lead":""}${nl==t.id?" newlead":""}"><span class="bbk">${cur[t.id]}</span><span class="bbn"><b>${esc(t.name||"Unnamed team")}${nl==t.id?'<span class="bbnl">NEW LEADER</span>':""}</b><span>${esc(t.owner||"")}</span></span><span class="bbm ${mv>0?"up":mv<0?"dn":""}">${mv>0?"▲ "+mv:mv<0?"▼ "+(-mv):"–"}</span><span class="bbp">${sc?fmt(t.v):Math.round(t.v)}</span></div>`}).join("");
   const RO={r:0,q:1,s:2,f:3,b:3};let live=[];
   for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.a&&m.b&&!m.w&&!m.dead)live.push({d,m})}}
-  live.sort((x,y)=>RO[y.m.rd]-RO[x.m.rd]);live=live.slice(0,4);
+  live.sort((x,y)=>RO[y.m.rd]-RO[x.m.rd]);const stake=bbStake(live);live=live.slice(0,stake?3:4);
   let side1;if(live.length)side1=`<h3>Shooting now</h3>${live.map(({d,m})=>`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span class="bbrd">${RLAB[m.rd]}</span><span>${esc(BY[m.a].n)} <i>vs</i> ${esc(BY[m.b].n)}</span></div>`).join("")}`;
   else{const lead=ORDER.map(d=>[d,qual(d)[0]]).filter(x=>x[1]);side1=lead.length?`<h3>Qualification leaders</h3>${lead.map(([d,q])=>`<div class="bbl"><span class="tag t-${d}">${DSHORT[d]}</span><span>${esc(BY[q.id].n)}</span><span class="bbrd" style="margin-left:auto">${q.s}</span></div>`).join("")}`:`<h3>Coming up</h3><p class="bbmsg">Scores appear here as soon as the first flight is posted.</p>`}
   const hot=(sc?A.filter(a=>P[a.id]!=null).sort((a,b)=>P[b.id]-P[a.id]):[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))).slice(0,4);
   const side2=`<h3>${sc?"Hottest archers":"Top projected archers"}</h3>${hot.map(a=>`<div class="bbl"><span>${esc(a.n)}</span><span class="bbrd">${sc?esc(status(a.id)||DSHORT[a.d]):DSHORT[a.d]}</span><b class="bbhp">${sc?fmt(P[a.id]):Math.round(PROJ[a.id]||0)}</b></div>`).join("")}`;
-  const tk=recTicker()+posts.slice(0,10).map(p=>`<span><b>${esc(p.name||"Someone")}:</b> ${esc(p.text)}</span><span class="dot">•</span>`).join("")||`<span>${locked()?"Follow along at":"Join the league and pick your team at"} ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
+  const tkp=posts.slice(0,10).map(p=>`<span><b>${esc(p.name||"Someone")}:</b> ${esc(p.text)}</span><span class="dot">•</span>`).join("")||`<span>${locked()?"Follow along at":"Join the league and pick your team at"} ${esc(siteHost())}</span><span class="dot">•</span><span>It's not a competition; it's an Experience!</span><span class="dot">•</span>`;
+  const tk=recTicker(true)+tkp+recTicker(false);
   const now=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});const Q=qualMode?bbQual():null;
   const liveIds=new Set(qualMode?(()=>{const {fl,live:lv}=flights();return lv>=0?fl[lv].ids:[]})():live.flatMap(({m})=>[m.a,m.b]));
   const spot=bbSpot(sc,P,liveIds);
@@ -1089,7 +1119,7 @@ function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(
     <div class="bbctl"><button class="btn ghost" data-act="fullscreen">Full screen</button><a class="btn ghost" href="#standings" style="text-decoration:none;display:inline-flex;align-items:center">Exit</a></div></div>
   <div class="bbmain"><section class="bbst"><div class="bbsh"><h2>${sc?"League standings":"Projected standings"}</h2><span>${list.length} team${list.length==1?"":"s"}${list.length>maxRows?" · top "+maxRows+" shown":""}</span></div>
     <div class="bbhd"><span class="bbk">Rank</span><span class="bbn">Team</span><span class="bbm">Move</span><span class="bbp">${sc?"Points":"Projected"}</span></div>${rows||`<p class="bbmsg">No teams yet.${locked()?"":" Scan the code to join!"}</p>`}</section>
-    <aside class="bbside">${qualMode?`<section class="bbbox">${Q.panel}</section>${Q.lbox?`<section class="bbbox">${Q.lbox}</section>`:""}`:`<section class="bbbox">${side1}</section>`}${spot}
+    <aside class="bbside">${qualMode?`<section class="bbbox">${Q.panel}</section>${Q.lbox?`<section class="bbbox">${Q.lbox}</section>`:""}`:`<section class="bbbox">${side1}</section>${stake}`}${spot}
       ${locked()?"":`<section class="bbqrbox"><div id="bbqr" role="img" aria-label="QR code for ${esc(siteHost())}"></div><div><div class="bbq1">Scan to join</div><div class="bbq2">${esc(siteHost())}</div></div></section>`}</aside></div>
   ${qualMode?Q.band:""}<div class="bbtick"><span class="bbtl">${posts.length?"Trash talk":"Ringer Fantasy Games"}</span><div class="tick"><div class="tickin">${tk}${tk}</div></div></div></div>`}
 function drawQR(){const el=$("#bbqr");if(!el)return;
