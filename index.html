@@ -150,6 +150,28 @@ body.bb header,body.bb footer{display:none}body.bb main.band{padding:0}body.bb .
 .tkp.nw{animation:tkfl 1.4s ease-in-out 6;border-radius:8px}
 @keyframes tkfl{0%,100%{background:transparent}50%{background:rgba(231,0,0,.28)}}
 .tkhl{color:#ffd45a;font-weight:600}
+.lvwrap{max-width:720px;margin:0 auto}
+.lvhd{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.lvhd h2{margin:0;display:flex;align-items:center;gap:10px}
+.lvdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff3b3b;margin-right:6px;animation:lvp 1.4s ease-in-out infinite;vertical-align:middle}
+@keyframes lvp{0%,100%{opacity:1}50%{opacity:.3}}
+#nav a.lvon{color:#ff8a8a}
+.lvh{font-family:Forum,serif;font-weight:400;font-size:24px;margin:18px 0 8px}
+.lvcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.lvme{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.lvrk{font-family:Forum,serif;font-size:40px;line-height:1}.lvpts{font-family:Forum,serif;font-size:30px;text-align:right;line-height:1}.lvpts small{display:block;font:12px Pridi,serif;color:var(--mut)}
+.lvme .up{color:#5fd068;font-size:14px}.lvme .dn{color:#ff6b6b;font-size:14px}
+.mut{color:var(--mut)}.sm{font-size:13px}
+.lvlbl{color:#ff8a8a;font-size:12px;letter-spacing:.05em;text-transform:uppercase;margin:14px 0 4px;font-weight:600}
+.lvar{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #2a2a2d;font-size:15px;min-height:44px}.lvar b{margin-left:auto;font-family:Forum,serif;font-weight:400;font-size:20px}
+.lvan{display:flex;flex-direction:column;min-width:0}.lvan small{color:var(--mut);font-size:12px}.lvar .tag{flex:none;font-size:11px}
+.lvcap{font-size:11px;background:var(--red);color:#fff;border-radius:4px;padding:1px 5px}
+.lvstake{background:#1d1013;border:1px solid #5a1a1a;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:15px;line-height:1.5}
+.lvbust{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:8px;font-size:15px}
+.lvfeed{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 16px}
+.lvit{display:flex;gap:12px;padding:12px 0;border-top:1px solid #2a2a2d;font-size:15px;line-height:1.45}.lvit:first-child{border-top:0}
+.lvic{flex:none;min-width:30px;height:30px;padding:0 4px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.lvic.gold{background:#c99a1e;color:#111}.lvic.red{background:var(--red);color:#fff}.lvic.gray{background:#2a2a2d;color:#ddd}.lvic.yel,.lvic.hl{background:#3a3010;color:#ffd45a}
+.hlt{color:#ffd45a}.lvtm{display:block;font-size:12px;color:var(--mut);margin-top:2px}
 .bbua.rec{background:#c99a1e;color:#111}.tkrec{color:#ffd45a;font-weight:700}
 .bbua.on{transform:scaleY(1)}
 .bbuat{font-family:Forum,serif;font-size:6vw;line-height:1}
@@ -464,18 +486,18 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");cl
 function lockText(){if(locked())return"Lineups locked";const ms=LOCK-Date.now();const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
   return"Lineups lock in "+(d?d+"d "+h+"h":h?h+"h "+m+"m":m+"m")}
 function header(){$("#sub").textContent=SEASONS[season].label+" · "+A.length+" archers across 5 adult divisions";$("#sub").classList.toggle("testm",season=="2025");const p=$("#lockpill");p.textContent=lockText();p.classList.toggle("lk",locked());
-  const r=route();const tabs=[["team","My Team"],["archers","Archers"],["results","Results"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
+  const r=route();const tabs=[["team","My Team"],["live","Live"],["archers","Archers"],["results","Results"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
   if(isAdmin||mode=="local")tabs.push(["commish","Commissioner"]);
   const ac=$("#acct");ac.innerHTML=authUser?`Signed in as ${esc(ownerName())} · <button class="lnk" data-act="signout">Sign out</button>`:(mode=="shared"?`<a class="lnk" href="#team">Sign in</a>`:"");
-  $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}">${l}${h=="standings"&&wallNew()?`<span class="ndot" aria-label="${wallNew()} new trash talk posts"></span>`:""}</a>`).join("")}
-const ROUTES=["team","archers","results","standings","awards","rules","commish","bigboard"];
+  $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}${h=="live"&&liveNow()?" lvon":""}">${h=="live"&&liveNow()?'<span class="lvdot" aria-hidden="true"></span>':""}${l}${h=="standings"&&wallNew()?`<span class="ndot" aria-label="${wallNew()} new trash talk posts"></span>`:""}</a>`).join("")}
+const ROUTES=["team","live","archers","results","standings","awards","rules","commish","bigboard"];
 function route(){const h=location.hash.slice(1);return ROUTES.includes(h)?h:"team"}
 
 function render(force){const ae=document.activeElement;
   if(!force&&ae&&ae.matches("input:not([type=checkbox]),select,textarea")&&view.contains(ae)){pend=true;return}
   pend=false;const r=route();if(r=="standings")markWallSeen();header();
   document.body.classList.toggle("bb",r=="bigboard");if(r=="bigboard"){view.innerHTML=bigBoardView();drawQR();bbFitTalk();bbDemoCheck();bbNextAlert();return}
-  view.innerHTML=notes()+(r=="team"?teamView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
+  view.innerHTML=notes()+(r=="team"?teamView():r=="live"?liveView():r=="archers"?archersView():r=="standings"?`<div class="stwrap"><div class="stcol">${standingsView()}</div>${wallView()}</div>`:r=="awards"?awardsView():r=="results"?resultsView():r=="rules"?rulesView():commishView());
 }
 
 function notes(){let s="";
@@ -1004,7 +1026,7 @@ async function delPost(pid){if(mode=="local"){posts=posts.filter(p=>p.id!=pid);r
 /* ================= Big Board (TV mode) ================= */
 let bbHist=[];
 function bbRanks(){const P=pts(),sc=anyScores();const list=teams.filter(t=>t.picks.some(Boolean)).map(t=>({id:t.id,v:sc?teamTotal(t,P):teamProj(t)}));const R={};list.forEach(t=>R[t.id]=1+list.filter(o=>o.v>t.v+1e-9).length);return R}
-function bbTick(){bbHist.push({t:Date.now(),r:bbRanks()});bbHist=bbHist.filter(h=>Date.now()-h.t<12*60e3)}
+function bbTick(){bbHist.push({t:Date.now(),r:bbRanks()});bbHist=bbHist.filter(h=>Date.now()-h.t<62*60e3)}
 /* New leader flash */
 let bbLead=null;
 function bbLeader(list,cur){const top=list.filter(t=>cur[t.id]==1);if(top.length!=1||!anyScores())return null;const id=top[0].id;
@@ -1086,6 +1108,55 @@ function liveTicker(){const sc=league.scores;const out=[];const dot='<span class
       const best=!A.some(a=>a.d==d&&upto.has(a.id)&&a.id!=top&&sc[a.id]!=null&&sc[a.id]>sc[top]);
       out.push(`<span><b>${esc(f.label)} flight</b> · ${best?`${esc(BY[top].n)} posts ${sc[top]}, the best ${DTK[d]} score so far`:`top ${DTK[d]} score is ${sc[top]} by ${esc(BY[top].n)}`}</span>${dot}`)}}
   return out.join("")}
+/* ================= Live tab (phones) ================= */
+function liveNow(){if(!anyScores())return false;const {live}=flights();if(live>=0)return true;for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.a&&m.b&&!m.w&&!m.dead)return true}}return false}
+function liveMatches(){const out=[];for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.a&&m.b&&!m.w&&!m.dead)out.push({d,m})}}return out}
+const feedSeen={};let feedInit=false;
+function liveFeed(){const sc=league.scores,items=[];const add=(key,ic,cls,html,sub)=>items.push({key,ic,cls,html,sub});const qualMode=!ORDER.some(d=>league.seeds[d]);
+  for(const d of ORDER){const h=recBest(d);if(h)add("rec"+d+h.a.id+h.s,"★","gold",`<b>${h.tie?"RINGER RECORD TIED":"NEW RINGER RECORD"}</b> · ${DTK[d]}: ${esc(h.a.n)} shoots ${h.s}${h.tie?"":`, breaking ${esc(h.r.n)}'s ${h.r.s} (${h.r.y})`}`,"Qualification")}
+  const RO={f:0,b:0,s:1,q:2,r:3};const done=[];for(const d of ORDER){const M=bracket(d);if(!M)continue;for(const k of MIDS){const m=M[k];if(m.w&&!m.bye&&m.a&&m.b)done.push({d,m})}}
+  done.sort((x,y)=>RO[x.m.rd]-RO[y.m.rd]);
+  done.filter(x=>x.m.rd=="f").forEach(({d,m})=>add("gold"+d+m.w,"1st","yel",`<b>${esc(BY[m.w].n)}</b> wins ${DIV[d]} gold`,"Gold match"));
+  done.forEach(({d,m})=>{const w=m.w,l=m.a==w?m.b:m.a,sw=seedOf(w)||99,sl=seedOf(l)||99;if(sw-sl<4)return;const n=teams.filter(t=>t.picks.includes(l)).length;
+    add("up"+d+m.id+w,"!","red",`<b>Upset!</b> #${sw} ${esc(BY[w].n)} knocks out #${sl} ${esc(BY[l].n)} in ${DIV[d]}.${n?` ${n} team${n==1?"":"s"} lost a pick.`:""}`,RLAB[m.rd])});
+  const hl=A.filter(a=>sc[a.id]!=null&&HILITE[a.d]&&sc[a.id]>=HILITE[a.d]&&!(RINGER_REC[a.d]&&sc[a.id]>=RINGER_REC[a.d].s)).sort((a,b)=>ORDER.indexOf(a.d)-ORDER.indexOf(b.d)||sc[b.id]-sc[a.id]).filter((a,i,arr)=>arr.slice(0,i).filter(o=>o.d==a.d).length<2);
+  hl.forEach(a=>add("hl"+a.id+sc[a.id],"★","hl",`<span class="hlt">${esc(a.n)} shoots ${sc[a.id]} in ${DIV[a.d]}</span>`,SEASONS[season].times[a.tc]?SEASONS[season].times[a.tc]+" flight":"Qualification"));
+  if(qualMode)for(const d of ORDER){const q=qual(d);if(q.length<3)continue;const gap=q[0].s-q[2].s;if(gap<=3)add("cc"+d+gap+q[0].id+q[2].id,"≈","gray",`<b>Close call</b> · ${DTK[d]}: ${gap==0?"1st through 3rd are tied":`only ${gap} point${gap==1?"":"s"} separate 1st and 3rd`}`,"Qualification")}
+  const N=teams.filter(t=>t.picks.some(Boolean));if(N.length>1&&anyScores()){const P=pts();const v=N.map(t=>({t,v:teamTotal(t,P)})).sort((a,b)=>b.v-a.v);if(v[0].v>v[1].v)add("lead"+v[0].t.id,"↑","gray",`<b>${esc(v[0].t.name||"Unnamed team")}</b> leads the league with ${fmt(v[0].v)} points`,"League")}
+  const now=Date.now(),first=!feedInit;feedInit=true;items.forEach(it=>{if(!(it.key in feedSeen))feedSeen[it.key]=first?0:now;it.t=feedSeen[it.key]});
+  return items.map((it,i)=>({...it,i})).sort((a,b)=>(b.t||0)-(a.t||0)||a.i-b.i)}
+function ago(t){const m=Math.round((Date.now()-t)/60e3);return m<1?"just now":m<60?m+" min ago":Math.round(m/60)+" hr ago"}
+function myStake(my,lm){const N=teams.filter(t=>t.picks.some(Boolean));const meT=N.find(t=>t.id==my.id)||my;if(!N.includes(meT))N.push(meT);
+  const rank=P=>{const v=N.map(t=>({id:t.id,v:teamTotal(t,P)}));const r={};v.forEach(x=>r[x.id]=1+v.filter(o=>o.v>x.v+1e-9).length);return r};
+  const out=[];for(const {d,m} of lm){const mine=my.picks.includes(m.a)?m.a:my.picks.includes(m.b)?m.b:null;if(!mine)continue;const opp=m.a==mine?m.b:m.a;if(my.picks.includes(opp))continue;
+    const R0=rank(pts()),E=league.elim[d]||(league.elim[d]={}),had=Object.prototype.hasOwnProperty.call(E,m.id),old=E[m.id];let Rw,Rl;
+    try{E[m.id]=mine;Rw=rank(pts());E[m.id]=opp;Rl=rank(pts())}finally{if(had)E[m.id]=old;else delete E[m.id];pts()}
+    const r0=R0[meT.id],rw=Rw[meT.id],rl=Rl[meT.id],first=BY[mine].n.split(" ")[0];
+    const win=rw<r0?`you move up to <b>${ORD(rw)}</b>`:rw==1?"you stay in <b>1st</b>":`you stay <b>${ORD(rw)}</b>`;
+    const passer=N.filter(t=>t.id!=meT.id&&R0[t.id]>r0&&Rl[t.id]<=rl).sort((a,b)=>Rl[a.id]-Rl[b.id])[0];
+    const lose=rl>r0?(passer?`<b>${esc(passer.name||"Unnamed team")}</b> passes you`:`you drop to <b>${ORD(rl)}</b>`):`you stay <b>${ORD(rl)}</b>`;
+    out.push(`<div class="lvstake"><b>What's at stake for you:</b> If ${esc(BY[mine].n)} wins this ${esc(RLAB[m.rd].toLowerCase())}, ${win}. If ${esc(first)} loses, ${lose}.</div>`)}
+  return out.slice(0,2).join("")}
+function liveView(){const sc=anyScores(),P=pts(),L=locked();const lm=liveMatches();const {fl,live}=flights();
+  const hasTeam=(mode=="local"||authUser)&&me&&me.picks.some(Boolean);
+  let mine="";
+  if(!hasTeam)mine=`<section class="lvcard"><p>${mode=="shared"&&!authUser?"Sign in and make a team":"Make a team"} to see your rank, your archers on the line and what's at stake for you.</p><a class="btn" href="#team" style="text-decoration:none;display:inline-block">${L?"View My Team":"Make a team"}</a></section>`;
+  else{const N=teams.filter(t=>t.picks.some(Boolean));const meT=N.find(t=>t.id==me.id||t.id==myId)||me;if(!N.includes(meT))N.push(meT);
+    const v=t=>sc?teamTotal(t,P):teamProj(t);const myV=v(meT),rk=1+N.filter(t=>v(t)>myV+1e-9).length;
+    const past=bbHist[0];const pr=past&&past.r[meT.id];const mv=pr&&sc?pr-rk:0;const mins=past?Math.round((Date.now()-past.t)/60e3):0;
+    const mvTxt=mv>0?`<span class="up">▲ ${mv} in the last ${mins>=55?"hour":mins+" min"}</span>`:mv<0?`<span class="dn">▼ ${-mv} in the last ${mins>=55?"hour":mins+" min"}</span>`:"";
+    const liveIds=new Set(live>=0?fl[live].ids:lm.flatMap(({m})=>[m.a,m.b]));
+    const shoot=me.picks.filter(id=>id&&liveIds.has(id));
+    const busted=sc&&ORDER.some(d=>league.seeds[d])?me.picks.filter(id=>id&&league.seeds[BY[id].d]&&!path(id).alive):[];
+    mine=`<section class="lvcard"><div class="lvme"><div><span class="lvrk">${ORD(rk)}</span><span class="mut"> of ${N.length}${sc?"":" projected"}</span> ${mvTxt}<div class="mut">${esc(meT.name||"Your team")}</div></div><div class="lvpts">${sc?fmt(myV):Math.round(myV)}<small>${sc?"points":"projected"}</small></div></div>
+      ${sc?`<div class="lvlbl">Shooting now</div>${shoot.length?shoot.map(id=>{const lmx=lm.find(({m})=>m.a==id||m.b==id);const desc=lmx?`${RLAB[lmx.m.rd]} vs ${BY[lmx.m.a==id?lmx.m.b:lmx.m.a].n}`:`Bale ${BY[id].b}${league.scores[id]!=null?" · scored "+league.scores[id]:" · shooting now"}`;
+        return`<div class="lvar"><span class="tag t-${BY[id].d}">${DSHORT[BY[id].d]}</span><div class="lvan"><span>${esc(BY[id].n)}${me.cap==id?' <span class="lvcap">C 1.5×</span>':""}</span><small>${esc(desc)}</small></div><b>${P[id]!=null?fmt(P[id]*(me.cap==id?1.5:1)):"–"}</b></div>`}).join(""):`<p class="mut sm">None of your archers are shooting right now.</p>`}`:`<p class="mut sm">${L?"":lockText()+". "}Live updates start with the ${esc((fl[0]&&fl[0].label)||"first")} flight.</p>`}</section>
+      ${sc?myStake({...me,id:meT.id},lm):""}
+      ${busted.map(id=>`<div class="lvbust">Ouch: <b>${esc(BY[id].n)}</b> is out. ${P[id]?`Scored you ${fmt(P[id]*(me.cap==id?1.5:1))} pts.`:""}</div>`).join("")}`}
+  const feed=liveFeed();
+  return`<div class="lvwrap"><div class="lvhd"><h2>${liveNow()?'<span class="lvdot"></span>':""}Live</h2><span class="mut sm">Updates every minute</span></div>
+    <h3 class="lvh">Your team</h3>${mine}
+    <h3 class="lvh">Live feed</h3><section class="lvfeed">${feed.length?feed.map(it=>`<div class="lvit"><span class="lvic ${it.cls}">${it.ic}</span><div>${it.html}<span class="lvtm">${it.t?ago(it.t)+" · ":""}${esc(it.sub||"")}</span></div></div>`).join(""):`<p class="mut">Live updates start with the ${esc((fl[0]&&fl[0].label)||"first")} flight. Records, upsets and big scores will show up here.</p>`}</section></div>`}
 /* Rotating spotlight */
 let spI=0;
 function bbSpot(sc,P,liveIds){const N=teams.filter(t=>t.picks.some(Boolean)),L=locked(),cards=[];
@@ -1168,7 +1239,7 @@ function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(
 function drawQR(){const el=$("#bbqr");if(!el)return;
   if(!window.QRCode){if(!drawQR.loading){drawQR.loading=true;const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=()=>drawQR();document.head.appendChild(s)}return}
   el.innerHTML="";const sz=Math.max(96,Math.round(el.clientWidth||140));try{new QRCode(el,{text:siteUrl(),width:sz,height:sz,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})}catch{}}
-setInterval(()=>{bbTick();if(route()=="bigboard")render()},60e3);
+setInterval(()=>{bbTick();if(route()=="bigboard"||route()=="live")render()},60e3);
 
 /* ================= Private player emails (commissioner only) ================= */
 let contacts={},contactSub=null,lastContactKey="";
