@@ -501,7 +501,7 @@ function render(force){const ae=document.activeElement;
 }
 
 function notes(){let s="";
-  if(season=="2025")s+=`<p class="note warn"><b>Test mode.</b> The site is using the 2025 Texas Ringer field and results. Switch back to the 2026 field on the Commissioner tab before lineups open for real.</p>`;
+  if(season=="2025")s+=`<p class="note warn"><b>Test mode.</b> The site is showing last year's (2025) field and results for testing. ${isAdmin||mode=="local"?"Switch back to the 2026 field on the Commissioner tab when you're done.":"Your real 2026 team is safe and comes back when testing ends. Changes made during testing aren't saved."}</p>`;
   if(mode=="loading")s+=`<p class="note">${slow?"Can't reach the league data yet. Check your connection, or the Firebase setup steps.":"Loading the league…"}</p>`;
   if(mode=="local")s+=`<p class="note warn">Setup isn't finished, so this is practice mode: picks are saved in this browser only. Fill in config.js with your Firebase settings to turn on the shared league.</p>`;
   return s}
@@ -701,7 +701,7 @@ function commishView(){if(mode=="shared"&&!isAdmin)return`<div class="empty-st">
     <div class="row"><button class="btn" data-act="seed" ${done?"":"disabled"}>Start ${DIV[d]} bracket from qualification</button></div>`}
   <h3 class="sec">Start over</h3><div class="row"><button class="btn ${clearArm?"danger":"ghost"}" data-act="clear">${clearArm?"Click again to erase ALL results":"Erase all results"}</button></div>`}
 
-async function writeTeam(){if(!named()){setStatus("Your team needs a name (at least 2 characters) before it can be saved.");return}if(mode=="local"){saveLocal();setStatus("Saved in this browser");return}
+async function writeTeam(){if(season!="2026"&&mode=="shared"){setStatus("Test mode is on, so changes aren't saved. Your real 2026 team is safe.");return}if(!named()){setStatus("Your team needs a name (at least 2 characters) before it can be saved.");return}if(mode=="local"){saveLocal();setStatus("Saved in this browser");return}
   if(mode!="shared"||!authUser)return;
   try{await fs.setDoc(fs.doc(db,"teams",myId),{name:me.name,picks:me.picks,cap:me.cap,owner:ownerName(),at:Date.now()});setStatus("Saved");saveContact()}
   catch(e){if(e&&e.code=="permission-denied"){setStatus(locked()?"Lineups are locked, so changes can't be saved.":"Couldn't save. Check that the security rules from firestore.rules are published (setup step 5).")}else setStatus("Couldn't save yet. Check your connection and try again.")}}
