@@ -1357,7 +1357,7 @@ function bigBoardView(){const P=pts(),sc=anyScores();const qualMode=!ORDER.some(
 function drawQR(){const el=$("#bbqr");if(!el)return;
   if(!window.QRCode){if(!drawQR.loading){drawQR.loading=true;const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";s.onload=()=>drawQR();document.head.appendChild(s)}return}
   el.innerHTML="";const sz=Math.max(96,Math.round(el.clientWidth||140));try{new QRCode(el,{text:siteUrl(),width:sz,height:sz,colorDark:"#000000",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})}catch{}}
-setInterval(()=>{bbTick();if(route()=="bigboard"||route()=="live")render()},60e3);
+setInterval(()=>{bbTick();if(route()=="bigboard"||route()=="live"||route()=="results")render()},60e3);
 
 /* ================= Private player emails (commissioner only) ================= */
 let contacts={},contactSub=null,lastContactKey="";
@@ -1400,7 +1400,7 @@ buildProj();render(true);
       overlayMine();if(mode=="loading")mode="shared";render()},
     e=>{clearTimeout(slowT);console.error(e);mode="shared";render(true)});
   fs.onSnapshot(fs.doc(db,"league","state"),s=>{league=cleanLeague(s.exists()?s.data():null);render()},e=>console.error(e));
-  fs.onSnapshot(fs.doc(db,"league","live"),s=>{live=cleanLive(s.exists()?s.data():null);if(["scores","live","bigboard"].includes(route()))render()},e=>console.warn("live",e&&e.code));
+  fs.onSnapshot(fs.doc(db,"league","live"),s=>{live=cleanLive(s.exists()?s.data():null);if(["results","live","bigboard","team","standings"].includes(route()))render()},e=>console.warn("live",e&&e.code));
   fs.onSnapshot(fs.query(fs.collection(db,"posts"),fs.orderBy("at","desc"),fs.limit(100)),s=>{posts=s.docs.map(d=>cleanPost(d.data(),d.id));render()},e=>console.warn("posts",e&&e.code));
   fs.onSnapshot(fs.collection(db,"reacts"),s=>{reacts=s.docs.map(d=>{const x=d.data();return{id:d.id,uid:String(x.uid||""),post:String(x.post||""),kind:x.kind=="o"?"o":"b"}});render()},e=>console.warn("reacts",e&&e.code));
   fa.onAuthStateChanged(auth,u=>{authUser=u;myId=u?u.uid:null;loadedMine=false;
