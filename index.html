@@ -274,7 +274,7 @@ ol.roster{list-style:none;margin:14px 0 0;padding:0}
 .chip{flex:none;border:1px solid #fff;background:var(--bg);color:var(--ink);border-radius:8px;padding:8px 14px;min-height:44px;font-weight:600}
 .chip.on{background:#fff;color:#000;border-color:#fff}
 ul.list{list-style:none;margin:0;padding:0}
-.ar,.st{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line)}
+.ar,.st{display:grid;grid-template-columns:minmax(0,1fr) auto auto;}.ar{grid-template-columns:auto minmax(0,1fr) auto auto}.ar,.st{gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line)}
 .tag{display:inline-block;color:#fff;font-size:12px;font-weight:700;padding:1px 8px;border-radius:5px;margin-right:6px}
 .t-BB{background:#2c4f9e}.t-TR{background:#8a5a2b}.t-FC{background:#c40000}.t-BH{background:#4d6a29}.t-RC{background:#8f6500}
 .stat{text-align:right;font-size:14px;color:var(--mut);max-width:220px}
@@ -341,7 +341,11 @@ tr.cutl td{color:var(--red);font-weight:700;font-size:13px;border-bottom:2px das
 .gbtn{width:100%;margin-top:14px;background:#fff;color:#1f1f1f;border:1px solid #fff}
 .or{text-align:center;color:var(--mut);font-size:14px;margin:14px 0}
 .err{color:var(--red);font-weight:600;min-height:22px;margin:10px 0 0}
-@media(max-width:600px){table{font-size:14px}.slot{grid-template-columns:34px minmax(0,1fr) auto}.slot .pts{display:none}.ar{grid-template-columns:minmax(0,1fr) auto}.ar .stat{display:none}}
+@media(max-width:600px){table{font-size:14px}.slot{grid-template-columns:34px minmax(0,1fr) auto}.slot .pts{display:none}.ar,li.ar{grid-template-columns:auto minmax(0,1fr) auto}.ar .stat{display:none}}
+.av{width:34px;height:34px;border-radius:50%;flex:none;object-fit:cover;background:radial-gradient(circle at 50% 35%,#a3221c,#4a0c0a);border:1.5px solid #333;display:inline-flex;align-items:center;justify-content:center;font:600 12px/1 system-ui,sans-serif;color:#aaa;vertical-align:middle}
+.av.ini{background:#222}.av.md{width:44px;height:44px;font-size:15px;margin-right:10px}.av.lg{width:84px;height:84px;font-size:26px;margin:6px auto 8px;display:flex;border-width:2px}
+.pod1:nth-child(2) .av.lg{width:104px;height:104px;border-color:#d4af37}.avw{display:flex;align-items:center;gap:10px}tr.me .av,.me>.av{border-color:var(--red)}
+.nm.avw .av.md{margin-right:0}.av.ara{margin-right:0}
 </style>
 </head>
 <body>
@@ -577,7 +581,7 @@ function tracker(P){const ids=me.picks.filter(Boolean),sc=anyScores();
     ${done?`<div><b>${medals}</b><span>medal${medals==1?"":"s"} won</span></div>`:`<div><b>${ids.length?(sc?alive:ids.length)+"/"+ids.length:"0"}</b><span>${sc?"still shooting":"archers picked"}</span></div>`}</div>`;
   const rows=SLOTS.map((s,i)=>{const id=me.picks[i];if(!id)return`<li class="tr emp"><span class="num">${i+1}</span><span class="meta">Empty ${s=="FLEX"?"Flex":DIV[s]} slot</span></li>`;
     const pth=paths.find(x=>x[0]==id)[1],c=me.cap==id,p=P[id];
-    return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm"><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div>
+    return`<li class="tr${pth.out?" gone":""}"><span class="num${c?" cp":""}">${i+1}</span><div class="nm avw">${av(BY[id].n,"md")}<div><b>${esc(BY[id].n)}</b><small>${DIV[BY[id].d]}${c?" · Captain 1.5×":""}</small></div></div>
       <div class="tpw"><b class="tp">${p==null?"–":fmt(c?p*1.5:p)}</b><small class="pj">proj ${fmt(Math.round((PROJ[id]||0)*(c?1.5:1)))}${c?` (${Math.round(PROJ[id]||0)} × 1.5)`:""}</small></div><div class="steps">${pth.st.map(x=>`<span class="stp ${x.c}">${esc(x.t)}</span>`).join("")}</div></li>`}).join("");
   return`<div class="trk card"><h3>${esc(me.name||"Tournament tracker")}</h3><p class="meta trk-sub">Tournament tracker</p>${sum}<ol class="trl">${rows}</ol>
     <p class="leg"><span class="stp done">Done</span><span class="stp now">Shooting now</span><span class="stp proj">On track</span><span class="stp out">Out</span>${sc?"":" Fills in as scores are posted."}</p></div>`}
@@ -637,7 +641,7 @@ function alist(){const P=pts(),o=ownMap(),L=locked(),showOwn=(L||mode=="local")&
   if(!xs.length)return`<li class="empty-st">No archers match “${esc(q)}”.</li>`;
   return xs.map(a=>{const on=me.picks.includes(a.id),p=P[a.id];
     const st=(p!=null?`<b>${fmt(p)} pts</b>${esc(status(a.id))}<div>proj ${projR(a.id)}</div>`:`<b>${projR(a.id)}</b>projected`)+(showOwn?`<div>${Math.round(100*(o[a.id]||0)/teams.length)}% rostered</div>`:"");
-    return`<li class="ar"><div class="who"><b>${esc(a.n)}</b>${a.out?`<span class="wdpill">Withdrawn</span>`:""}${scoutOf(a)?`<span class="scpill">Scouting report</span>`:""}<span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span></div><div class="stat">${st}</div>
+    return`<li class="ar">${av(a.n,"md ara")}<div class="who"><b>${esc(a.n)}</b>${a.out?`<span class="wdpill">Withdrawn</span>`:""}${scoutOf(a)?`<span class="scpill">Scouting report</span>`:""}<span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span></div><div class="stat">${st}</div>
     ${a.out?`<button class="add" disabled>Withdrawn</button>`:`<button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button>`}</li>`}).join("")}
 function archersView(){const cnt=d=>A.filter(a=>a.d==d).length;
   const ban=pendingSlot!=null?`<p class="note">Choosing for slot ${pendingSlot+1} (${SLOTS[pendingSlot]=="FLEX"?"Flex, any division":DIV[SLOTS[pendingSlot]]}). <a href="#team" data-act="cancelpick">Back to my team</a></p>`:"";
@@ -682,6 +686,9 @@ function qualTable(d,edit){const Q=qual(d),P=pts();const done=new Set(Q.map(r=>r
   return`<table class="qt"><thead><tr><th class="n">Rank</th><th>Archer</th><th class="n">Score</th><th class="n">7s</th>${edit?"":`<th class="n">Fantasy pts</th><th class="n pjc">Projected</th>`}</tr></thead><tbody>${rows}</tbody></table>`}
 function divChips(act,cur){return`<div class="chips">${ORDER.map(d=>`<button class="chip${cur==d?" on":""}" data-act="${act}" data-d="${d}">${DIV[d]}</button>`).join("")}</div>`}
 let rview=null;
+const PHOTOS=new Set(["alex-gilliam","amy-booth","andy-love","belinda-hale","bubba-bateman","caelan-shanklin","carter-pearson","cheyenne-mcbride","chris-monaco","cole-ware","dana-lampman","donnye-mitchell","gene-cross","griffin-witty","hector-leon","jack-krengel","jacob-goff","jason-gilliland","jeremiah-jones","joel-bonner","john-winker","julie-jones","kevin-jensen","landry-blakey","marcey-house","matt-hudson","michael-davenport","mike-wynn","mollie-mcdonald","nathan-schoeneberg","paul-batchelder","randall-chesnutt","ray-arquette","richard-bolton","rod-shackelford","sarah-phillips","scooter-farber","sherry-kessler","sk-jentsch","spanky-brooks","steve-holbert","suzi-swanson","terra-timmerman","venugopal-kunnavakkam"]);
+const slugN=n=>String(n||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function av(n,cls){const s=slugN(n);return PHOTOS.has(s)?`<img class="av${cls?" "+cls:""}" src="img/players/${s}.webp" alt="" loading="lazy">`:`<span class="av ini${cls?" "+cls:""}">${esc(String(n||"").split(/\s+/).map(w=>w[0]||"").slice(0,2).join("").toUpperCase())}</span>`}
 function liveDiv(d){return live&&live.season==season&&live.divs&&live.divs[d]?live.divs[d]:null}
 function resultsView(){const d=rdiv,P=pts(),L=locked(),M=bracket(d),LD=liveDiv(d);const N=teams.filter(t=>t.picks.some(Boolean));
   const own=id=>N.filter(t=>t.picks.includes(id)).length,showOwn=(L||mode=="local")&&N.length;
@@ -699,7 +706,7 @@ function resultsView(){const d=rdiv,P=pts(),L=locked(),M=bracket(d),LD=liveDiv(d
     rows=rows.filter(r=>r.sc>0||(r.shot>0)).sort((a,b)=>(b.sc||0)-(a.sc||0)||(b.x||0)-(a.x||0));
     body=!rows.length?`<p class="empty-st">No ${DIV[d]} scores yet. Qualification scores show up here as soon as archers start shooting.</p>`:
     `${key}<div class="sctw"><table class="sct"><thead><tr><th>#</th><th>Archer</th><th class="r">Score</th><th class="r">7s</th><th class="r">Pts</th></tr></thead><tbody>${rows.map((r,i)=>{const rk=i+1,prog=r.of&&r.shot&&r.shot<r.of;const p=r.id?P[r.id]:null;
-      return`<tr class="${mine(r.id)?"mine":""}${rk==CUT?" cut16":""}${rk==QCUT?" cut32":""}"><td>${rk}</td><td><b>${esc(r.n)}</b>${cap(r.id)?'<span class="lvcap">C</span>':""}${prog?`<div class="prg">● Shooting · ${r.shot} of ${r.of} arrows</div><div class="pbar"><i style="width:${Math.round(100*r.shot/r.of)}%"></i></div>`:showOwn&&r.id?`<div class="meta sm">On ${own(r.id)} team${own(r.id)==1?"":"s"}</div>`:""}</td><td class="r">${r.sc||"–"}</td><td class="r">${r.x??"–"}</td><td class="r g">${p!=null&&!prog?fmt(cap(r.id)?p*1.5:p):"–"}</td></tr>`}).join("")}</tbody></table></div>
+      return`<tr class="${mine(r.id)?"mine":""}${rk==CUT?" cut16":""}${rk==QCUT?" cut32":""}"><td>${rk}</td><td><div class="avw">${av(r.n)}<div><b>${esc(r.n)}</b>${cap(r.id)?'<span class="lvcap">C</span>':""}${prog?`<div class="prg">● Shooting · ${r.shot} of ${r.of} arrows</div><div class="pbar"><i style="width:${Math.round(100*r.shot/r.of)}%"></i></div>`:showOwn&&r.id?`<div class="meta sm">On ${own(r.id)} team${own(r.id)==1?"":"s"}</div>`:""}</div></div></td><td class="r">${r.sc||"–"}</td><td class="r">${r.x??"–"}</td><td class="r g">${p!=null&&!prog?fmt(cap(r.id)?p*1.5:p):"–"}</td></tr>`}).join("")}</tbody></table></div>
       <p class="meta sm">Dashed line: top ${CUT} go to the bracket. Dotted line: qualification points stop at ${QCUT}${QCUT==32?"nd":"th"}. Ties on score are broken by 7s.</p>`}
   else if(v=="b"){
     if(LD&&LD.rounds&&LD.rounds.length){const cols=LD.rounds.map((rd,ri)=>{const fin=/final/i.test(rd.n)&&!/semi|quarter/i.test(rd.n);
@@ -709,7 +716,7 @@ function resultsView(){const d=rdiv,P=pts(),L=locked(),M=bracket(d),LD=liveDiv(d
       body=`${key.replace('<span class="g">Gold = fantasy points</span>','<span class="lvk">● Being shot now</span>').replace('<span>Teams = fantasy teams that picked them</span>','')}<div class="sbw"><div class="sbg" style="grid-template-columns:repeat(${LD.rounds.length},minmax(150px,1fr))">${cols}</div></div>`}
     else body=M?bracketHtml(d,false):`<p class="empty-st">The ${DIV[d]} bracket starts after qualification. The top ${CUT} are seeded 1 vs ${CUT}, 8 vs 9, and so on.</p>`}
   else{if(!done)body=`<p class="empty-st">Medals show up here once the ${DIV[d]} gold and bronze matches are done.</p>`;
-    else{const g=M.f.w,sv=M.f.a==g?M.f.b:M.f.a,bz=M.b.w;const card=(cls,lab,id)=>`<div class="pod1 ${cls}${mine(id)?" me":""}"><span>${lab}</span><b>${esc(BY[id].n)}</b><span class="meta sm">${P[id]!=null?fmt(P[id])+" fantasy pts":""}${showOwn?` · on ${own(id)} team${own(id)==1?"":"s"}`:""}</span></div>`;
+    else{const g=M.f.w,sv=M.f.a==g?M.f.b:M.f.a,bz=M.b.w;const card=(cls,lab,id)=>`<div class="pod1 ${cls}${mine(id)?" me":""}"><span>${lab}</span>${av(BY[id].n,"lg")}<b>${esc(BY[id].n)}</b><span class="meta sm">${P[id]!=null?fmt(P[id])+" fantasy pts":""}${showOwn?` · on ${own(id)} team${own(id)==1?"":"s"}`:""}</span></div>`;
       body=`<div class="pod3">${card("s","2nd",sv)}${card("g","🥇 Champion",g)}${card("bz","3rd",bz)}</div>`}}
   return`${head}${divChips("rdiv",d)}${views}${body}`}
 
