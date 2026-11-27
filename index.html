@@ -511,7 +511,7 @@ function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");cl
 function lockText(){if(locked())return"Lineups locked";const ms=LOCK-Date.now();const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
   return"Lineups lock in "+(d?d+"d "+h+"h":h?h+"h "+m+"m":m+"m")}
 function header(){$("#sub").textContent=SEASONS[season].label+" · "+A.length+" archers across 5 adult divisions";$("#sub").classList.toggle("testm",season=="2025");const p=$("#lockpill");p.textContent=lockText();p.classList.toggle("lk",locked());
-  const r=route();const tabs=[["team","My Team"],["live","Live"],["archers","Archers"],["results","Scores"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
+  const r=route();const tabs=[["team","My Team"],["live","Live"],["results","Scores"],["archers","Archers"],["standings","Standings"]];tabs.push(["awards","Awards"]);tabs.push(["rules","How it works"]);
   if(isAdmin||mode=="local")tabs.push(["commish","Commissioner"]);
   const ac=$("#acct");ac.innerHTML=authUser?`Signed in as ${esc(ownerName())} · <button class="lnk" data-act="signout">Sign out</button>`:(mode=="shared"?`<a class="lnk" href="#team">Sign in</a>`:"");
   $("#nav").innerHTML=tabs.map(([h,l])=>`<a href="#${h}" class="${r==h?"on":""}${h=="live"&&liveNow()?" lvon":""}">${h=="live"&&liveNow()?'<span class="lvdot" aria-hidden="true"></span>':""}${l}${h=="standings"&&wallNew()?`<span class="ndot" aria-label="${wallNew()} new trash talk posts"></span>`:""}</a>`).join("")}
