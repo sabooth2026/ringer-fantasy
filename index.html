@@ -1309,9 +1309,9 @@ function bbSpot(sc,P,liveIds){const N=teams.filter(t=>t.picks.some(Boolean)),L=l
     if(sl&&sl[1]>0){const n=N.filter(t=>t.picks.includes(sl[0])).length;cards.push({a:BY[sl[0]].n,k:"Award race · preliminary",t:"Sleeper Pick",s:"Beating their projection by the most",b:`<div class="spbig">+${fmt(sl[1])}</div>${esc(BY[sl[0]].n)}, projected ${projR(sl[0])} and already at ${fmt(P[sl[0]])}. Picked by ${n} team${n==1?"":"s"}.`})}}
   else{const tp=[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))[0];if(tp)cards.push({a:tp.n,k:"Top projected archer",t:tp.n,s:DIV[tp.d],b:`<div class="spbig">${projR(tp.id)} pts</div>projected, the highest in the field.`})}
   {const rc=ORDER.map(d=>{const r=RINGER_REC[d];if(!r)return null;const h=recBest(d);
-      if(h)return{a:h.a.n,brk:1,k:(h.tie?"Texas Ringer record tied · ":"NEW Texas Ringer record · ")+DIV[d],t:h.a.n,s:`Set at the ${season} Ringer`,b:`<div class="spbig">${h.s}</div>${h.tie?"Ties":"Broke"} ${esc(r.n)}'s ${r.s} from ${r.y}.`};
+      if(h)return{a:h.a.n,brk:1,k:(h.tie?"Texas Ringer National Record tied · ":"NEW Texas Ringer National Record · ")+DIV[d],t:h.a.n,s:`Set at the ${season} Ringer`,b:`<div class="spbig">${h.s}</div>${h.tie?"Ties":"Broke"} ${esc(r.n)}'s ${r.s} from ${r.y}.`};
       const inF=A.some(x=>x.d==d&&normN(x.n)==normN(r.n));
-      return{a:r.n,k:"Texas Ringer record · "+DIV[d],t:r.n,s:`Record holder since ${r.y}`,b:`<div class="spbig">${r.s}</div>${inF?`${esc(r.n.split(" ")[0])} is back to defend it. `:""}Shoot <b>${r.s+1}</b> or better this weekend to take the record.`}}).filter(Boolean);
+      return{a:r.n,k:"Texas Ringer National Record · "+DIV[d],t:r.n,s:`Record holder since ${r.y}`,b:`<div class="spbig">${r.s}</div>${inF?`${esc(r.n.split(" ")[0])} is back to defend it. `:""}Shoot <b>${r.s+1}</b> or better this weekend to take the record.`}}).filter(Boolean);
     const brk=rc.filter(c=>c.brk),rest=rc.filter(c=>!c.brk),qualOn=!sc||ORDER.some(d=>qual(d).length&&!(league.elim[d]&&Object.keys(league.elim[d]).length));
     const per=qualOn?2:1,st=Math.floor(Date.now()/6e5);for(let i=0;i<Math.min(per,rest.length);i++)brk.push(rest[(st*per+i)%rest.length]);
     brk.forEach((c,i)=>cards.splice(Math.min(cards.length,1+i*2),0,c))}
