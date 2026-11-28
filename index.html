@@ -346,6 +346,9 @@ tr.cutl td{color:var(--red);font-weight:700;font-size:13px;border-bottom:2px das
 .av.ini{background:#222}.av.md{width:44px;height:44px;font-size:15px;margin-right:10px}.av.lg{width:84px;height:84px;font-size:26px;margin:6px auto 8px;display:flex;border-width:2px}
 .pod1:nth-child(2) .av.lg{width:104px;height:104px;border-color:#d4af37}.avw{display:flex;align-items:center;gap:10px}tr.me .av,.me>.av{border-color:var(--red)}
 .nm.avw .av.md{margin-right:0}.av.ara{margin-right:0}
+.scbtn{display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#2a0b0a;border:1px solid var(--red);color:#fff;border-radius:99px;font:600 12px/1 inherit;padding:6px 11px;cursor:pointer;width:max-content}.scbtn i{font-style:normal;font-size:10px}.scbtn.on{background:var(--red)}
+.scx{grid-column:1/-1;background:#151517;border:1px solid #2a2a2d;border-left:3px solid var(--red);border-radius:10px;padding:10px 14px;margin-top:2px}.scx ul{margin:0 0 8px;padding-left:18px}.scx li{margin:4px 0;line-height:1.4}.scx .scs{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px;margin-bottom:6px}.scx .meta.sm{margin:0;font-size:12px}
+.chip.scchip{border-color:var(--red)}
 </style>
 </head>
 <body>
@@ -626,7 +629,7 @@ const SCOUT={
 };
 const SCOUTN=Object.fromEntries(Object.entries(SCOUT).map(([k,v])=>[normN(k),v]));
 const scoutOf=a=>SCOUTN[normN(a.n)];
-let scOpen=null;
+let scOpen=null,scOnly=false;const scShow=new Set();
 function scoutView(){const xs=A.filter(a=>scoutOf(a)&&(afilter=="ALL"||a.d==afilter)).sort((a,b)=>ORDER.indexOf(a.d)-ORDER.indexOf(b.d)||(PROJ[b.id]||0)-(PROJ[a.id]||0));
   if(!xs.length)return"";const open=scOpen??(afilter!="ALL"),L=locked();
   return`<details class="scout" id="scd"${open?" open":""}><summary><span class="sch">Scouting report</span><span class="meta">${xs.length} archer${xs.length==1?"":"s"} to know${afilter=="ALL"?"":" in "+DIV[afilter]} · ${open?"Hide":"Show"}</span></summary>
@@ -635,20 +638,21 @@ function scoutView(){const xs=A.filter(a=>scoutOf(a)&&(afilter=="ALL"||a.d==afil
     <ul>${c.f.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
     <div class="scs">${c.s.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)} ↗</a>`).join("")}</div>
     <div class="scf"><span class="meta">Projected<b>${projR(a.id)}</b></span><button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button></div></article>`}).join("")}</div></details>`}
+function scoutPanel(a){const c=scoutOf(a);return`<div class="scx"><ul>${c.f.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><div class="scs">${c.s.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)} ↗</a>`).join("")}</div><p class="meta sm">Researched from public news, interviews and past Ringer results. Projected ${projR(a.id)} pts.</p></div>`}
 function alist(){const P=pts(),o=ownMap(),L=locked(),showOwn=(L||mode=="local")&&teams.length,ql=q.trim().toLowerCase();
-  let xs=A.filter(a=>(afilter=="ALL"||a.d==afilter)&&(!ql||a.n.toLowerCase().includes(ql)));
+  let xs=A.filter(a=>(afilter=="ALL"||a.d==afilter)&&(!ql||a.n.toLowerCase().includes(ql))&&(!scOnly||scoutOf(a)));
   xs.sort(sort=="pts"?(a,b)=>(P[b.id]??-1)-(P[a.id]??-1):sort=="proj"?(a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0):sort=="time"?(a,b)=>TORD[a.tc]-TORD[b.tc]||a.b.localeCompare(b.b):(a,b)=>a.n.localeCompare(b.n));
-  if(!xs.length)return`<li class="empty-st">No archers match “${esc(q)}”.</li>`;
+  if(!xs.length)return`<li class="empty-st">${scOnly&&!ql?"No scouting reports in this division yet.":`No archers match “${esc(q)}”.`}</li>`;
   return xs.map(a=>{const on=me.picks.includes(a.id),p=P[a.id];
     const st=(p!=null?`<b>${fmt(p)} pts</b>${esc(status(a.id))}<div>proj ${projR(a.id)}</div>`:`<b>${projR(a.id)}</b>projected`)+(showOwn?`<div>${Math.round(100*(o[a.id]||0)/teams.length)}% rostered</div>`:"");
-    return`<li class="ar">${av(a.n,"md ara")}<div class="who"><b>${esc(a.n)}</b>${a.out?`<span class="wdpill">Withdrawn</span>`:""}${scoutOf(a)?`<span class="scpill">Scouting report</span>`:""}<span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span></div><div class="stat">${st}</div>
-    ${a.out?`<button class="add" disabled>Withdrawn</button>`:`<button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button>`}</li>`}).join("")}
+    return`<li class="ar">${av(a.n,"md ara")}<div class="who"><b>${esc(a.n)}</b>${a.out?`<span class="wdpill">Withdrawn</span>`:""}<span class="meta"><span class="tag t-${a.d}">${DIV[a.d]}</span>Bale ${a.b} · ${a.t}</span><span class="hist">${esc(histText(a.id,true))}</span>${scoutOf(a)?`<button class="scbtn${scShow.has(a.id)?" on":""}" data-act="scrow" data-id="${a.id}" aria-expanded="${scShow.has(a.id)}">Scouting report <i>${scShow.has(a.id)?"▴":"▾"}</i></button>`:""}</div><div class="stat">${st}</div>
+    ${a.out?`<button class="add" disabled>Withdrawn</button>`:`<button class="add${on?" have":""}" data-act="add" data-id="${a.id}" ${on||L||!canWrite||mode=="loading"||(mode=="shared"&&!authUser)?"disabled":""}>${on?"On team":"Add"}</button>`}${scoutOf(a)&&scShow.has(a.id)?scoutPanel(a):""}</li>`}).join("")}
 function archersView(){const cnt=d=>A.filter(a=>a.d==d).length;
   const ban=pendingSlot!=null?`<p class="note">Choosing for slot ${pendingSlot+1} (${SLOTS[pendingSlot]=="FLEX"?"Flex, any division":DIV[SLOTS[pendingSlot]]}). <a href="#team" data-act="cancelpick">Back to my team</a></p>`:"";
   return`<h2>The field</h2>${ban}${(mode!="shared"||authUser)&&!named()&&!locked()?`<p class="note"><a href="#team">Name your team</a> first, then add archers.</p>`:""}${mode=="shared"&&!authUser?`<p class="note"><a href="#team">Sign in</a> to add archers to a team.</p>`:""}<div class="tools"><input type="search" id="q" placeholder="Search archers" value="${esc(q)}" aria-label="Search archers">
   <select id="sort" aria-label="Sort"><option value="name"${sort=="name"?" selected":""}>Sort: name</option><option value="time"${sort=="time"?" selected":""}>Sort: flight time</option><option value="proj"${sort=="proj"?" selected":""}>Sort: projected points</option><option value="pts"${sort=="pts"?" selected":""}>Sort: fantasy points</option></select></div>
-  <div class="chips">${[["ALL","All ("+A.length+")"],...ORDER.map(d=>[d,DIV[d]+" ("+cnt(d)+")"])].map(([d,l])=>`<button class="chip${afilter==d?" on":""}" data-act="filter" data-d="${d}">${l}</button>`).join("")}</div>
-  ${scoutView()}<ul class="list" id="alist">${alist()}</ul>`}
+  <div class="chips">${[["ALL","All ("+A.length+")"],...ORDER.map(d=>[d,DIV[d]+" ("+cnt(d)+")"])].map(([d,l])=>`<button class="chip${afilter==d?" on":""}" data-act="filter" data-d="${d}">${l}</button>`).join("")}<button class="chip scchip${scOnly?" on":""}" data-act="sconly" aria-pressed="${scOnly}">★ Scouting reports (${A.filter(a=>scoutOf(a)&&(afilter=="ALL"||a.d==afilter)).length})</button></div>
+  <ul class="list" id="alist">${alist()}</ul>`}
 
 function standingsView(){const P=pts(),sc=anyScores(),show=locked()||mode=="local";
   const list=teams.filter(t=>t.picks.some(Boolean)||t.name).map(t=>({...t,tot:teamTotal(t,P)})).sort((a,b)=>sc?(b.tot-a.tot||(a.name||"").localeCompare(b.name||"")):(teamProj(b)-teamProj(a)));
@@ -815,6 +819,8 @@ document.addEventListener("click",async e=>{if(e.target.id=="modal"){e.target.hi
   else if(act=="rm"){if(me.cap==me.picks[i])me.cap=null;me.picks[i]=null;schedSave();render(true)}
   else if(act=="cap"){me.cap=me.cap==me.picks[i]?null:me.picks[i];schedSave();render(true)}
   else if(act=="filter"){afilter=b.dataset.d;scOpen=null;render(true)}
+  else if(act=="sconly"){scOnly=!scOnly;render(true)}
+  else if(act=="scrow"){const id=b.dataset.id;scShow.has(id)?scShow.delete(id):scShow.add(id);const l=document.getElementById("alist");if(l)l.innerHTML=alist();else render(true)}
   else if(act=="cdiv"){cdiv=b.dataset.d;clearArm=false;resetArm=false;render(true)}
   else if(act=="rdiv"){rdiv=b.dataset.d;render(true)}
   else if(act=="seed"){const top=qual(cdiv).slice(0,CUT).map(r=>r.id);while(top.length<16)top.push(null);
