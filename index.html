@@ -1198,8 +1198,8 @@ function bbScanUpsets(){const done=[];for(const d of ORDER){const M=bracket(d);i
   done.forEach((x,i)=>{if(bbSeen.has(keys[i]))return;bbSeen.add(keys[i]);const w=x.m.w,l=x.m.a==w?x.m.b:x.m.a,sw=seedOf(w)||99,sl=seedOf(l)||99;
     if(sw-sl>=4)bbQ.push({d:x.d,w,l,sw,sl,rd:x.m.rd,n:teams.filter(t=>t.picks.includes(l)).length})});
   if(bbQ.length>3)bbQ=bbQ.sort((a,b)=>(b.sw-b.sl)-(a.sw-a.sl)).slice(0,3)}
-function bbAlertHTML(u){if(u.rec)return`<div class="bbuav">${av(BY[u.id].n,"bbal")}</div><div class="bbuat">${u.tie?"RECORD TIED!":"NEW RINGER RECORD!"}</div><div class="bbuas">${esc(BY[u.id].n)} shoots ${u.s} in ${DIV[u.d]}</div><div class="bbuan">${u.tie?`Matching ${esc(u.r.n)}'s ${u.r.s} from ${u.r.y}`:`Breaking ${esc(u.r.n)}'s ${u.r.s} from ${u.r.y}`}</div>`;
-  if(u.demo&&u.demoRec)return`<div class="bbuat">NEW RINGER RECORD!</div><div class="bbuas">This is a preview. When an archer beats a Texas Ringer record, the alert shows here and the new record stays in the scrolling ticker.</div>`;
+function bbAlertHTML(u){if(u.rec)return`<div class="bbuav">${av(BY[u.id].n,"bbal")}</div><div class="bbuat">${u.tie?"NATIONAL RECORD TIED!":"NEW NATIONAL RECORD!"}</div><div class="bbuas">${esc(BY[u.id].n)} shoots ${u.s} in ${DIV[u.d]}</div><div class="bbuan">${u.tie?`Matching ${esc(u.r.n)}'s ${u.r.s} from ${u.r.y}`:`Breaking ${esc(u.r.n)}'s ${u.r.s} from ${u.r.y}`}</div>`;
+  if(u.demo&&u.demoRec)return`<div class="bbuat">NEW NATIONAL RECORD!</div><div class="bbuas">This is a preview. When an archer beats a Texas Ringer National Record, the alert shows here and the new record stays in the scrolling ticker.</div>`;
   if(u.demo)return`<div class="bbuat">UPSET!</div><div class="bbuas">This is a preview. When a lower seed knocks out a higher seed, the alert shows here for a few seconds.</div>`;
   return`<div class="bbuav">${av(BY[u.w].n,"bbal")}<span class="bbvs">over</span>${av(BY[u.l].n,"bbal out")}</div><div class="bbuat">UPSET!</div><div class="bbuas">#${u.sw} ${esc(BY[u.w].n)} knocks out #${u.sl} ${esc(BY[u.l].n)} · ${DIV[u.d]} ${esc(RLAB[u.rd]||"")}</div><div class="bbuan">${u.n?`${u.n} fantasy team${u.n==1?"":"s"} just lost ${u.n==1?"their":"a"} pick`:"No fantasy team had picked "+esc(BY[u.l].n)}</div>`}
 function eosResume(){if(isAdmin&&!eosT&&eosAutoOn())eosAutoSet(true)}
@@ -1216,8 +1216,8 @@ function bbScanRecords(){const hits=ORDER.map(d=>[d,recBest(d)]).filter(x=>x[1])
   if(!recSeen){recSeen=new Set(keys);return}
   hits.forEach(([d,h],i)=>{if(recSeen.has(keys[i]))return;recSeen.add(keys[i]);bbQ.unshift({rec:true,d,id:h.a.id,s:h.s,tie:h.tie,r:h.r})})}
 function recTicker(broken){return ORDER.map(d=>{const r=RINGER_REC[d];if(!r)return"";const h=recBest(d);if(!!h!==broken)return"";
-  if(h)return`<span class="tkrec">${h.tie?"TIES THE RINGER RECORD":"NEW RINGER RECORD"} · ${DIV[d]}: ${esc(h.a.n)} ${h.s}${h.tie?"":` (old record ${r.s}, ${esc(r.n)}, ${r.y})`}</span><span class="dot">•</span>`;
-  return`<span><b>Ringer record to beat</b> · ${DIV[d]}: ${r.s} by ${esc(r.n)} (${r.y})</span><span class="dot">•</span>`}).join("")}
+  if(h)return`<span class="tkrec">${h.tie?"TIES THE TEXAS RINGER NATIONAL RECORD":"NEW TEXAS RINGER NATIONAL RECORD"} · ${DIV[d]}: ${esc(h.a.n)} ${h.s}${h.tie?"":` (old record ${r.s}, ${esc(r.n)}, ${r.y})`}</span><span class="dot">•</span>`;
+  return`<span><b>National record to beat</b> · ${DIV[d]}: ${r.s} by ${esc(r.n)} (${r.y})</span><span class="dot">•</span>`}).join("")}
 /* What's at stake: how each live match would move the league */
 const ORD=n=>n+(n%100>=11&&n%100<=13?"th":["th","st","nd","rd"][n%10]||"th");
 function stakeFor(d,m){const N=teams.filter(t=>t.picks.some(Boolean));if(N.length<2)return null;
