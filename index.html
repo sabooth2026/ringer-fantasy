@@ -1340,7 +1340,7 @@ function bbSpot(sc,P,liveIds){const N=teams.filter(t=>t.picks.some(Boolean)),L=l
   else{const tp=[...A].sort((a,b)=>(PROJ[b.id]||0)-(PROJ[a.id]||0))[0];if(tp)cards.push({a:tp.n,k:"Top projected archer",t:tp.n,s:DIV[tp.d],b:`<div class="spbig">${projR(tp.id)} pts</div>projected, the highest in the field.`})}
   {const {fl,live:lv}=flights();let pool=A.filter(a=>cardOf(a.n)&&liveIds.has(a.id)),lab="on the line now",nx=null;
     if(!pool.length){nx=fl.find(f=>f.state=="next");if(nx){pool=A.filter(a=>cardOf(a.n)&&nx.ids.includes(a.id));lab="up next · "+nx.label}}
-    const slot=Math.floor(Date.now()/12e4);let c;
+    const slot=Math.floor(Date.now()/6e4);let c;
     if(pool.length){const a=pool[slot%pool.length];c={a:null,k:"ARCHÉMON card · "+lab,t:a.n,s:`${DIV[a.d]} · Bale ${a.b}`,img:cardOf(a.n),b:`${sc&&P[a.id]!=null?`<div class="spbig">${fmt(P[a.id])} pts</div>so far.`:`Projected <b>${projR(a.id)}</b> fantasy points.`}`}}
     else{const all=[...CARDS];const k=all[slot%all.length];const a=A.find(x=>slugN(x.n)==k);const st=CSTAFF[k];c={a:null,k:"ARCHÉMON card",t:a?a.n:st?st[0]:k,s:a?DIV[a.d]:st?st[1]:"",img:"img/cards/"+k+".jpg",b:""}}
     c.b+=`<p style="color:#e8b93a;margin-top:1vh">Collect the 2026 Texas Ringer ARCHÉMON cards.</p>`;cards.splice(Math.min(cards.length,2),0,c)}
